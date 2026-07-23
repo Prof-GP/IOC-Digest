@@ -57,6 +57,14 @@ def build_incident(inc: dict) -> str:
             f"          </tr>"
         )
 
+    # Lead with when it was REPORTED (why it's in this issue); ACTIVE SINCE is the
+    # campaign's age, which tells a defender their potential exposure window.
+    if inc.get("reported"):
+        date_html = (f'<span class="reported">REPORTED {esc(inc["reported"])}</span>'
+                     f'<span>ACTIVE SINCE {esc(inc["first_seen"])}</span>')
+    else:
+        date_html = f'<span>ACTIVE SINCE {esc(inc["first_seen"])}</span>'
+
     facts = "".join(f"\n        <span>{esc(f)}</span>" for f in inc.get("facts", []))
     attack = " · ".join(inc.get("attack", []))
     sources = " · ".join(
@@ -75,7 +83,7 @@ def build_incident(inc: dict) -> str:
         </div>
         <p class="inc-sum">{inc["summary"]}</p>
         <div class="inc-meta">
-          <span>FIRST SEEN {esc(inc["first_seen"])}</span>{facts}
+          {date_html}{facts}
           <span class="attck">{attack}</span>
           <span>{sources}</span>
         </div>
@@ -224,6 +232,23 @@ def build(path: Path) -> None:
     issue = json.loads(path.read_text(encoding="utf-8"))
     tag = f"{issue['issue']:03d}"
     template = (ROOT / "templates" / "page.html").read_text(encoding="utf-8")
+
+    # Order for a defender scan: severity first (most dangerous on top), then the
+    # most-recently-reported within each severity. "reported" is the digest's axis,
+    # not campaign age.
+    sev_rank = {"crit": 0, "high": 1, "med": 2}
+    issue["incidents"].sort(
+        key=lambda i: (sev_rank.get(i["severity"], 9),
+                       "0000" if not i.get("reported") else
+                       "".join(c for c in i["reported"] if c.isdigit())),
+        reverse=False,
+    )
+    # newest reported first *within* each severity band
+    from itertools import groupby
+    ordered = []
+    for _, grp in groupby(issue["incidents"], key=lambda i: sev_rank.get(i["severity"], 9)):
+        ordered.extend(sorted(grp, key=lambda i: i.get("reported", ""), reverse=True))
+    issue["incidents"] = ordered
 
     DOCS.mkdir(exist_ok=True)
     (DOCS / "archive").mkdir(exist_ok=True)

@@ -110,6 +110,216 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
+      "id": "indicator--6d3635c4-7be0-5b5a-a431-72c2124caa13",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: SystemBC proxy \u2014 RC4 SOCKS5 tunnel",
+      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
+      "pattern": "[file:hashes.'SHA-256' = '992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ddaf98dd-da8b-5a08-b09a-7a1b1a8beb16",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Gentlemen locker (Windows) \u2014 1 of 20 samples in source",
+      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
+      "pattern": "[file:hashes.'SHA-256' = '025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--55b74490-48ea-512b-803b-60e5cba1c5a2",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Gentlemen locker (Linux)",
+      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
+      "pattern": "[file:hashes.'SHA-256' = '5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f31b5032-fb6a-506f-ab76-7a6e88287c0f",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: gentlemen.bmp \u2014 ransom wallpaper artifact",
+      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
+      "pattern": "[file:hashes.'SHA-256' = 'fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0babdbd4-83cc-5879-9200-b10433d929d4",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Cobalt Strike C2 (ports 443/80)",
+      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
+      "pattern": "[ipv4-addr:value = '91.107.247.163']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--d0a32a29-a1fd-5e50-9197-0ad049f03da8",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: SystemBC C2",
+      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
+      "pattern": "[ipv4-addr:value = '45.86.230.112']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a7dc2243-7a15-5a48-8c62-e0a2e1d15f32",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor access to exposed PLCs \u2014 Mar 2026 only",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '135.136.1.133']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e3e454bb-d958-5480-b494-15b8ec6d69a2",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.162']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--4ea96a84-494d-5816-9042-f7d70ef15eff",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.164']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e1a5477f-e08a-5df7-86d7-0018431f3155",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.165']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7ad93478-db14-57ff-9700-d1313f25a522",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.167']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--aaa18336-59f9-5fe0-81c0-8d4a3c15c5c2",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.168']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--602d30bf-b67f-5d3c-b2fb-86528a31c30b",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.170']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5db6d2a8-0906-5cec-bf63-c4ea505d96a0",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
+      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
+      "pattern": "[ipv4-addr:value = '185.82.73.171']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
       "id": "indicator--a24b4ef5-ccb8-5383-99e7-c94f6f421f70",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
@@ -320,12 +530,12 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--a7dc2243-7a15-5a48-8c62-e0a2e1d15f32",
+      "id": "indicator--2181be6b-3abb-58d4-b509-47157c8de3d6",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor access to exposed PLCs \u2014 Mar 2026 only",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '135.136.1.133']",
+      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: C2",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
+      "pattern": "[domain-name:value = 'check02id.com']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [
@@ -335,12 +545,12 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--e3e454bb-d958-5480-b494-15b8ec6d69a2",
+      "id": "indicator--2bf8bd7d-264e-586f-afa1-9d5e2dd3abf2",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.162']",
+      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: C2",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
+      "pattern": "[domain-name:value = 'uw04webzoom.us']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [
@@ -350,12 +560,12 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--4ea96a84-494d-5816-9042-f7d70ef15eff",
+      "id": "indicator--2d77bdb6-5e17-552c-aba8-79acc2677ae1",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.164']",
+      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: C2 / lure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
+      "pattern": "[domain-name:value = 'tronracing.com']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [
@@ -365,12 +575,12 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--e1a5477f-e08a-5df7-86d7-0018431f3155",
+      "id": "indicator--6ab5ee72-e2ae-56f0-9721-fda491fba548",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.165']",
+      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
+      "pattern": "[ipv4-addr:value = '208.91.197.27']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [
@@ -380,12 +590,12 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--7ad93478-db14-57ff-9700-d1313f25a522",
+      "id": "indicator--4f247b0d-60ba-5471-909a-38162c6bb1c9",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.167']",
+      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
+      "pattern": "[ipv4-addr:value = '94.191.24.214']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [
@@ -395,42 +605,12 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--aaa18336-59f9-5fe0-81c0-8d4a3c15c5c2",
+      "id": "indicator--308ace93-b87e-5a9b-bb16-12e106a397e4",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.168']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--602d30bf-b67f-5d3c-b2fb-86528a31c30b",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.170']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--5db6d2a8-0906-5cec-bf63-c4ea505d96a0",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A): Actor infrastructure \u2014 Jan 2025 \u2192 Mar 2026",
-      "description": "Source: https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a; https://www.ic3.gov/CSA/2026/260407.pdf",
-      "pattern": "[ipv4-addr:value = '185.82.73.171']",
+      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
+      "pattern": "[ipv4-addr:value = '139.59.27.154']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [
@@ -536,186 +716,6 @@
       "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: C2 (AS202412, Seychelles)",
       "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
       "pattern": "[ipv4-addr:value = '158.94.208.120']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--6d3635c4-7be0-5b5a-a431-72c2124caa13",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: SystemBC proxy \u2014 RC4 SOCKS5 tunnel",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = '992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--ddaf98dd-da8b-5a08-b09a-7a1b1a8beb16",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Gentlemen locker (Windows) \u2014 1 of 20 samples in source",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = '025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--55b74490-48ea-512b-803b-60e5cba1c5a2",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Gentlemen locker (Linux)",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = '5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--f31b5032-fb6a-506f-ab76-7a6e88287c0f",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: gentlemen.bmp \u2014 ransom wallpaper artifact",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = 'fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--0babdbd4-83cc-5879-9200-b10433d929d4",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Cobalt Strike C2 (ports 443/80)",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[ipv4-addr:value = '91.107.247.163']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--d0a32a29-a1fd-5e50-9197-0ad049f03da8",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: SystemBC C2",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[ipv4-addr:value = '45.86.230.112']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--2181be6b-3abb-58d4-b509-47157c8de3d6",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: C2",
-      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
-      "pattern": "[domain-name:value = 'check02id.com']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--2bf8bd7d-264e-586f-afa1-9d5e2dd3abf2",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: C2",
-      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
-      "pattern": "[domain-name:value = 'uw04webzoom.us']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--2d77bdb6-5e17-552c-aba8-79acc2677ae1",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: C2 / lure",
-      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
-      "pattern": "[domain-name:value = 'tronracing.com']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--6ab5ee72-e2ae-56f0-9721-fda491fba548",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: Actor infrastructure",
-      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
-      "pattern": "[ipv4-addr:value = '208.91.197.27']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--4f247b0d-60ba-5471-909a-38162c6bb1c9",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: Actor infrastructure",
-      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
-      "pattern": "[ipv4-addr:value = '94.191.24.214']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--308ace93-b87e-5a9b-bb16-12e106a397e4",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise: Actor infrastructure",
-      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/",
-      "pattern": "[ipv4-addr:value = '139.59.27.154']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [

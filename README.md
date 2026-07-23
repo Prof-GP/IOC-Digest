@@ -48,6 +48,20 @@ the clean feeds are there for machines, clearly labeled.
 - STIX bundles cover hash/domain/ip/url indicators; host artifacts (paths, mutexes,
   commands, RTLO filenames) live in the txt/csv feeds only.
 
+## What "weekly" means here
+
+Curate by **reporting date, not campaign age.** An item belongs in an issue because
+its analysis was *published/updated* that week — the campaign itself may have been
+running for months (or, for the FSB router activity, a decade). Each incident carries
+two dates:
+
+- `reported` — when the source published; this is why it's in this issue, shown first.
+- `first_seen` — when the campaign began; shown as ACTIVE SINCE, because it tells a
+  defender how far back their exposure window potentially runs.
+
+Incidents are ordered severity-first, then newest-reported within each severity band.
+Only add an incident whose `reported` date falls in (or just before) the issue week.
+
 ## Editorial rules
 
 - Severity reflects risk to a general defender audience, not headline volume.
