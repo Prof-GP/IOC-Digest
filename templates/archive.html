@@ -1,0 +1,99 @@
+<title>IOC Digest — Archive</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0;
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 320px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 48px;
+  }
+  header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px 18px;
+    padding: 18px 0 14px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 22px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+  }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0;
+  }
+  .wordmark span { color: var(--accent); }
+  h1 { font-size: 15px; margin: 0; font-weight: 600; color: var(--dim); }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .spacer { flex: 1; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 16px;
+  }
+  .issue-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 16px 18px;
+    transition: border-color .12s, background .12s;
+  }
+  .issue-card:hover { border-color: var(--accent); background: var(--panel-2); }
+  .ic-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .ic-tag {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    color: var(--accent);
+  }
+  .ic-meta { font-family: var(--mono); font-size: 11px; color: var(--faint); }
+  .ic-titles { margin: 10px 0 0; font-size: 13px; color: var(--dim); }
+</style>
+
+<header>
+  <h2 class="wordmark">IOC<span>//</span>DIGEST</h2>
+  <h1>ARCHIVE</h1>
+  <span class="spacer"></span>
+  <a class="navlink" href="../index.html">← LATEST ISSUE</a>
+</header>
+
+<div class="grid">
+{{CARDS}}
+</div>

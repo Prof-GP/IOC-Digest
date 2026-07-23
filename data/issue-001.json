@@ -4,6 +4,33 @@
   "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
   "incidents": [
     {
+      "id": "miasma",
+      "severity": "crit",
+      "wide": true,
+      "kind": "SUPPLY CHAIN · BOTNET",
+      "title": "Miasma botnet — AsyncAPI npm packages trojanized via GitHub Actions",
+      "summary": "A malicious commit to AsyncAPI's repo abused trusted publishing to push five trojanized npm package versions; on module load they fetch an encrypted loader from IPFS and install the cross-platform Miasma botnet (REST C2, shell execution, systemd persistence). <b>If any listed version was installed on or after Jul 14, treat the host as compromised.</b>",
+      "first_seen": "2026-07-14",
+      "facts": ["5 TROJANIZED npm PACKAGES", "WIN · MAC · LINUX"],
+      "attack": ["T1195.002", "T1059.007", "T1105", "T1543.002", "T1102"],
+      "sources": [
+        { "label": "Rescana exploitation alert", "url": "https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act" }
+      ],
+      "action": "Audit lockfiles for the five versions below; on hits, remove, hunt sync.js / .miasma paths and the systemd user service, and rotate every credential the host could reach.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "34014776d3d3ff11bc4439b02fd7ac0f02a887eb3a052eeafff236e2f6db8ad1", "context": "@asyncapi/generator-helpers@1.1.1 (npm)", "seen": "JUL 14" },
+        { "type": "sha256", "category": "hash", "value": "082d733db0687dcd768104972b065d4b58cb1e6043688c6c20fa3702337f36ab", "context": "@asyncapi/generator-components@0.7.1 (npm)", "seen": "JUL 14" },
+        { "type": "sha256", "category": "hash", "value": "bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4", "context": "@asyncapi/generator@3.3.1 (npm)", "seen": "JUL 14" },
+        { "type": "sha256", "category": "hash", "value": "9b2e65db653ca8575c9b10eefb9a80c6006404812c2ec212bf5675e3c690233b", "context": "@asyncapi/specs@6.11.2 (npm)", "seen": "JUL 14" },
+        { "type": "sha256", "category": "hash", "value": "d425e4583cc6185d41e95c45eda00550045a5d1919b9a012236a4520d009dbd7", "context": "@asyncapi/specs@6.11.2-alpha.1 (npm)", "seen": "JUL 14" },
+        { "type": "url", "category": "net", "value": "ipfs[.]io/ipfs/QmQobZSp1wRPrpSEQ56qnyq7ecZh5Bg5k1fnjt4SUwwHb9", "context": "Stage-2 encrypted sync.js — legit IPFS gateway, block/hunt the CID not the gateway", "seen": "JUL 14" },
+        { "type": "ip", "category": "net", "value": "85[.]137[.]53[.]71", "context": "Miasma REST C2 (ports 8080 / 8081 / 8091)", "seen": "JUL 14" },
+        { "type": "path", "category": "host", "value": "%LOCALAPPDATA%\\NodeJS\\sync.js", "context": "Staged loader (macOS: ~/Library/Application Support/NodeJS/, Linux: ~/.local/share/NodeJS/)", "seen": "JUL 14" },
+        { "type": "path", "category": "host", "value": "~/.config/systemd/user/miasma-monitor.service", "context": "Linux persistence — systemd user service", "seen": "JUL 14" },
+        { "type": "path", "category": "host", "value": "~/.config/.miasma/run/node.lock", "context": "Runtime lock file — reliable infection marker", "seen": "JUL 14" }
+      ]
+    },
+    {
       "id": "acr",
       "severity": "high",
       "wide": true,
@@ -59,6 +86,34 @@
       ]
     },
     {
+      "id": "plc",
+      "severity": "high",
+      "wide": true,
+      "kind": "OT · APT INTRUSION",
+      "title": "Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A)",
+      "summary": "FBI/CISA/NSA report Iranian-affiliated APT actors using leased infrastructure and legitimate Studio 5000 software to access internet-facing Rockwell/Allen-Bradley PLCs (CompactLogix, Micro850), extract project files, and manipulate HMI/SCADA displays; Dropbear SSH deployed for remote access. <b>Victims across US water, energy, and government saw real operational disruption.</b>",
+      "first_seen": "2026-03",
+      "facts": ["JOINT ADVISORY AA26-097A", "TARGETS: US OT — WWS · ENERGY · GOV"],
+      "attack": ["T0883", "T0885", "T1219", "T1565"],
+      "sources": [
+        { "label": "CISA advisory AA26-097A", "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a" },
+        { "label": "Joint advisory PDF", "url": "https://www.ic3.gov/CSA/2026/260407.pdf" }
+      ],
+      "action": "Get PLCs off the internet. Query logs for the IPs below (FBI: vet before blocking); monitor OT ports 44818/2222/102/22/502 at the boundary and hunt unexpected Dropbear SSH on endpoints.",
+      "iocs": [
+        { "type": "ip", "category": "net", "value": "135[.]136[.]1[.]133", "context": "Actor access to exposed PLCs — Mar 2026 only", "seen": "MAR" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]162", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]164", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]165", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]167", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]168", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]170", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "ip", "category": "net", "value": "185[.]82[.]73[.]171", "context": "Actor infrastructure — Jan 2025 → Mar 2026", "seen": "JAN 25" },
+        { "type": "port", "category": "net", "value": "44818, 2222, 102, 22, 502", "context": "OT protocol ports abused for inbound C2 — monitor at OT boundary", "seen": "MAR" },
+        { "type": "tool", "category": "host", "value": "dropbear", "context": "Unexpected Dropbear SSH deployed on victim endpoints for port-22 access", "seen": "MAR" }
+      ]
+    },
+    {
       "id": "pe",
       "severity": "med",
       "wide": false,
@@ -83,6 +138,124 @@
         { "type": "uri", "category": "net", "value": "GET /laravel[.]php?api=api&hash=*&message=PT1n*", "context": "Gen-1 beacon pattern — hunt web/proxy logs", "seen": "JAN" },
         { "type": "uri", "category": "net", "value": "POST /nbw/", "context": "Gen-2 beacon — JSON with COMPUTERNAME/USERNAME every 180s", "seen": "JUL 12" },
         { "type": "path", "category": "host", "value": "is-*.tmp\\<Name>Application\\App.exe", "context": "Dropped payload path from the Inno Setup installer", "seen": "JAN" }
+      ]
+    },
+    {
+      "id": "gentlemen",
+      "severity": "crit",
+      "wide": true,
+      "kind": "RANSOMWARE · RaaS",
+      "title": "The Gentlemen RaaS + SystemBC — GPO-deployed multi-OS locker",
+      "summary": "A human-operated intrusion where a Gentlemen affiliate disabled Defender via PowerShell, tunneled with SystemBC (RC4 SOCKS5), and pushed the locker domain-wide through GPO scheduled tasks; Windows, Linux, NAS, and ESXi builds observed. <b>The behavioral chain — Defender exclusions, GPO NETLOGON drop, named scheduled tasks — outlasts the 20+ rotating hashes.</b>",
+      "first_seen": "2026-01",
+      "facts": ["320+ CLAIMED VICTIMS", "MULTI-OS: WIN · LINUX · NAS · ESXi"],
+      "attack": ["T1078", "T1562.001", "T1053.005", "T1486", "T1090.003"],
+      "sources": [
+        { "label": "Check Point / DFIR Report", "url": "https://research.checkpoint.com/2026/dfir-report-the-gentlemen/" }
+      ],
+      "action": "Alert on Set-MpPreference -DisableRealtimeMonitoring and Defender ExclusionPath C:\\; hunt the scheduled tasks and services below and lockers dropped to NETLOGON or C:\\ProgramData\\r.exe/g.exe/o.exe.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5", "context": "SystemBC proxy — RC4 SOCKS5 tunnel", "seen": "JAN" },
+        { "type": "sha256", "category": "hash", "value": "025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a", "context": "Gentlemen locker (Windows) — 1 of 20 samples in source", "seen": "JAN" },
+        { "type": "sha256", "category": "hash", "value": "5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca", "context": "Gentlemen locker (Linux)", "seen": "JAN" },
+        { "type": "sha256", "category": "hash", "value": "fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68", "context": "gentlemen.bmp — ransom wallpaper artifact", "seen": "JAN" },
+        { "type": "ip", "category": "net", "value": "91[.]107[.]247[.]163", "context": "Cobalt Strike C2 (ports 443/80)", "seen": "JAN" },
+        { "type": "ip", "category": "net", "value": "45[.]86[.]230[.]112", "context": "SystemBC C2", "seen": "JAN" },
+        { "type": "cmd", "category": "host", "value": "Set-MpPreference -DisableRealtimeMonitoring $true", "context": "Defender kill — hunt in PowerShell logs", "seen": "JAN" },
+        { "type": "cmd", "category": "host", "value": "Add-MpPreference -ExclusionPath C:\\", "context": "Whole-disk Defender exclusion", "seen": "JAN" },
+        { "type": "task", "category": "host", "value": "UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU", "context": "Scheduled-task persistence (local + remote push)", "seen": "JAN" },
+        { "type": "service", "category": "host", "value": "DefSvc, UpdateSvc, UpdateSvc2", "context": "Service persistence names", "seen": "JAN" },
+        { "type": "path", "category": "host", "value": "C:\\ProgramData\\r.exe", "context": "Locker staging (also g.exe / o.exe)", "seen": "JAN" }
+      ]
+    },
+    {
+      "id": "polinrider",
+      "severity": "high",
+      "wide": false,
+      "kind": "APT · SUPPLY CHAIN",
+      "title": "Lazarus (Famous Chollima) PolinRider — dev-account & registry compromise",
+      "summary": "North Korea-linked actors compromised legitimate developer accounts across npm, Go Modules, Packagist, and Chrome extensions to reach developer environments in defense, finance, and crypto. <b>Aimed squarely at builder machines and CI — treat dev credential theft as the objective.</b>",
+      "first_seen": "2026-05",
+      "facts": ["26+ COUNTRIES TARGETED", "ECOSYSTEMS: npm · Go · Packagist · Chrome"],
+      "attack": ["T1195.002", "T1566.001", "T1587.001", "T1078"],
+      "sources": [
+        { "label": "CYFIRMA weekly report", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/" }
+      ],
+      "action": "Block the domains/IPs below; hunt nwv3u.exe and builds referencing /scratch/zoo/2026/; enforce hardware-key MFA and provenance checks on package publishing accounts.",
+      "iocs": [
+        { "type": "domain", "category": "net", "value": "check02id[.]com", "context": "C2", "seen": "MAY" },
+        { "type": "domain", "category": "net", "value": "uw04webzoom[.]us", "context": "C2", "seen": "MAY" },
+        { "type": "domain", "category": "net", "value": "tronracing[.]com", "context": "C2 / lure", "seen": "MAY" },
+        { "type": "ip", "category": "net", "value": "208[.]91[.]197[.]27", "context": "Actor infrastructure", "seen": "MAY" },
+        { "type": "ip", "category": "net", "value": "94[.]191[.]24[.]214", "context": "Actor infrastructure", "seen": "MAY" },
+        { "type": "ip", "category": "net", "value": "139[.]59[.]27[.]154", "context": "Actor infrastructure", "seen": "MAY" },
+        { "type": "filename", "category": "host", "value": "nwv3u.exe", "context": "Payload executable", "seen": "MAY" },
+        { "type": "path", "category": "host", "value": "/scratch/zoo/2026/0522/", "context": "Build/staging path string in samples", "seen": "MAY" }
+      ]
+    },
+    {
+      "id": "fsb-router",
+      "severity": "high",
+      "wide": false,
+      "kind": "OT · NETWORK DEVICE",
+      "title": "FSB Center 16 router config theft via SNMP & Smart Install (AA26-194A)",
+      "summary": "Russian FSB Center 16 (Berserk Bear / Static Tundra) scans for SNMP agents with default community strings, then uses SNMP Set-Requests against the Cisco config-copy MIB to TFTP running-configs out; Smart Install (CVE-2018-0171) and the SYNful Knock IOS implant also seen. <b>Weak SNMP config, not a fresh 0-day, is the exposure.</b>",
+      "first_seen": "2026-07-13",
+      "facts": ["ADVISORY AA26-194A", "TARGETS: COMMS · ENERGY · DEFENSE · GOV"],
+      "attack": ["T1595.002", "T1602.002", "T1048", "T1090"],
+      "sources": [
+        { "label": "CISA advisory AA26-194A", "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-194a" },
+        { "label": "Picus technical breakdown", "url": "https://www.picussecurity.com/resource/blog/fsb-center-16-how-russian-hackers-exploit-routers-via-snmp-and-cisco-smart-install" }
+      ],
+      "action": "Move to SNMPv3 authPriv and kill v1/v2c; disable Smart Install (no vstack) and patch CVE-2018-0171; block TCP 4786, UDP 69/161/162 at the edge; alert on inbound SNMP Set-Requests hitting the config-copy OID.",
+      "iocs": [
+        { "type": "oid", "category": "net", "value": "1.3.6.1.4.1.9.9.96.1.1", "context": "CISCO-CONFIG-COPY-MIB — config-copy operation abused to exfil running-config", "seen": "JUL 13" },
+        { "type": "oid", "category": "net", "value": "1.3.6.1.4.1.9.9.96.1.1.1.1.5", "context": "Config-transfer destination address OID — IDS alert target", "seen": "JUL 13" },
+        { "type": "port", "category": "net", "value": "TCP 4786", "context": "Cisco Smart Install — disable and block at edge", "seen": "JUL 13" },
+        { "type": "cve", "category": "net", "value": "CVE-2018-0171", "context": "Smart Install RCE (CVSS 9.8) — patched Mar 2018, still exploited", "seen": "JUL 13" },
+        { "type": "port", "category": "net", "value": "UDP 69", "context": "TFTP exfil channel for stolen configs", "seen": "JUL 13" },
+        { "type": "malware", "category": "host", "value": "SYNful Knock", "context": "Cisco IOS firmware implant; reboot-persistent, woken by crafted TCP SYN magic packet", "seen": "JUL 13" }
+      ]
+    },
+    {
+      "id": "brunostealer",
+      "severity": "med",
+      "wide": false,
+      "kind": "MALWARE · INFOSTEALER",
+      "title": "BrunoStealer — Discord-webhook exfil infostealer",
+      "summary": "A Windows infostealer that fingerprints the host, geolocates it via ip-api.com, and exfiltrates over a hardcoded Discord webhook, executed through rundll32/loaddll64. <b>Discord webhook + ip-api lookup pairing is a cheap, high-signal hunt across proxy logs.</b>",
+      "first_seen": "2026-07",
+      "facts": ["TARGET: WINDOWS (GLOBAL)"],
+      "attack": ["T1071", "T1614", "T1218", "T1082"],
+      "sources": [
+        { "label": "CYFIRMA weekly report", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/" }
+      ],
+      "action": "Hunt for outbound discord.com/api/webhooks paired with ip-api.com lookups from non-browser processes; block the sample hash below.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "c8525c9380f5c3d9d5c66e101120fee50c3e4a80d0981507d300b33a6cafb208", "context": "BrunoStealer sample", "seen": "JUL" },
+        { "type": "url", "category": "net", "value": "discord[.]com/api/webhooks/", "context": "Exfil channel — legit service, alert on non-browser use", "seen": "JUL" },
+        { "type": "url", "category": "net", "value": "ip-api[.]com/line/?fields=query", "context": "Victim geolocation/public-IP lookup", "seen": "JUL" },
+        { "type": "cmd", "category": "host", "value": "rundll32.exe / loaddll64.exe", "context": "Execution via DLL proxy loaders", "seen": "JUL" }
+      ]
+    },
+    {
+      "id": "doommageddon",
+      "severity": "med",
+      "wide": false,
+      "kind": "RANSOMWARE · DOUBLE EXTORTION",
+      "title": "Doommageddon — double-extortion ransomware",
+      "summary": "Encrypts with asymmetric crypto, appends an extension while keeping the original filename, and runs a victim-shaming leak portal; wipes shadow copies before encrypting. <b>The vssadmin/wmic shadow-deletion pair is the pre-encryption tripwire to alert on.</b>",
+      "first_seen": "2026-07",
+      "facts": ["TARGETS: FINANCE · MANUFACTURING · RETAIL", "REGIONS: BR · IN · PY · TR"],
+      "attack": ["T1486", "T1490", "T1055", "T1003"],
+      "sources": [
+        { "label": "CYFIRMA weekly report", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/" }
+      ],
+      "action": "Alert on shadow-copy deletion (below) as a pre-encryption signal; block the ransom-note write pattern and isolate offline backups.",
+      "iocs": [
+        { "type": "filename", "category": "host", "value": "README_DECRYPT.txt", "context": "Ransom note dropped in encrypted directories", "seen": "JUL" },
+        { "type": "cmd", "category": "host", "value": "vssadmin.exe Delete Shadows /all /quiet", "context": "Shadow-copy wipe before encryption", "seen": "JUL" },
+        { "type": "cmd", "category": "host", "value": "wmic shadowcopy delete /nointeractive", "context": "Secondary shadow-copy deletion", "seen": "JUL" }
       ]
     }
   ]

@@ -1,7 +1,19 @@
-# IOC//DIGEST issue 001 · week of 2026-07-20
-# CLEAN values — import into TIP/SIEM. May trip AV/mail scanning.
+# IOC//DIGEST issue 001 - week of 2026-07-20
+# CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
 #
-# --- ACRStealer — fake Claude Code & AI-tool installer sites  (https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign)
+# --- Miasma botnet \u2014 AsyncAPI npm packages trojanized via GitHub Actions  (https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act)
+34014776d3d3ff11bc4439b02fd7ac0f02a887eb3a052eeafff236e2f6db8ad1
+082d733db0687dcd768104972b065d4b58cb1e6043688c6c20fa3702337f36ab
+bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4
+9b2e65db653ca8575c9b10eefb9a80c6006404812c2ec212bf5675e3c690233b
+d425e4583cc6185d41e95c45eda00550045a5d1919b9a012236a4520d009dbd7
+ipfs.io/ipfs/QmQobZSp1wRPrpSEQ56qnyq7ecZh5Bg5k1fnjt4SUwwHb9
+85.137.53.71
+%LOCALAPPDATA%\\NodeJS\\sync.js
+~/.config/systemd/user/miasma-monitor.service
+~/.config/.miasma/run/node.lock
+#
+# --- ACRStealer \u2014 fake Claude Code & AI-tool installer sites  (https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign)
 2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5
 d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90
 cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e
@@ -11,21 +23,33 @@ ctr.accrabbleshowm.cfd
 145.249.109.147
 telegra.ph/function-c0a03
 claude-code-docs-page.duckdns.org
-%LocalAppData%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdateCore.dll
+%LocalAppData%\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdateCore.dll
 update-S-1-5-21-14297136-4737252683-2816350604-2100
 rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript
 #
-# --- Simba Service — WebDAV phishing delivering PureRAT  (https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html, https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel)
+# --- Simba Service \u2014 WebDAV phishing delivering PureRAT  (https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html, https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel)
 gobf.mx
 onedrive.cv
 onedrive.cv/Downloads/6/HyperPackSetup.exe
 138.124.123.87
 203.161.39.169
-\\summerartcamp.net@ssl@443\DavWWWRoot\OSYxaOjr
+\\\\summerartcamp.net@ssl@443\\DavWWWRoot\\OSYxaOjr
 HyperPackSetup.exe
 Labcorp Results.<U+202E>fdp.scr
 #
-# --- PhantomEnigma — .gov.br portals spreading Node.js backdoor  (https://any.run/cybersecurity-blog/phantomenigma-research/)
+# --- Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A)  (https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a, https://www.ic3.gov/CSA/2026/260407.pdf)
+135.136.1.133
+185.82.73.162
+185.82.73.164
+185.82.73.165
+185.82.73.167
+185.82.73.168
+185.82.73.170
+185.82.73.171
+44818, 2222, 102, 22, 502
+dropbear
+#
+# --- PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor  (https://any.run/cybersecurity-blog/phantomenigma-research/)
 e0dae1a04b7a3b2ae07377b0fd00681e9633532788870b3709a9e149f3ccf0e0
 71f69978667dc421e7edf8885e9f3bde9dd527d9f7974228c9a6eac84c2ab71c
 dahieenloo.com
@@ -35,4 +59,46 @@ policiacivilmg.com
 158.94.208.120
 GET /laravel.php?api=api&hash=*&message=PT1n*
 POST /nbw/
-is-*.tmp\<Name>Application\App.exe
+is-*.tmp\\<Name>Application\\App.exe
+#
+# --- The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker  (https://research.checkpoint.com/2026/dfir-report-the-gentlemen/)
+992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5
+025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a
+5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca
+fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68
+91.107.247.163
+45.86.230.112
+Set-MpPreference -DisableRealtimeMonitoring $true
+Add-MpPreference -ExclusionPath C:\\
+UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU
+DefSvc, UpdateSvc, UpdateSvc2
+C:\\ProgramData\\r.exe
+#
+# --- Lazarus (Famous Chollima) PolinRider \u2014 dev-account & registry compromise  (https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/)
+check02id.com
+uw04webzoom.us
+tronracing.com
+208.91.197.27
+94.191.24.214
+139.59.27.154
+nwv3u.exe
+/scratch/zoo/2026/0522/
+#
+# --- FSB Center 16 router config theft via SNMP & Smart Install (AA26-194A)  (https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-194a, https://www.picussecurity.com/resource/blog/fsb-center-16-how-russian-hackers-exploit-routers-via-snmp-and-cisco-smart-install)
+1.3.6.1.4.1.9.9.96.1.1
+1.3.6.1.4.1.9.9.96.1.1.1.1.5
+TCP 4786
+CVE-2018-0171
+UDP 69
+SYNful Knock
+#
+# --- BrunoStealer \u2014 Discord-webhook exfil infostealer  (https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/)
+c8525c9380f5c3d9d5c66e101120fee50c3e4a80d0981507d300b33a6cafb208
+discord.com/api/webhooks/
+ip-api.com/line/?fields=query
+rundll32.exe / loaddll64.exe
+#
+# --- Doommageddon \u2014 double-extortion ransomware  (https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/)
+README_DECRYPT.txt
+vssadmin.exe Delete Shadows /all /quiet
+wmic shadowcopy delete /nointeractive

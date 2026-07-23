@@ -144,9 +144,20 @@
     font-family: var(--mono);
     font-size: 11px;
     color: var(--faint);
-    margin-right: 14px;
     white-space: nowrap;
   }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
   .fchip {
     font-family: var(--mono);
     font-size: 12px;
@@ -401,6 +412,7 @@
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
   <span class="issue-meta">{{ISSUE_META}}</span>
+  <a class="navlink" href="{{ARCHIVE_HREF}}">{{ARCHIVE_LABEL}}</a>
   <button class="fchip on" data-type="all">ALL<b>{{COUNT_ALL}}</b></button>
   <button class="fchip" data-type="hash">HASHES<b>{{COUNT_HASH}}</b></button>
   <button class="fchip" data-type="net">NETWORK<b>{{COUNT_NET}}</b></button>

@@ -144,9 +144,20 @@
     font-family: var(--mono);
     font-size: 11px;
     color: var(--faint);
-    margin-right: 14px;
     white-space: nowrap;
   }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
   .fchip {
     font-family: var(--mono);
     font-size: 12px;
@@ -400,11 +411,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 001 · WK 2026-07-20 · 3 INCIDENTS · 30 IOCs</span>
-  <button class="fchip on" data-type="all">ALL<b>30</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>6</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>18</b></button>
-  <button class="fchip" data-type="host">HOST<b>6</b></button>
+  <span class="issue-meta">ISSUE 001 · WK 2026-07-20 · 10 INCIDENTS · 82 IOCs</span>
+  <a class="navlink" href="archive/">ARCHIVE ▾</a>
+  <button class="fchip on" data-type="all">ALL<b>82</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>16</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>44</b></button>
+  <button class="fchip" data-type="host">HOST<b>22</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -419,6 +431,99 @@
 </div>
 
 <div class="grid">
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>Miasma botnet — AsyncAPI npm packages trojanized via GitHub Actions</h2>
+        </div>
+        <p class="inc-sum">A malicious commit to AsyncAPI's repo abused trusted publishing to push five trojanized npm package versions; on module load they fetch an encrypted loader from IPFS and install the cross-platform Miasma botnet (REST C2, shell execution, systemd persistence). <b>If any listed version was installed on or after Jul 14, treat the host as compromised.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-07-14</span>
+        <span>5 TROJANIZED npm PACKAGES</span>
+        <span>WIN · MAC · LINUX</span>
+          <span class="attck">T1195.002 · T1059.007 · T1105 · T1543.002 · T1102</span>
+          <span><a href="https://www.rescana.com/post/active-exploitation-alert-asyncapi-npm-supply-chain-attack-delivers-multi-stage-miasma-botnet-via-compromised-github-act" rel="noopener">Rescana exploitation alert</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SUPPLY CHAIN · BOTNET</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Audit lockfiles for the five versions below; on hits, remove, hunt sync.js / .miasma paths and the systemd user service, and rotate every credential the host could reach.</span>
+      <button class="tbtn copy-inc" data-inc="miasma">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="miasma">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="34014776d3d3ff11bc4439b02fd7ac0f02a887eb3a052eeafff236e2f6db8ad1">34014776d3d3ff11bc4439b02fd7ac0f02a887eb3a052eeafff236e2f6db8ad1</button></td>
+            <td class="ctx">@asyncapi/generator-helpers@1.1.1 (npm)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="082d733db0687dcd768104972b065d4b58cb1e6043688c6c20fa3702337f36ab">082d733db0687dcd768104972b065d4b58cb1e6043688c6c20fa3702337f36ab</button></td>
+            <td class="ctx">@asyncapi/generator-components@0.7.1 (npm)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4">bfaeb987faa6de2b5a5eb63b1233d055215b09b0349a9394f2175fd7cdf385e4</button></td>
+            <td class="ctx">@asyncapi/generator@3.3.1 (npm)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="9b2e65db653ca8575c9b10eefb9a80c6006404812c2ec212bf5675e3c690233b">9b2e65db653ca8575c9b10eefb9a80c6006404812c2ec212bf5675e3c690233b</button></td>
+            <td class="ctx">@asyncapi/specs@6.11.2 (npm)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="d425e4583cc6185d41e95c45eda00550045a5d1919b9a012236a4520d009dbd7">d425e4583cc6185d41e95c45eda00550045a5d1919b9a012236a4520d009dbd7</button></td>
+            <td class="ctx">@asyncapi/specs@6.11.2-alpha.1 (npm)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="ipfs[.]io/ipfs/QmQobZSp1wRPrpSEQ56qnyq7ecZh5Bg5k1fnjt4SUwwHb9">ipfs[.]io/ipfs/QmQobZSp1wRPrpSEQ56qnyq7ecZh5Bg5k1fnjt4SUwwHb9</button></td>
+            <td class="ctx">Stage-2 encrypted sync.js — legit IPFS gateway, block/hunt the CID not the gateway</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="85[.]137[.]53[.]71">85[.]137[.]53[.]71</button></td>
+            <td class="ctx">Miasma REST C2 (ports 8080 / 8081 / 8091)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="%LOCALAPPDATA%\NodeJS\sync.js">%LOCALAPPDATA%\NodeJS\sync.js</button></td>
+            <td class="ctx">Staged loader (macOS: ~/Library/Application Support/NodeJS/, Linux: ~/.local/share/NodeJS/)</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="~/.config/systemd/user/miasma-monitor.service">~/.config/systemd/user/miasma-monitor.service</button></td>
+            <td class="ctx">Linux persistence — systemd user service</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="~/.config/.miasma/run/node.lock">~/.config/.miasma/run/node.lock</button></td>
+            <td class="ctx">Runtime lock file — reliable infection marker</td>
+            <td class="seen">JUL 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
   <section class="incident high wide">
     <div class="inc-head">
       <div class="inc-lead">
@@ -605,6 +710,99 @@
       </table>
     </div>
   </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Iranian-affiliated actors disrupting internet-exposed PLCs (AA26-097A)</h2>
+        </div>
+        <p class="inc-sum">FBI/CISA/NSA report Iranian-affiliated APT actors using leased infrastructure and legitimate Studio 5000 software to access internet-facing Rockwell/Allen-Bradley PLCs (CompactLogix, Micro850), extract project files, and manipulate HMI/SCADA displays; Dropbear SSH deployed for remote access. <b>Victims across US water, energy, and government saw real operational disruption.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-03</span>
+        <span>JOINT ADVISORY AA26-097A</span>
+        <span>TARGETS: US OT — WWS · ENERGY · GOV</span>
+          <span class="attck">T0883 · T0885 · T1219 · T1565</span>
+          <span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-097a" rel="noopener">CISA advisory AA26-097A</a> · <a href="https://www.ic3.gov/CSA/2026/260407.pdf" rel="noopener">Joint advisory PDF</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">OT · APT INTRUSION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Get PLCs off the internet. Query logs for the IPs below (FBI: vet before blocking); monitor OT ports 44818/2222/102/22/502 at the boundary and hunt unexpected Dropbear SSH on endpoints.</span>
+      <button class="tbtn copy-inc" data-inc="plc">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="plc">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="135[.]136[.]1[.]133">135[.]136[.]1[.]133</button></td>
+            <td class="ctx">Actor access to exposed PLCs — Mar 2026 only</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]162">185[.]82[.]73[.]162</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]164">185[.]82[.]73[.]164</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]165">185[.]82[.]73[.]165</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]167">185[.]82[.]73[.]167</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]168">185[.]82[.]73[.]168</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]170">185[.]82[.]73[.]170</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]82[.]73[.]171">185[.]82[.]73[.]171</button></td>
+            <td class="ctx">Actor infrastructure — Jan 2025 → Mar 2026</td>
+            <td class="seen">JAN 25</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">port</span></td>
+            <td><button class="val" data-defanged="44818, 2222, 102, 22, 502">44818, 2222, 102, 22, 502</button></td>
+            <td class="ctx">OT protocol ports abused for inbound C2 — monitor at OT boundary</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="dropbear">dropbear</button></td>
+            <td class="ctx">Unexpected Dropbear SSH deployed on victim endpoints for port-22 access</td>
+            <td class="seen">MAR</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
   <section class="incident med">
     <div class="inc-head">
       <div class="inc-lead">
@@ -693,6 +891,362 @@
             <td><button class="val" data-defanged="is-*.tmp\&lt;Name&gt;Application\App.exe">is-*.tmp\&lt;Name&gt;Application\App.exe</button></td>
             <td class="ctx">Dropped payload path from the Inno Setup installer</td>
             <td class="seen">JAN</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>The Gentlemen RaaS + SystemBC — GPO-deployed multi-OS locker</h2>
+        </div>
+        <p class="inc-sum">A human-operated intrusion where a Gentlemen affiliate disabled Defender via PowerShell, tunneled with SystemBC (RC4 SOCKS5), and pushed the locker domain-wide through GPO scheduled tasks; Windows, Linux, NAS, and ESXi builds observed. <b>The behavioral chain — Defender exclusions, GPO NETLOGON drop, named scheduled tasks — outlasts the 20+ rotating hashes.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-01</span>
+        <span>320+ CLAIMED VICTIMS</span>
+        <span>MULTI-OS: WIN · LINUX · NAS · ESXi</span>
+          <span class="attck">T1078 · T1562.001 · T1053.005 · T1486 · T1090.003</span>
+          <span><a href="https://research.checkpoint.com/2026/dfir-report-the-gentlemen/" rel="noopener">Check Point / DFIR Report</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · RaaS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Alert on Set-MpPreference -DisableRealtimeMonitoring and Defender ExclusionPath C:\; hunt the scheduled tasks and services below and lockers dropped to NETLOGON or C:\ProgramData\r.exe/g.exe/o.exe.</span>
+      <button class="tbtn copy-inc" data-inc="gentlemen">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="gentlemen">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5">992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5</button></td>
+            <td class="ctx">SystemBC proxy — RC4 SOCKS5 tunnel</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a">025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a</button></td>
+            <td class="ctx">Gentlemen locker (Windows) — 1 of 20 samples in source</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca">5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca</button></td>
+            <td class="ctx">Gentlemen locker (Linux)</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68">fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68</button></td>
+            <td class="ctx">gentlemen.bmp — ransom wallpaper artifact</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="91[.]107[.]247[.]163">91[.]107[.]247[.]163</button></td>
+            <td class="ctx">Cobalt Strike C2 (ports 443/80)</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="45[.]86[.]230[.]112">45[.]86[.]230[.]112</button></td>
+            <td class="ctx">SystemBC C2</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cmd</span></td>
+            <td><button class="val" data-defanged="Set-MpPreference -DisableRealtimeMonitoring $true">Set-MpPreference -DisableRealtimeMonitoring $true</button></td>
+            <td class="ctx">Defender kill — hunt in PowerShell logs</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cmd</span></td>
+            <td><button class="val" data-defanged="Add-MpPreference -ExclusionPath C:\">Add-MpPreference -ExclusionPath C:\</button></td>
+            <td class="ctx">Whole-disk Defender exclusion</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">task</span></td>
+            <td><button class="val" data-defanged="UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU">UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU</button></td>
+            <td class="ctx">Scheduled-task persistence (local + remote push)</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">service</span></td>
+            <td><button class="val" data-defanged="DefSvc, UpdateSvc, UpdateSvc2">DefSvc, UpdateSvc, UpdateSvc2</button></td>
+            <td class="ctx">Service persistence names</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="C:\ProgramData\r.exe">C:\ProgramData\r.exe</button></td>
+            <td class="ctx">Locker staging (also g.exe / o.exe)</td>
+            <td class="seen">JAN</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Lazarus (Famous Chollima) PolinRider — dev-account & registry compromise</h2>
+        </div>
+        <p class="inc-sum">North Korea-linked actors compromised legitimate developer accounts across npm, Go Modules, Packagist, and Chrome extensions to reach developer environments in defense, finance, and crypto. <b>Aimed squarely at builder machines and CI — treat dev credential theft as the objective.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-05</span>
+        <span>26+ COUNTRIES TARGETED</span>
+        <span>ECOSYSTEMS: npm · Go · Packagist · Chrome</span>
+          <span class="attck">T1195.002 · T1566.001 · T1587.001 · T1078</span>
+          <span><a href="https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/" rel="noopener">CYFIRMA weekly report</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">APT · SUPPLY CHAIN</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Block the domains/IPs below; hunt nwv3u.exe and builds referencing /scratch/zoo/2026/; enforce hardware-key MFA and provenance checks on package publishing accounts.</span>
+      <button class="tbtn copy-inc" data-inc="polinrider">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="polinrider">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="check02id[.]com">check02id[.]com</button></td>
+            <td class="ctx">C2</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="uw04webzoom[.]us">uw04webzoom[.]us</button></td>
+            <td class="ctx">C2</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="tronracing[.]com">tronracing[.]com</button></td>
+            <td class="ctx">C2 / lure</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="208[.]91[.]197[.]27">208[.]91[.]197[.]27</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="94[.]191[.]24[.]214">94[.]191[.]24[.]214</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="139[.]59[.]27[.]154">139[.]59[.]27[.]154</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="nwv3u.exe">nwv3u.exe</button></td>
+            <td class="ctx">Payload executable</td>
+            <td class="seen">MAY</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/scratch/zoo/2026/0522/">/scratch/zoo/2026/0522/</button></td>
+            <td class="ctx">Build/staging path string in samples</td>
+            <td class="seen">MAY</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>FSB Center 16 router config theft via SNMP & Smart Install (AA26-194A)</h2>
+        </div>
+        <p class="inc-sum">Russian FSB Center 16 (Berserk Bear / Static Tundra) scans for SNMP agents with default community strings, then uses SNMP Set-Requests against the Cisco config-copy MIB to TFTP running-configs out; Smart Install (CVE-2018-0171) and the SYNful Knock IOS implant also seen. <b>Weak SNMP config, not a fresh 0-day, is the exposure.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-07-13</span>
+        <span>ADVISORY AA26-194A</span>
+        <span>TARGETS: COMMS · ENERGY · DEFENSE · GOV</span>
+          <span class="attck">T1595.002 · T1602.002 · T1048 · T1090</span>
+          <span><a href="https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-194a" rel="noopener">CISA advisory AA26-194A</a> · <a href="https://www.picussecurity.com/resource/blog/fsb-center-16-how-russian-hackers-exploit-routers-via-snmp-and-cisco-smart-install" rel="noopener">Picus technical breakdown</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">OT · NETWORK DEVICE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Move to SNMPv3 authPriv and kill v1/v2c; disable Smart Install (no vstack) and patch CVE-2018-0171; block TCP 4786, UDP 69/161/162 at the edge; alert on inbound SNMP Set-Requests hitting the config-copy OID.</span>
+      <button class="tbtn copy-inc" data-inc="fsb-router">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="fsb-router">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">oid</span></td>
+            <td><button class="val" data-defanged="1.3.6.1.4.1.9.9.96.1.1">1.3.6.1.4.1.9.9.96.1.1</button></td>
+            <td class="ctx">CISCO-CONFIG-COPY-MIB — config-copy operation abused to exfil running-config</td>
+            <td class="seen">JUL 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">oid</span></td>
+            <td><button class="val" data-defanged="1.3.6.1.4.1.9.9.96.1.1.1.1.5">1.3.6.1.4.1.9.9.96.1.1.1.1.5</button></td>
+            <td class="ctx">Config-transfer destination address OID — IDS alert target</td>
+            <td class="seen">JUL 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">port</span></td>
+            <td><button class="val" data-defanged="TCP 4786">TCP 4786</button></td>
+            <td class="ctx">Cisco Smart Install — disable and block at edge</td>
+            <td class="seen">JUL 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2018-0171">CVE-2018-0171</button></td>
+            <td class="ctx">Smart Install RCE (CVSS 9.8) — patched Mar 2018, still exploited</td>
+            <td class="seen">JUL 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">port</span></td>
+            <td><button class="val" data-defanged="UDP 69">UDP 69</button></td>
+            <td class="ctx">TFTP exfil channel for stolen configs</td>
+            <td class="seen">JUL 13</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">malware</span></td>
+            <td><button class="val" data-defanged="SYNful Knock">SYNful Knock</button></td>
+            <td class="ctx">Cisco IOS firmware implant; reboot-persistent, woken by crafted TCP SYN magic packet</td>
+            <td class="seen">JUL 13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>BrunoStealer — Discord-webhook exfil infostealer</h2>
+        </div>
+        <p class="inc-sum">A Windows infostealer that fingerprints the host, geolocates it via ip-api.com, and exfiltrates over a hardcoded Discord webhook, executed through rundll32/loaddll64. <b>Discord webhook + ip-api lookup pairing is a cheap, high-signal hunt across proxy logs.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-07</span>
+        <span>TARGET: WINDOWS (GLOBAL)</span>
+          <span class="attck">T1071 · T1614 · T1218 · T1082</span>
+          <span><a href="https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/" rel="noopener">CYFIRMA weekly report</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">MALWARE · INFOSTEALER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Hunt for outbound discord.com/api/webhooks paired with ip-api.com lookups from non-browser processes; block the sample hash below.</span>
+      <button class="tbtn copy-inc" data-inc="brunostealer">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="brunostealer">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="c8525c9380f5c3d9d5c66e101120fee50c3e4a80d0981507d300b33a6cafb208">c8525c9380f5c3d9d5c66e101120fee50c3e4a80d0981507d300b33a6cafb208</button></td>
+            <td class="ctx">BrunoStealer sample</td>
+            <td class="seen">JUL</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="discord[.]com/api/webhooks/">discord[.]com/api/webhooks/</button></td>
+            <td class="ctx">Exfil channel — legit service, alert on non-browser use</td>
+            <td class="seen">JUL</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="ip-api[.]com/line/?fields=query">ip-api[.]com/line/?fields=query</button></td>
+            <td class="ctx">Victim geolocation/public-IP lookup</td>
+            <td class="seen">JUL</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cmd</span></td>
+            <td><button class="val" data-defanged="rundll32.exe / loaddll64.exe">rundll32.exe / loaddll64.exe</button></td>
+            <td class="ctx">Execution via DLL proxy loaders</td>
+            <td class="seen">JUL</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Doommageddon — double-extortion ransomware</h2>
+        </div>
+        <p class="inc-sum">Encrypts with asymmetric crypto, appends an extension while keeping the original filename, and runs a victim-shaming leak portal; wipes shadow copies before encrypting. <b>The vssadmin/wmic shadow-deletion pair is the pre-encryption tripwire to alert on.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-07</span>
+        <span>TARGETS: FINANCE · MANUFACTURING · RETAIL</span>
+        <span>REGIONS: BR · IN · PY · TR</span>
+          <span class="attck">T1486 · T1490 · T1055 · T1003</span>
+          <span><a href="https://www.cyfirma.com/news/weekly-intelligence-report-10-jul-2026/" rel="noopener">CYFIRMA weekly report</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · DOUBLE EXTORTION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Alert on shadow-copy deletion (below) as a pre-encryption signal; block the ransom-note write pattern and isolate offline backups.</span>
+      <button class="tbtn copy-inc" data-inc="doommageddon">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="doommageddon">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="README_DECRYPT.txt">README_DECRYPT.txt</button></td>
+            <td class="ctx">Ransom note dropped in encrypted directories</td>
+            <td class="seen">JUL</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cmd</span></td>
+            <td><button class="val" data-defanged="vssadmin.exe Delete Shadows /all /quiet">vssadmin.exe Delete Shadows /all /quiet</button></td>
+            <td class="ctx">Shadow-copy wipe before encryption</td>
+            <td class="seen">JUL</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cmd</span></td>
+            <td><button class="val" data-defanged="wmic shadowcopy delete /nointeractive">wmic shadowcopy delete /nointeractive</button></td>
+            <td class="ctx">Secondary shadow-copy deletion</td>
+            <td class="seen">JUL</td>
           </tr>
         </tbody>
       </table>

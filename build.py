@@ -106,26 +106,31 @@ def build_feeds(issue: dict, tag: str) -> None:
     week = issue["week"]
 
     # --- txt (defanged) and clean.txt ---
+    # Feeds are kept ASCII-only for maximum importer portability. ascii() escapes any
+    # stray non-ASCII (and makes the RTLO marker visible), so no downstream tool mojibakes.
+    def a(s: str) -> str:
+        return ascii(s)[1:-1]
+
     def txt_lines(clean: bool) -> str:
         out = [
-            f"# IOC//DIGEST issue {tag} · week of {week}",
-            "# " + ("CLEAN values — import into TIP/SIEM. May trip AV/mail scanning."
+            f"# IOC//DIGEST issue {tag} - week of {week}",
+            "# " + ("CLEAN values - import into TIP/SIEM. May trip AV/mail scanning."
                     if clean else
                     "DEFANGED values. Refang: replace [.] with .  (sed 's/\\[\\.\\]/./g')"),
         ]
         for inc in issue["incidents"]:
             src = ", ".join(s["url"] for s in inc.get("sources", []))
-            out.append(f"#\n# --- {inc['title']}  ({src})")
+            out.append(f"#\n# --- {a(inc['title'])}  ({src})")
             for ioc in inc["iocs"]:
                 v = refang(ioc["value"]) if clean else ioc["value"]
-                out.append(v)
+                out.append(a(v))
         return "\n".join(out) + "\n"
 
     (feeds / f"issue-{tag}-iocs.txt").write_text(txt_lines(False), encoding="utf-8")
     (feeds / f"issue-{tag}-iocs.clean.txt").write_text(txt_lines(True), encoding="utf-8")
 
-    # --- csv ---
-    with open(feeds / f"issue-{tag}-iocs.csv", "w", newline="", encoding="utf-8") as fh:
+    # --- csv (utf-8-sig so Excel renders context em-dashes instead of mojibake) ---
+    with open(feeds / f"issue-{tag}-iocs.csv", "w", newline="", encoding="utf-8-sig") as fh:
         w = csv.writer(fh)
         w.writerow(["incident", "severity", "kind", "type", "category",
                     "indicator_defanged", "indicator_clean", "context", "seen", "sources"])
@@ -169,23 +174,21 @@ def build_feeds(issue: dict, tag: str) -> None:
     print(f"  feeds: txt, clean.txt, csv, stix2.json ({len(objects)} STIX indicators, {skipped} non-patternable types in txt/csv only)")
 
 
-def build(path: Path) -> None:
-    issue = json.loads(path.read_text(encoding="utf-8"))
+def render_page(issue: dict, template: str, *, feed_prefix: str,
+                archive_href: str, archive_label: str) -> str:
     tag = f"{issue['issue']:03d}"
-    template = (ROOT / "templates" / "page.html").read_text(encoding="utf-8")
-
     iocs = [i for inc in issue["incidents"] for i in inc["iocs"]]
     counts = {c: sum(1 for i in iocs if i["category"] == c) for c in ("hash", "net", "host")}
-
     feeds_html = "\n  ".join(
-        f'<a class="file" href="feeds/{name}">{name}</a>'
+        f'<a class="file" href="{feed_prefix}{name}">{name}</a>'
         for name in (f"issue-{tag}-iocs.txt", f"issue-{tag}-iocs.clean.txt",
                      f"issue-{tag}-iocs.csv", f"issue-{tag}.stix2.json"))
-
-    page = (template
+    return (template
             .replace("{{TITLE}}", f"IOC Digest — Issue {tag} · Week of {issue['week']}")
             .replace("{{ISSUE_META}}",
                      f"ISSUE {tag} · WK {issue['week']} · {len(issue['incidents'])} INCIDENTS · {len(iocs)} IOCs")
+            .replace("{{ARCHIVE_HREF}}", archive_href)
+            .replace("{{ARCHIVE_LABEL}}", archive_label)
             .replace("{{COUNT_ALL}}", str(len(iocs)))
             .replace("{{COUNT_HASH}}", str(counts["hash"]))
             .replace("{{COUNT_NET}}", str(counts["net"]))
@@ -193,21 +196,65 @@ def build(path: Path) -> None:
             .replace("{{INCIDENTS}}", "\n".join(build_incident(i) for i in issue["incidents"]))
             .replace("{{FEEDS}}", feeds_html))
 
+
+def build_archive_index(issues: list[dict]) -> None:
+    """Static archive listing every issue, newest first."""
+    cards = []
+    for issue in sorted(issues, key=lambda x: x["issue"], reverse=True):
+        tag = f"{issue['issue']:03d}"
+        n_inc = len(issue["incidents"])
+        n_ioc = sum(len(inc["iocs"]) for inc in issue["incidents"])
+        titles = " · ".join(esc(inc["title"].split(" — ")[0]) for inc in issue["incidents"][:5])
+        if n_inc > 5:
+            titles += f" · +{n_inc - 5} more"
+        cards.append(
+            f'  <a class="issue-card" href="issue-{tag}.html">\n'
+            f'    <div class="ic-top"><span class="ic-tag">ISSUE {tag}</span>'
+            f'<span class="ic-meta">WK {esc(issue["week"])} · {n_inc} incidents · {n_ioc} IOCs</span></div>\n'
+            f'    <p class="ic-titles">{titles}</p>\n'
+            f"  </a>"
+        )
+    template = (ROOT / "templates" / "archive.html").read_text(encoding="utf-8")
+    (DOCS / "archive" / "index.html").write_text(
+        template.replace("{{CARDS}}", "\n".join(cards)), encoding="utf-8")
+    print(f"built archive index: docs/archive/index.html ({len(issues)} issues)")
+
+
+def build(path: Path) -> None:
+    issue = json.loads(path.read_text(encoding="utf-8"))
+    tag = f"{issue['issue']:03d}"
+    template = (ROOT / "templates" / "page.html").read_text(encoding="utf-8")
+
     DOCS.mkdir(exist_ok=True)
     (DOCS / "archive").mkdir(exist_ok=True)
-    (DOCS / "index.html").write_text(page, encoding="utf-8")
-    (DOCS / "archive" / f"issue-{tag}.html").write_text(
-        page.replace('href="feeds/', 'href="../feeds/'), encoding="utf-8")
-    print(f"built issue {tag}: docs/index.html, docs/archive/issue-{tag}.html")
+
+    all_issues = [json.loads(p.read_text(encoding="utf-8"))
+                  for p in sorted((ROOT / "data").glob("issue-*.json"))]
+    latest = max(i["issue"] for i in all_issues)
+    is_latest = issue["issue"] == latest
+
+    # index.html always shows the newest issue; a plain issue only writes its archive copy.
+    if is_latest:
+        page = render_page(issue, template, feed_prefix="feeds/",
+                           archive_href="archive/", archive_label="ARCHIVE ▾")
+        (DOCS / "index.html").write_text(page, encoding="utf-8")
+
+    archived = render_page(issue, template, feed_prefix="../feeds/",
+                           archive_href="index.html", archive_label="← ALL ISSUES")
+    (DOCS / "archive" / f"issue-{tag}.html").write_text(archived, encoding="utf-8")
+    print(f"built issue {tag}: "
+          + ("docs/index.html + " if is_latest else "")
+          + f"docs/archive/issue-{tag}.html")
     build_feeds(issue, tag)
+    build_archive_index(all_issues)
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        target = Path(sys.argv[1])
+        targets = [Path(sys.argv[1])]
     else:
-        issues = sorted((ROOT / "data").glob("issue-*.json"))
-        if not issues:
+        targets = sorted((ROOT / "data").glob("issue-*.json"))
+        if not targets:
             sys.exit("no data/issue-*.json found")
-        target = issues[-1]
-    build(target)
+    for t in targets:
+        build(t)
