@@ -110,96 +110,6 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--6d3635c4-7be0-5b5a-a431-72c2124caa13",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: SystemBC proxy \u2014 RC4 SOCKS5 tunnel",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = '992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--ddaf98dd-da8b-5a08-b09a-7a1b1a8beb16",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Gentlemen locker (Windows) \u2014 1 of 20 samples in source",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = '025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--55b74490-48ea-512b-803b-60e5cba1c5a2",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Gentlemen locker (Linux)",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = '5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--f31b5032-fb6a-506f-ab76-7a6e88287c0f",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: gentlemen.bmp \u2014 ransom wallpaper artifact",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[file:hashes.'SHA-256' = 'fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--0babdbd4-83cc-5879-9200-b10433d929d4",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: Cobalt Strike C2 (ports 443/80)",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[ipv4-addr:value = '91.107.247.163']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--d0a32a29-a1fd-5e50-9197-0ad049f03da8",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "The Gentlemen RaaS + SystemBC \u2014 GPO-deployed multi-OS locker: SystemBC C2",
-      "description": "Source: https://research.checkpoint.com/2026/dfir-report-the-gentlemen/",
-      "pattern": "[ipv4-addr:value = '45.86.230.112']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
       "id": "indicator--a7dc2243-7a15-5a48-8c62-e0a2e1d15f32",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
@@ -320,141 +230,6 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
-      "id": "indicator--a24b4ef5-ccb8-5383-99e7-c94f6f421f70",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ServiceCore.dll \u2014 initial loader",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[file:hashes.'SHA-256' = '2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--5b1e628d-8675-5274-b28a-b49693973e13",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: MicrosoftEdgeUpdateCore.dll \u2014 sideloaded stage",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[file:hashes.'SHA-256' = 'd04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--ee782756-7f57-57f8-98cc-05ca3dd14ced",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ACRStealer payload (inner PE)",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[file:hashes.'SHA-256' = 'cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--f8ffadf0-e05f-5107-87c2-539524886a6c",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: 1.exe \u2014 crypto-clipper module",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[file:hashes.'SHA-256' = '39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--0d005bff-ab86-55a7-a2f7-13ba3f88b3b8",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: Initial C2 over WebDAV (rotating subdomains)",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[domain-name:value = 'dn8xapil.in.net']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--eb8a0304-8c1a-5fbb-8b05-7fd1cfd1f185",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ACRStealer C2",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[domain-name:value = 'ctr.accrabbleshowm.cfd']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--47f8db6b-cac5-504c-b2e4-f769107cada1",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ACRStealer C2 host",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[ipv4-addr:value = '145.249.109.147']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--62eabf3f-65ef-58c6-9de1-e238c178c8dd",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: Dead-drop page on legit Telegraph service \u2014 block the URL, not the domain",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[url:value = 'telegra.ph/function-c0a03']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
-      "id": "indicator--05b6fdde-fd24-5ae5-b147-50da0d526bc6",
-      "created": "2026-07-20T00:00:00.000Z",
-      "modified": "2026-07-20T00:00:00.000Z",
-      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: Fake Claude Code docs lure (1 of 88 domains \u2014 full list in source)",
-      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
-      "pattern": "[domain-name:value = 'claude-code-docs-page.duckdns.org']",
-      "pattern_type": "stix",
-      "valid_from": "2026-07-20T00:00:00.000Z",
-      "labels": [
-        "malicious-activity"
-      ]
-    },
-    {
-      "type": "indicator",
-      "spec_version": "2.1",
       "id": "indicator--0cc66248-d273-560f-a656-5353511cad8e",
       "created": "2026-07-20T00:00:00.000Z",
       "modified": "2026-07-20T00:00:00.000Z",
@@ -521,6 +296,156 @@
       "name": "Simba Service \u2014 WebDAV phishing delivering PureRAT: Delivery / C2 infrastructure",
       "description": "Source: https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html; https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel",
       "pattern": "[ipv4-addr:value = '203.161.39.169']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7f302712-cbc5-5357-9712-6d6ec041724f",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: MODBEACON C2",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[domain-name:value = 'fzdoor.vip']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--082f48c7-5071-51ff-8718-4cec8c68581a",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: MODBEACON C2",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[domain-name:value = 'amvcoins.vip']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--cd624c85-3830-5a7b-b00c-1fba927bf8fa",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: MODBEACON C2",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[domain-name:value = 'jinmai.vip']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c735727a-f587-55b9-9fd9-759aebc3cdcb",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: MODBEACON C2",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[domain-name:value = 'betooo.vip']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ce455c32-3a24-5758-bb55-8075589274df",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[ipv4-addr:value = '43.128.54.184']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7f23db23-5f64-5983-9c90-88cbce0893a3",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[ipv4-addr:value = '207.56.138.28']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--79d85cc5-8566-5666-998a-1445902f3e03",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[ipv4-addr:value = '108.187.42.63']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--544eb472-72e7-5f5c-9473-be8928ff07f0",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[ipv4-addr:value = '108.187.37.85']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c7e45e63-826e-53fe-bea5-5ca128cfec6c",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Silver Fox (Void Arachne) \u2014 MODBEACON via counterfeit installers: Actor infrastructure",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[ipv4-addr:value = '154.82.81.205']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b492eee2-57e6-5d9e-9851-91b8e0d61a8c",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "GoldDigger \u2014 Android banking trojan abusing Accessibility: GoldDigger APK sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = 'bba9bc21a322ea0e1737c5fa64057d12f133a3ebed6007ffed979b3d6099f6aa']",
       "pattern_type": "stix",
       "valid_from": "2026-07-20T00:00:00.000Z",
       "labels": [

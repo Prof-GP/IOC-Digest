@@ -32,33 +32,31 @@
       ]
     },
     {
-      "id": "acr",
+      "id": "silverfox",
       "severity": "high",
       "wide": true,
-      "kind": "MALWARE · INFOSTEALER",
-      "title": "ACRStealer — fake Claude Code & AI-tool installer sites",
-      "summary": "Fake documentation sites for Claude Code, JetBrains, and NotebookLM — pushed via SEO poisoning and paid search ads — trick developers into running installer commands that sideload ACRStealer through a fake Edge Update DLL. <b>Targets developer machines: browser credentials, wallets, and clipboard-swapped crypto addresses.</b>",
-      "reported": "2026-07-16",
-      "first_seen": "2026-03",
-      "facts": ["88 LURE DOMAINS IDENTIFIED", "CAMPAIGN ACTIVE"],
-      "attack": ["T1566.002", "T1574.002", "T1218.011", "T1555", "T1115"],
+      "kind": "APT · ESPIONAGE",
+      "title": "Silver Fox (Void Arachne) — MODBEACON via counterfeit installers",
+      "summary": "A China-nexus espionage group delivers the custom MODBEACON trojan through counterfeit software installers, establishing persistent access against government, defense, and telecom targets across East and Southeast Asia. <b>Fake-installer delivery — the .vip C2 domains and the win32.exe stage are the durable catches.</b>",
+      "reported": "2026-07-17",
+      "first_seen": "2026",
+      "facts": ["18+ COUNTRIES (E/SE ASIA)", "TARGETS: GOV · DEFENSE · TELECOM"],
+      "attack": ["T1189", "T1566.002", "T1543.003", "T1071", "T1573"],
       "sources": [
-        { "label": "Straiker analysis", "url": "https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign" }
+        { "label": "CYFIRMA weekly report (17 Jul)", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/" }
       ],
-      "action": "Block the listed domains; hunt %LocalAppData%\\Microsoft\\EdgeUpdate\\ for MicrosoftEdgeUpdateCore.dll and rundll32 loading its GetTranslateScript export. Devs: install CLIs only from official docs, never from ad results.",
+      "action": "Block the .vip C2 domains and IPs below; hunt for win32.exe dropped by software installers and unexpected service persistence created by counterfeit setup packages.",
       "iocs": [
-        { "type": "sha256", "category": "hash", "value": "2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5", "context": "ServiceCore.dll — initial loader", "seen": "MAR" },
-        { "type": "sha256", "category": "hash", "value": "d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90", "context": "MicrosoftEdgeUpdateCore.dll — sideloaded stage", "seen": "MAR" },
-        { "type": "sha256", "category": "hash", "value": "cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e", "context": "ACRStealer payload (inner PE)", "seen": "MAR" },
-        { "type": "sha256", "category": "hash", "value": "39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116", "context": "1.exe — crypto-clipper module", "seen": "MAR" },
-        { "type": "domain", "category": "net", "value": "dn8xapil[.]in[.]net", "context": "Initial C2 over WebDAV (rotating subdomains)", "seen": "MAR" },
-        { "type": "domain", "category": "net", "value": "ctr[.]accrabbleshowm[.]cfd", "context": "ACRStealer C2", "seen": "MAY 14" },
-        { "type": "ip", "category": "net", "value": "145[.]249[.]109[.]147", "context": "ACRStealer C2 host", "seen": "MAY 14" },
-        { "type": "url", "category": "net", "value": "telegra[.]ph/function-c0a03", "context": "Dead-drop page on legit Telegraph service — block the URL, not the domain", "seen": "MAR" },
-        { "type": "domain", "category": "net", "value": "claude-code-docs-page[.]duckdns[.]org", "context": "Fake Claude Code docs lure (1 of 88 domains — full list in source)", "seen": "MAY 14" },
-        { "type": "path", "category": "host", "value": "%LocalAppData%\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdateCore.dll", "context": "Install path masquerading as Edge Update", "seen": "MAR" },
-        { "type": "mutex", "category": "host", "value": "update-S-1-5-21-14297136-4737252683-2816350604-2100", "context": "Infection-marker mutex", "seen": "MAR" },
-        { "type": "cmd", "category": "host", "value": "rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript", "context": "Scheduled-task persistence via rundll32 export", "seen": "MAR" }
+        { "type": "domain", "category": "net", "value": "fzdoor[.]vip", "context": "MODBEACON C2", "seen": "JUL 17" },
+        { "type": "domain", "category": "net", "value": "amvcoins[.]vip", "context": "MODBEACON C2", "seen": "JUL 17" },
+        { "type": "domain", "category": "net", "value": "jinmai[.]vip", "context": "MODBEACON C2", "seen": "JUL 17" },
+        { "type": "domain", "category": "net", "value": "betooo[.]vip", "context": "MODBEACON C2", "seen": "JUL 17" },
+        { "type": "ip", "category": "net", "value": "43[.]128[.]54[.]184", "context": "Actor infrastructure", "seen": "JUL 17" },
+        { "type": "ip", "category": "net", "value": "207[.]56[.]138[.]28", "context": "Actor infrastructure", "seen": "JUL 17" },
+        { "type": "ip", "category": "net", "value": "108[.]187[.]42[.]63", "context": "Actor infrastructure", "seen": "JUL 17" },
+        { "type": "ip", "category": "net", "value": "108[.]187[.]37[.]85", "context": "Actor infrastructure", "seen": "JUL 17" },
+        { "type": "ip", "category": "net", "value": "154[.]82[.]81[.]205", "context": "Actor infrastructure", "seen": "JUL 17" },
+        { "type": "filename", "category": "host", "value": "win32.exe", "context": "MODBEACON stage dropped by counterfeit installer", "seen": "JUL 17" }
       ]
     },
     {
@@ -68,7 +66,7 @@
       "kind": "PHISHING · RAT",
       "title": "Simba Service — WebDAV phishing delivering PureRAT",
       "summary": "A typosquatted Mexican CURP portal drives victims through a search-ms: WebDAV share to RTLO-spoofed .scr payloads; an Inno Setup loader hollows a .NET stealer into a signed process and drops PureRAT. <b>Abuses CVE-2025-33053 — patched since June 2025, so unpatched hosts are the exposure.</b>",
-      "reported": "2026-07-16",
+      "reported": "2026-07-20",
       "first_seen": "2026-06-20",
       "facts": ["CVE-2025-33053 · PATCH AVAILABLE", "TARGET: MX (82% OF TRAFFIC)"],
       "attack": ["T1566.002", "T1218", "T1055", "T1021.002"],
@@ -124,7 +122,7 @@
       "kind": "BACKDOOR · GOV INFRA ABUSE",
       "title": "PhantomEnigma — .gov.br portals spreading Node.js backdoor",
       "summary": "Spoofed Brazilian police emails and 20+ compromised .gov.br portals deliver a trojanized Electron app whose Node.js backdoor beacons every 180 seconds. <b>Mail passed SPF/DKIM/DMARC — domain reputation was the attack surface.</b>",
-      "reported": "2026-07-12",
+      "reported": "2026-07-16",
       "first_seen": "2026-01-15",
       "facts": ["20+ COMPROMISED .gov.br PORTALS", "TARGET: BR BANKING & PUBLIC SECTOR"],
       "attack": ["T1584", "T1566.002", "T1059.007", "T1547.001", "T1071.001"],
@@ -146,32 +144,26 @@
       ]
     },
     {
-      "id": "gentlemen",
-      "severity": "crit",
-      "wide": true,
-      "kind": "RANSOMWARE · RaaS",
-      "title": "The Gentlemen RaaS + SystemBC — GPO-deployed multi-OS locker",
-      "summary": "A human-operated intrusion where a Gentlemen affiliate disabled Defender via PowerShell, tunneled with SystemBC (RC4 SOCKS5), and pushed the locker domain-wide through GPO scheduled tasks; Windows, Linux, NAS, and ESXi builds observed. <b>The behavioral chain — Defender exclusions, GPO NETLOGON drop, named scheduled tasks — outlasts the 20+ rotating hashes.</b>",
-      "reported": "2026-07-13",
-      "first_seen": "2026-01",
-      "facts": ["320+ CLAIMED VICTIMS", "MULTI-OS: WIN · LINUX · NAS · ESXi"],
-      "attack": ["T1078", "T1562.001", "T1053.005", "T1486", "T1090.003"],
+      "id": "golddigger",
+      "severity": "high",
+      "wide": false,
+      "kind": "MALWARE · ANDROID BANKER",
+      "title": "GoldDigger — Android banking trojan abusing Accessibility",
+      "summary": "A sideloaded Android banking trojan that lures users into granting broad permissions, then abuses Accessibility Services to intercept SMS/2FA codes, harvest banking credentials, and monitor the clipboard, beaconing to remote C2. <b>The Accessibility + READ_SMS permission pairing on a sideloaded APK is the flag.</b>",
+      "reported": "2026-07-17",
+      "first_seen": "2026",
+      "facts": ["TARGET: ANDROID (GLOBAL)", "ABUSES ACCESSIBILITY SVC"],
+      "attack": ["T1406", "T1517", "T1636.004", "T1512"],
       "sources": [
-        { "label": "Check Point / DFIR Report", "url": "https://research.checkpoint.com/2026/dfir-report-the-gentlemen/" }
+        { "label": "CYFIRMA weekly report (17 Jul)", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/" }
       ],
-      "action": "Alert on Set-MpPreference -DisableRealtimeMonitoring and Defender ExclusionPath C:\\; hunt the scheduled tasks and services below and lockers dropped to NETLOGON or C:\\ProgramData\\r.exe/g.exe/o.exe.",
+      "action": "Hunt sideloaded APKs requesting BIND_ACCESSIBILITY_SERVICE together with READ_SMS; block the sample hash; enforce Play Protect and MDM sideload restrictions on managed fleets.",
       "iocs": [
-        { "type": "sha256", "category": "hash", "value": "992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5", "context": "SystemBC proxy — RC4 SOCKS5 tunnel", "seen": "JAN" },
-        { "type": "sha256", "category": "hash", "value": "025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a", "context": "Gentlemen locker (Windows) — 1 of 20 samples in source", "seen": "JAN" },
-        { "type": "sha256", "category": "hash", "value": "5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca", "context": "Gentlemen locker (Linux)", "seen": "JAN" },
-        { "type": "sha256", "category": "hash", "value": "fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68", "context": "gentlemen.bmp — ransom wallpaper artifact", "seen": "JAN" },
-        { "type": "ip", "category": "net", "value": "91[.]107[.]247[.]163", "context": "Cobalt Strike C2 (ports 443/80)", "seen": "JAN" },
-        { "type": "ip", "category": "net", "value": "45[.]86[.]230[.]112", "context": "SystemBC C2", "seen": "JAN" },
-        { "type": "cmd", "category": "host", "value": "Set-MpPreference -DisableRealtimeMonitoring $true", "context": "Defender kill — hunt in PowerShell logs", "seen": "JAN" },
-        { "type": "cmd", "category": "host", "value": "Add-MpPreference -ExclusionPath C:\\", "context": "Whole-disk Defender exclusion", "seen": "JAN" },
-        { "type": "task", "category": "host", "value": "UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU", "context": "Scheduled-task persistence (local + remote push)", "seen": "JAN" },
-        { "type": "service", "category": "host", "value": "DefSvc, UpdateSvc, UpdateSvc2", "context": "Service persistence names", "seen": "JAN" },
-        { "type": "path", "category": "host", "value": "C:\\ProgramData\\r.exe", "context": "Locker staging (also g.exe / o.exe)", "seen": "JAN" }
+        { "type": "sha256", "category": "hash", "value": "bba9bc21a322ea0e1737c5fa64057d12f133a3ebed6007ffed979b3d6099f6aa", "context": "GoldDigger APK sample", "seen": "JUL 17" },
+        { "type": "permission", "category": "host", "value": "android.permission.BIND_ACCESSIBILITY_SERVICE", "context": "Accessibility abuse — the core capability", "seen": "JUL 17" },
+        { "type": "permission", "category": "host", "value": "android.permission.READ_SMS", "context": "SMS / 2FA interception (paired with SEND_SMS, RECEIVE_SMS)", "seen": "JUL 17" },
+        { "type": "uri", "category": "host", "value": "content://sms", "context": "SMS-store access pattern", "seen": "JUL 17" },
+        { "type": "api", "category": "host", "value": "getInstalledPackages", "context": "Installed-app enumeration (targets banking apps)", "seen": "JUL 17" }
       ]
     },
     {

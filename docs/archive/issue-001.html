@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 001 · WK 2026-07-20 · 10 INCIDENTS · 82 IOCs</span>
+  <span class="issue-meta">ISSUE 001 · WK 2026-07-20 · 10 INCIDENTS · 74 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>82</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>16</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>44</b></button>
-  <button class="fchip" data-type="host">HOST<b>22</b></button>
+  <button class="fchip on" data-type="all">ALL<b>74</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>9</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>46</b></button>
+  <button class="fchip" data-type="host">HOST<b>19</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -525,105 +525,6 @@
       </table>
     </div>
   </section>
-  <section class="incident crit wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev crit">CRITICAL</span>
-          <h2>The Gentlemen RaaS + SystemBC — GPO-deployed multi-OS locker</h2>
-        </div>
-        <p class="inc-sum">A human-operated intrusion where a Gentlemen affiliate disabled Defender via PowerShell, tunneled with SystemBC (RC4 SOCKS5), and pushed the locker domain-wide through GPO scheduled tasks; Windows, Linux, NAS, and ESXi builds observed. <b>The behavioral chain — Defender exclusions, GPO NETLOGON drop, named scheduled tasks — outlasts the 20+ rotating hashes.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-07-13</span><span>ACTIVE SINCE 2026-01</span>
-        <span>320+ CLAIMED VICTIMS</span>
-        <span>MULTI-OS: WIN · LINUX · NAS · ESXi</span>
-          <span class="attck">T1078 · T1562.001 · T1053.005 · T1486 · T1090.003</span>
-          <span><a href="https://research.checkpoint.com/2026/dfir-report-the-gentlemen/" rel="noopener">Check Point / DFIR Report</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">RANSOMWARE · RaaS</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Alert on Set-MpPreference -DisableRealtimeMonitoring and Defender ExclusionPath C:\; hunt the scheduled tasks and services below and lockers dropped to NETLOGON or C:\ProgramData\r.exe/g.exe/o.exe.</span>
-      <button class="tbtn copy-inc" data-inc="gentlemen">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="gentlemen">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5">992c951f4af57ca7cd8396f5ed69c2199fd6fd4ae5e93726da3e198e78bec0a5</button></td>
-            <td class="ctx">SystemBC proxy — RC4 SOCKS5 tunnel</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a">025fc0976c548fb5a880c83ea3eb21a5f23c5d53c4e51e862bb893c11adf712a</button></td>
-            <td class="ctx">Gentlemen locker (Windows) — 1 of 20 samples in source</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca">5dc607c8990841139768884b1b43e1403496d5a458788a1937be139594f01dca</button></td>
-            <td class="ctx">Gentlemen locker (Linux)</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68">fe1033335a045c696c900d435119d210361966e2fb5cd1ba3382608cfa2c8e68</button></td>
-            <td class="ctx">gentlemen.bmp — ransom wallpaper artifact</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">ip</span></td>
-            <td><button class="val" data-defanged="91[.]107[.]247[.]163">91[.]107[.]247[.]163</button></td>
-            <td class="ctx">Cobalt Strike C2 (ports 443/80)</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">ip</span></td>
-            <td><button class="val" data-defanged="45[.]86[.]230[.]112">45[.]86[.]230[.]112</button></td>
-            <td class="ctx">SystemBC C2</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cmd</span></td>
-            <td><button class="val" data-defanged="Set-MpPreference -DisableRealtimeMonitoring $true">Set-MpPreference -DisableRealtimeMonitoring $true</button></td>
-            <td class="ctx">Defender kill — hunt in PowerShell logs</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cmd</span></td>
-            <td><button class="val" data-defanged="Add-MpPreference -ExclusionPath C:\">Add-MpPreference -ExclusionPath C:\</button></td>
-            <td class="ctx">Whole-disk Defender exclusion</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">task</span></td>
-            <td><button class="val" data-defanged="UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU">UpdateSystem, UpdateUser, DefS, DefU, UpdateGS, UpdateGU</button></td>
-            <td class="ctx">Scheduled-task persistence (local + remote push)</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">service</span></td>
-            <td><button class="val" data-defanged="DefSvc, UpdateSvc, UpdateSvc2">DefSvc, UpdateSvc, UpdateSvc2</button></td>
-            <td class="ctx">Service persistence names</td>
-            <td class="seen">JAN</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">path</span></td>
-            <td><button class="val" data-defanged="C:\ProgramData\r.exe">C:\ProgramData\r.exe</button></td>
-            <td class="ctx">Locker staging (also g.exe / o.exe)</td>
-            <td class="seen">JAN</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
   <section class="incident high wide">
     <div class="inc-head">
       <div class="inc-lead">
@@ -717,111 +618,6 @@
       </table>
     </div>
   </section>
-  <section class="incident high wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev high">HIGH</span>
-          <h2>ACRStealer — fake Claude Code & AI-tool installer sites</h2>
-        </div>
-        <p class="inc-sum">Fake documentation sites for Claude Code, JetBrains, and NotebookLM — pushed via SEO poisoning and paid search ads — trick developers into running installer commands that sideload ACRStealer through a fake Edge Update DLL. <b>Targets developer machines: browser credentials, wallets, and clipboard-swapped crypto addresses.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-07-16</span><span>ACTIVE SINCE 2026-03</span>
-        <span>88 LURE DOMAINS IDENTIFIED</span>
-        <span>CAMPAIGN ACTIVE</span>
-          <span class="attck">T1566.002 · T1574.002 · T1218.011 · T1555 · T1115</span>
-          <span><a href="https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign" rel="noopener">Straiker analysis</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">MALWARE · INFOSTEALER</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Block the listed domains; hunt %LocalAppData%\Microsoft\EdgeUpdate\ for MicrosoftEdgeUpdateCore.dll and rundll32 loading its GetTranslateScript export. Devs: install CLIs only from official docs, never from ad results.</span>
-      <button class="tbtn copy-inc" data-inc="acr">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="acr">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5">2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5</button></td>
-            <td class="ctx">ServiceCore.dll — initial loader</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90">d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90</button></td>
-            <td class="ctx">MicrosoftEdgeUpdateCore.dll — sideloaded stage</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e">cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e</button></td>
-            <td class="ctx">ACRStealer payload (inner PE)</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="hash">
-            <td><span class="t-badge">sha256</span></td>
-            <td><button class="val" data-defanged="39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116">39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116</button></td>
-            <td class="ctx">1.exe — crypto-clipper module</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">domain</span></td>
-            <td><button class="val" data-defanged="dn8xapil[.]in[.]net">dn8xapil[.]in[.]net</button></td>
-            <td class="ctx">Initial C2 over WebDAV (rotating subdomains)</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">domain</span></td>
-            <td><button class="val" data-defanged="ctr[.]accrabbleshowm[.]cfd">ctr[.]accrabbleshowm[.]cfd</button></td>
-            <td class="ctx">ACRStealer C2</td>
-            <td class="seen">MAY 14</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">ip</span></td>
-            <td><button class="val" data-defanged="145[.]249[.]109[.]147">145[.]249[.]109[.]147</button></td>
-            <td class="ctx">ACRStealer C2 host</td>
-            <td class="seen">MAY 14</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">url</span></td>
-            <td><button class="val" data-defanged="telegra[.]ph/function-c0a03">telegra[.]ph/function-c0a03</button></td>
-            <td class="ctx">Dead-drop page on legit Telegraph service — block the URL, not the domain</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">domain</span></td>
-            <td><button class="val" data-defanged="claude-code-docs-page[.]duckdns[.]org">claude-code-docs-page[.]duckdns[.]org</button></td>
-            <td class="ctx">Fake Claude Code docs lure (1 of 88 domains — full list in source)</td>
-            <td class="seen">MAY 14</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">path</span></td>
-            <td><button class="val" data-defanged="%LocalAppData%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdateCore.dll">%LocalAppData%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdateCore.dll</button></td>
-            <td class="ctx">Install path masquerading as Edge Update</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">mutex</span></td>
-            <td><button class="val" data-defanged="update-S-1-5-21-14297136-4737252683-2816350604-2100">update-S-1-5-21-14297136-4737252683-2816350604-2100</button></td>
-            <td class="ctx">Infection-marker mutex</td>
-            <td class="seen">MAR</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cmd</span></td>
-            <td><button class="val" data-defanged="rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript">rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript</button></td>
-            <td class="ctx">Scheduled-task persistence via rundll32 export</td>
-            <td class="seen">MAR</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
   <section class="incident high">
     <div class="inc-head">
       <div class="inc-lead">
@@ -831,7 +627,7 @@
         </div>
         <p class="inc-sum">A typosquatted Mexican CURP portal drives victims through a search-ms: WebDAV share to RTLO-spoofed .scr payloads; an Inno Setup loader hollows a .NET stealer into a signed process and drops PureRAT. <b>Abuses CVE-2025-33053 — patched since June 2025, so unpatched hosts are the exposure.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-07-16</span><span>ACTIVE SINCE 2026-06-20</span>
+          <span class="reported">REPORTED 2026-07-20</span><span>ACTIVE SINCE 2026-06-20</span>
         <span>CVE-2025-33053 · PATCH AVAILABLE</span>
         <span>TARGET: MX (82% OF TRAFFIC)</span>
           <span class="attck">T1566.002 · T1218 · T1055 · T1021.002</span>
@@ -898,6 +694,162 @@
             <td><button class="val" data-defanged="Labcorp Results.&lt;U+202E&gt;fdp.scr">Labcorp Results.&lt;U+202E&gt;fdp.scr</button></td>
             <td class="ctx">RTLO filename — renders as …rcs.pdf to hide the .scr extension</td>
             <td class="seen">JUN</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Silver Fox (Void Arachne) — MODBEACON via counterfeit installers</h2>
+        </div>
+        <p class="inc-sum">A China-nexus espionage group delivers the custom MODBEACON trojan through counterfeit software installers, establishing persistent access against government, defense, and telecom targets across East and Southeast Asia. <b>Fake-installer delivery — the .vip C2 domains and the win32.exe stage are the durable catches.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-07-17</span><span>ACTIVE SINCE 2026</span>
+        <span>18+ COUNTRIES (E/SE ASIA)</span>
+        <span>TARGETS: GOV · DEFENSE · TELECOM</span>
+          <span class="attck">T1189 · T1566.002 · T1543.003 · T1071 · T1573</span>
+          <span><a href="https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/" rel="noopener">CYFIRMA weekly report (17 Jul)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">APT · ESPIONAGE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Block the .vip C2 domains and IPs below; hunt for win32.exe dropped by software installers and unexpected service persistence created by counterfeit setup packages.</span>
+      <button class="tbtn copy-inc" data-inc="silverfox">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="silverfox">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="fzdoor[.]vip">fzdoor[.]vip</button></td>
+            <td class="ctx">MODBEACON C2</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="amvcoins[.]vip">amvcoins[.]vip</button></td>
+            <td class="ctx">MODBEACON C2</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="jinmai[.]vip">jinmai[.]vip</button></td>
+            <td class="ctx">MODBEACON C2</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="betooo[.]vip">betooo[.]vip</button></td>
+            <td class="ctx">MODBEACON C2</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="43[.]128[.]54[.]184">43[.]128[.]54[.]184</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="207[.]56[.]138[.]28">207[.]56[.]138[.]28</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="108[.]187[.]42[.]63">108[.]187[.]42[.]63</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="108[.]187[.]37[.]85">108[.]187[.]37[.]85</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="154[.]82[.]81[.]205">154[.]82[.]81[.]205</button></td>
+            <td class="ctx">Actor infrastructure</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="win32.exe">win32.exe</button></td>
+            <td class="ctx">MODBEACON stage dropped by counterfeit installer</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>GoldDigger — Android banking trojan abusing Accessibility</h2>
+        </div>
+        <p class="inc-sum">A sideloaded Android banking trojan that lures users into granting broad permissions, then abuses Accessibility Services to intercept SMS/2FA codes, harvest banking credentials, and monitor the clipboard, beaconing to remote C2. <b>The Accessibility + READ_SMS permission pairing on a sideloaded APK is the flag.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-07-17</span><span>ACTIVE SINCE 2026</span>
+        <span>TARGET: ANDROID (GLOBAL)</span>
+        <span>ABUSES ACCESSIBILITY SVC</span>
+          <span class="attck">T1406 · T1517 · T1636.004 · T1512</span>
+          <span><a href="https://www.cyfirma.com/news/weekly-intelligence-report-17-jul-2026/" rel="noopener">CYFIRMA weekly report (17 Jul)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">MALWARE · ANDROID BANKER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Hunt sideloaded APKs requesting BIND_ACCESSIBILITY_SERVICE together with READ_SMS; block the sample hash; enforce Play Protect and MDM sideload restrictions on managed fleets.</span>
+      <button class="tbtn copy-inc" data-inc="golddigger">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="golddigger">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="bba9bc21a322ea0e1737c5fa64057d12f133a3ebed6007ffed979b3d6099f6aa">bba9bc21a322ea0e1737c5fa64057d12f133a3ebed6007ffed979b3d6099f6aa</button></td>
+            <td class="ctx">GoldDigger APK sample</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">permission</span></td>
+            <td><button class="val" data-defanged="android.permission.BIND_ACCESSIBILITY_SERVICE">android.permission.BIND_ACCESSIBILITY_SERVICE</button></td>
+            <td class="ctx">Accessibility abuse — the core capability</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">permission</span></td>
+            <td><button class="val" data-defanged="android.permission.READ_SMS">android.permission.READ_SMS</button></td>
+            <td class="ctx">SMS / 2FA interception (paired with SEND_SMS, RECEIVE_SMS)</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">uri</span></td>
+            <td><button class="val" data-defanged="content://sms">content://sms</button></td>
+            <td class="ctx">SMS-store access pattern</td>
+            <td class="seen">JUL 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">api</span></td>
+            <td><button class="val" data-defanged="getInstalledPackages">getInstalledPackages</button></td>
+            <td class="ctx">Installed-app enumeration (targets banking apps)</td>
+            <td class="seen">JUL 17</td>
           </tr>
         </tbody>
       </table>
@@ -1062,7 +1014,7 @@
         </div>
         <p class="inc-sum">Spoofed Brazilian police emails and 20+ compromised .gov.br portals deliver a trojanized Electron app whose Node.js backdoor beacons every 180 seconds. <b>Mail passed SPF/DKIM/DMARC — domain reputation was the attack surface.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-07-12</span><span>ACTIVE SINCE 2026-01-15</span>
+          <span class="reported">REPORTED 2026-07-16</span><span>ACTIVE SINCE 2026-01-15</span>
         <span>20+ COMPROMISED .gov.br PORTALS</span>
         <span>TARGET: BR BANKING &amp; PUBLIC SECTOR</span>
           <span class="attck">T1584 · T1566.002 · T1059.007 · T1547.001 · T1071.001</span>
