@@ -1,0 +1,38 @@
+# IOC//DIGEST issue 001 · week of 2026-07-20
+# DEFANGED values. Refang: replace [.] with .  (sed 's/\[\.\]/./g')
+#
+# --- ACRStealer — fake Claude Code & AI-tool installer sites  (https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign)
+2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5
+d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90
+cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e
+39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116
+dn8xapil[.]in[.]net
+ctr[.]accrabbleshowm[.]cfd
+145[.]249[.]109[.]147
+telegra[.]ph/function-c0a03
+claude-code-docs-page[.]duckdns[.]org
+%LocalAppData%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdateCore.dll
+update-S-1-5-21-14297136-4737252683-2816350604-2100
+rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript
+#
+# --- Simba Service — WebDAV phishing delivering PureRAT  (https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html, https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel)
+gobf[.]mx
+onedrive[.]cv
+onedrive[.]cv/Downloads/6/HyperPackSetup.exe
+138[.]124[.]123[.]87
+203[.]161[.]39[.]169
+\\summerartcamp[.]net@ssl@443\DavWWWRoot\OSYxaOjr
+HyperPackSetup.exe
+Labcorp Results.<U+202E>fdp.scr
+#
+# --- PhantomEnigma — .gov.br portals spreading Node.js backdoor  (https://any.run/cybersecurity-blog/phantomenigma-research/)
+e0dae1a04b7a3b2ae07377b0fd00681e9633532788870b3709a9e149f3ccf0e0
+71f69978667dc421e7edf8885e9f3bde9dd527d9f7974228c9a6eac84c2ab71c
+dahieenloo[.]com
+oficiospolicia[.]com
+policiacivilmg[.]com
+185[.]219[.]83[.]191
+158[.]94[.]208[.]120
+GET /laravel[.]php?api=api&hash=*&message=PT1n*
+POST /nbw/
+is-*.tmp\<Name>Application\App.exe

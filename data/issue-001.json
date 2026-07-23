@@ -1,0 +1,89 @@
+{
+  "issue": 1,
+  "week": "2026-07-20",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "acr",
+      "severity": "high",
+      "wide": true,
+      "kind": "MALWARE · INFOSTEALER",
+      "title": "ACRStealer — fake Claude Code & AI-tool installer sites",
+      "summary": "Fake documentation sites for Claude Code, JetBrains, and NotebookLM — pushed via SEO poisoning and paid search ads — trick developers into running installer commands that sideload ACRStealer through a fake Edge Update DLL. <b>Targets developer machines: browser credentials, wallets, and clipboard-swapped crypto addresses.</b>",
+      "first_seen": "2026-03",
+      "facts": ["88 LURE DOMAINS IDENTIFIED", "CAMPAIGN ACTIVE"],
+      "attack": ["T1566.002", "T1574.002", "T1218.011", "T1555", "T1115"],
+      "sources": [
+        { "label": "Straiker analysis", "url": "https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign" }
+      ],
+      "action": "Block the listed domains; hunt %LocalAppData%\\Microsoft\\EdgeUpdate\\ for MicrosoftEdgeUpdateCore.dll and rundll32 loading its GetTranslateScript export. Devs: install CLIs only from official docs, never from ad results.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5", "context": "ServiceCore.dll — initial loader", "seen": "MAR" },
+        { "type": "sha256", "category": "hash", "value": "d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90", "context": "MicrosoftEdgeUpdateCore.dll — sideloaded stage", "seen": "MAR" },
+        { "type": "sha256", "category": "hash", "value": "cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e", "context": "ACRStealer payload (inner PE)", "seen": "MAR" },
+        { "type": "sha256", "category": "hash", "value": "39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116", "context": "1.exe — crypto-clipper module", "seen": "MAR" },
+        { "type": "domain", "category": "net", "value": "dn8xapil[.]in[.]net", "context": "Initial C2 over WebDAV (rotating subdomains)", "seen": "MAR" },
+        { "type": "domain", "category": "net", "value": "ctr[.]accrabbleshowm[.]cfd", "context": "ACRStealer C2", "seen": "MAY 14" },
+        { "type": "ip", "category": "net", "value": "145[.]249[.]109[.]147", "context": "ACRStealer C2 host", "seen": "MAY 14" },
+        { "type": "url", "category": "net", "value": "telegra[.]ph/function-c0a03", "context": "Dead-drop page on legit Telegraph service — block the URL, not the domain", "seen": "MAR" },
+        { "type": "domain", "category": "net", "value": "claude-code-docs-page[.]duckdns[.]org", "context": "Fake Claude Code docs lure (1 of 88 domains — full list in source)", "seen": "MAY 14" },
+        { "type": "path", "category": "host", "value": "%LocalAppData%\\Microsoft\\EdgeUpdate\\MicrosoftEdgeUpdateCore.dll", "context": "Install path masquerading as Edge Update", "seen": "MAR" },
+        { "type": "mutex", "category": "host", "value": "update-S-1-5-21-14297136-4737252683-2816350604-2100", "context": "Infection-marker mutex", "seen": "MAR" },
+        { "type": "cmd", "category": "host", "value": "rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript", "context": "Scheduled-task persistence via rundll32 export", "seen": "MAR" }
+      ]
+    },
+    {
+      "id": "simba",
+      "severity": "high",
+      "wide": false,
+      "kind": "PHISHING · RAT",
+      "title": "Simba Service — WebDAV phishing delivering PureRAT",
+      "summary": "A typosquatted Mexican CURP portal drives victims through a search-ms: WebDAV share to RTLO-spoofed .scr payloads; an Inno Setup loader hollows a .NET stealer into a signed process and drops PureRAT. <b>Abuses CVE-2025-33053 — patched since June 2025, so unpatched hosts are the exposure.</b>",
+      "first_seen": "2026-06-20",
+      "facts": ["CVE-2025-33053 · PATCH AVAILABLE", "TARGET: MX (82% OF TRAFFIC)"],
+      "attack": ["T1566.002", "T1218", "T1055", "T1021.002"],
+      "sources": [
+        { "label": "Hacker News write-up", "url": "https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html" },
+        { "label": "Rapid7 IOC list (200+ hashes)", "url": "https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel" }
+      ],
+      "action": "Verify CVE-2025-33053 patching; alert when the WebClient service starts (davclnt.dll reaching remote hosts) and on signed binaries spawning children from WebDAV/UNC paths.",
+      "iocs": [
+        { "type": "domain", "category": "net", "value": "gobf[.]mx", "context": "Typosquat of Mexican gov CURP portal — lure page", "seen": "JUN 20" },
+        { "type": "domain", "category": "net", "value": "onedrive[.]cv", "context": "WebDAV payload host masquerading as OneDrive", "seen": "JUN 20" },
+        { "type": "url", "category": "net", "value": "onedrive[.]cv/Downloads/6/HyperPackSetup.exe", "context": "Payload download URL", "seen": "JUN 20" },
+        { "type": "ip", "category": "net", "value": "138[.]124[.]123[.]87", "context": "Delivery / C2 infrastructure", "seen": "JUN 20" },
+        { "type": "ip", "category": "net", "value": "203[.]161[.]39[.]169", "context": "Delivery / C2 infrastructure", "seen": "JUN 20" },
+        { "type": "unc", "category": "net", "value": "\\\\summerartcamp[.]net@ssl@443\\DavWWWRoot\\OSYxaOjr", "context": "WebDAV UNC path pattern opened by the search-ms: lure", "seen": "JUN" },
+        { "type": "filename", "category": "host", "value": "HyperPackSetup.exe", "context": "Inno Setup loader → in-memory .NET stealer → PureRAT", "seen": "JUN 20" },
+        { "type": "filename", "category": "host", "value": "Labcorp Results.<U+202E>fdp.scr", "context": "RTLO filename — renders as …rcs.pdf to hide the .scr extension", "seen": "JUN" }
+      ]
+    },
+    {
+      "id": "pe",
+      "severity": "med",
+      "wide": false,
+      "kind": "BACKDOOR · GOV INFRA ABUSE",
+      "title": "PhantomEnigma — .gov.br portals spreading Node.js backdoor",
+      "summary": "Spoofed Brazilian police emails and 20+ compromised .gov.br portals deliver a trojanized Electron app whose Node.js backdoor beacons every 180 seconds. <b>Mail passed SPF/DKIM/DMARC — domain reputation was the attack surface.</b>",
+      "first_seen": "2026-01-15",
+      "facts": ["20+ COMPROMISED .gov.br PORTALS", "TARGET: BR BANKING & PUBLIC SECTOR"],
+      "attack": ["T1584", "T1566.002", "T1059.007", "T1547.001", "T1071.001"],
+      "sources": [
+        { "label": "ANY.RUN research", "url": "https://any.run/cybersecurity-blog/phantomenigma-research/" }
+      ],
+      "action": "Hunt web/proxy logs for the beacon patterns below; don't whitelist .gov.br senders — validate behavior, not domain reputation.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "e0dae1a04b7a3b2ae07377b0fd00681e9633532788870b3709a9e149f3ccf0e0", "context": "Procuracao_Digital.exe — Inno Setup installer", "seen": "JAN 15" },
+        { "type": "sha256", "category": "hash", "value": "71f69978667dc421e7edf8885e9f3bde9dd527d9f7974228c9a6eac84c2ab71c", "context": "index.js — Node.js backdoor inside patched Boostnote", "seen": "JAN 15" },
+        { "type": "domain", "category": "net", "value": "dahieenloo[.]com", "context": "C2", "seen": "JAN" },
+        { "type": "domain", "category": "net", "value": "oficiospolicia[.]com", "context": "Lure / C2 — fake police notary theme", "seen": "JAN" },
+        { "type": "domain", "category": "net", "value": "policiacivilmg[.]com", "context": "Typosquat of Polícia Civil MG", "seen": "JAN" },
+        { "type": "ip", "category": "net", "value": "185[.]219[.]83[.]191", "context": "C2 (AS214943 RAILNET)", "seen": "JAN" },
+        { "type": "ip", "category": "net", "value": "158[.]94[.]208[.]120", "context": "C2 (AS202412, Seychelles)", "seen": "JAN" },
+        { "type": "uri", "category": "net", "value": "GET /laravel[.]php?api=api&hash=*&message=PT1n*", "context": "Gen-1 beacon pattern — hunt web/proxy logs", "seen": "JAN" },
+        { "type": "uri", "category": "net", "value": "POST /nbw/", "context": "Gen-2 beacon — JSON with COMPUTERNAME/USERNAME every 180s", "seen": "JUL 12" },
+        { "type": "path", "category": "host", "value": "is-*.tmp\\<Name>Application\\App.exe", "context": "Dropped payload path from the Inno Setup installer", "seen": "JAN" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,786 @@
+<title>IOC Digest — Issue 001 · Week of 2026-07-20</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    margin-right: 14px;
+    white-space: nowrap;
+  }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 001 · WK 2026-07-20 · 3 INCIDENTS · 30 IOCs</span>
+  <button class="fchip on" data-type="all">ALL<b>30</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>6</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>18</b></button>
+  <button class="fchip" data-type="host">HOST<b>6</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>ACRStealer — fake Claude Code & AI-tool installer sites</h2>
+        </div>
+        <p class="inc-sum">Fake documentation sites for Claude Code, JetBrains, and NotebookLM — pushed via SEO poisoning and paid search ads — trick developers into running installer commands that sideload ACRStealer through a fake Edge Update DLL. <b>Targets developer machines: browser credentials, wallets, and clipboard-swapped crypto addresses.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-03</span>
+        <span>88 LURE DOMAINS IDENTIFIED</span>
+        <span>CAMPAIGN ACTIVE</span>
+          <span class="attck">T1566.002 · T1574.002 · T1218.011 · T1555 · T1115</span>
+          <span><a href="https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign" rel="noopener">Straiker analysis</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">MALWARE · INFOSTEALER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Block the listed domains; hunt %LocalAppData%\Microsoft\EdgeUpdate\ for MicrosoftEdgeUpdateCore.dll and rundll32 loading its GetTranslateScript export. Devs: install CLIs only from official docs, never from ad results.</span>
+      <button class="tbtn copy-inc" data-inc="acr">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="acr">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5">2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5</button></td>
+            <td class="ctx">ServiceCore.dll — initial loader</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90">d04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90</button></td>
+            <td class="ctx">MicrosoftEdgeUpdateCore.dll — sideloaded stage</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e">cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e</button></td>
+            <td class="ctx">ACRStealer payload (inner PE)</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116">39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116</button></td>
+            <td class="ctx">1.exe — crypto-clipper module</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="dn8xapil[.]in[.]net">dn8xapil[.]in[.]net</button></td>
+            <td class="ctx">Initial C2 over WebDAV (rotating subdomains)</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="ctr[.]accrabbleshowm[.]cfd">ctr[.]accrabbleshowm[.]cfd</button></td>
+            <td class="ctx">ACRStealer C2</td>
+            <td class="seen">MAY 14</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="145[.]249[.]109[.]147">145[.]249[.]109[.]147</button></td>
+            <td class="ctx">ACRStealer C2 host</td>
+            <td class="seen">MAY 14</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="telegra[.]ph/function-c0a03">telegra[.]ph/function-c0a03</button></td>
+            <td class="ctx">Dead-drop page on legit Telegraph service — block the URL, not the domain</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="claude-code-docs-page[.]duckdns[.]org">claude-code-docs-page[.]duckdns[.]org</button></td>
+            <td class="ctx">Fake Claude Code docs lure (1 of 88 domains — full list in source)</td>
+            <td class="seen">MAY 14</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="%LocalAppData%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdateCore.dll">%LocalAppData%\Microsoft\EdgeUpdate\MicrosoftEdgeUpdateCore.dll</button></td>
+            <td class="ctx">Install path masquerading as Edge Update</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">mutex</span></td>
+            <td><button class="val" data-defanged="update-S-1-5-21-14297136-4737252683-2816350604-2100">update-S-1-5-21-14297136-4737252683-2816350604-2100</button></td>
+            <td class="ctx">Infection-marker mutex</td>
+            <td class="seen">MAR</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cmd</span></td>
+            <td><button class="val" data-defanged="rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript">rundll32 MicrosoftEdgeUpdateCore.dll,GetTranslateScript</button></td>
+            <td class="ctx">Scheduled-task persistence via rundll32 export</td>
+            <td class="seen">MAR</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Simba Service — WebDAV phishing delivering PureRAT</h2>
+        </div>
+        <p class="inc-sum">A typosquatted Mexican CURP portal drives victims through a search-ms: WebDAV share to RTLO-spoofed .scr payloads; an Inno Setup loader hollows a .NET stealer into a signed process and drops PureRAT. <b>Abuses CVE-2025-33053 — patched since June 2025, so unpatched hosts are the exposure.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-06-20</span>
+        <span>CVE-2025-33053 · PATCH AVAILABLE</span>
+        <span>TARGET: MX (82% OF TRAFFIC)</span>
+          <span class="attck">T1566.002 · T1218 · T1055 · T1021.002</span>
+          <span><a href="https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html" rel="noopener">Hacker News write-up</a> · <a href="https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel" rel="noopener">Rapid7 IOC list (200+ hashes)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">PHISHING · RAT</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Verify CVE-2025-33053 patching; alert when the WebClient service starts (davclnt.dll reaching remote hosts) and on signed binaries spawning children from WebDAV/UNC paths.</span>
+      <button class="tbtn copy-inc" data-inc="simba">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="simba">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="gobf[.]mx">gobf[.]mx</button></td>
+            <td class="ctx">Typosquat of Mexican gov CURP portal — lure page</td>
+            <td class="seen">JUN 20</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="onedrive[.]cv">onedrive[.]cv</button></td>
+            <td class="ctx">WebDAV payload host masquerading as OneDrive</td>
+            <td class="seen">JUN 20</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="onedrive[.]cv/Downloads/6/HyperPackSetup.exe">onedrive[.]cv/Downloads/6/HyperPackSetup.exe</button></td>
+            <td class="ctx">Payload download URL</td>
+            <td class="seen">JUN 20</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="138[.]124[.]123[.]87">138[.]124[.]123[.]87</button></td>
+            <td class="ctx">Delivery / C2 infrastructure</td>
+            <td class="seen">JUN 20</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="203[.]161[.]39[.]169">203[.]161[.]39[.]169</button></td>
+            <td class="ctx">Delivery / C2 infrastructure</td>
+            <td class="seen">JUN 20</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">unc</span></td>
+            <td><button class="val" data-defanged="\\summerartcamp[.]net@ssl@443\DavWWWRoot\OSYxaOjr">\\summerartcamp[.]net@ssl@443\DavWWWRoot\OSYxaOjr</button></td>
+            <td class="ctx">WebDAV UNC path pattern opened by the search-ms: lure</td>
+            <td class="seen">JUN</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="HyperPackSetup.exe">HyperPackSetup.exe</button></td>
+            <td class="ctx">Inno Setup loader → in-memory .NET stealer → PureRAT</td>
+            <td class="seen">JUN 20</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="Labcorp Results.&lt;U+202E&gt;fdp.scr">Labcorp Results.&lt;U+202E&gt;fdp.scr</button></td>
+            <td class="ctx">RTLO filename — renders as …rcs.pdf to hide the .scr extension</td>
+            <td class="seen">JUN</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>PhantomEnigma — .gov.br portals spreading Node.js backdoor</h2>
+        </div>
+        <p class="inc-sum">Spoofed Brazilian police emails and 20+ compromised .gov.br portals deliver a trojanized Electron app whose Node.js backdoor beacons every 180 seconds. <b>Mail passed SPF/DKIM/DMARC — domain reputation was the attack surface.</b></p>
+        <div class="inc-meta">
+          <span>FIRST SEEN 2026-01-15</span>
+        <span>20+ COMPROMISED .gov.br PORTALS</span>
+        <span>TARGET: BR BANKING &amp; PUBLIC SECTOR</span>
+          <span class="attck">T1584 · T1566.002 · T1059.007 · T1547.001 · T1071.001</span>
+          <span><a href="https://any.run/cybersecurity-blog/phantomenigma-research/" rel="noopener">ANY.RUN research</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">BACKDOOR · GOV INFRA ABUSE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Hunt web/proxy logs for the beacon patterns below; don&#x27;t whitelist .gov.br senders — validate behavior, not domain reputation.</span>
+      <button class="tbtn copy-inc" data-inc="pe">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="pe">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="e0dae1a04b7a3b2ae07377b0fd00681e9633532788870b3709a9e149f3ccf0e0">e0dae1a04b7a3b2ae07377b0fd00681e9633532788870b3709a9e149f3ccf0e0</button></td>
+            <td class="ctx">Procuracao_Digital.exe — Inno Setup installer</td>
+            <td class="seen">JAN 15</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">sha256</span></td>
+            <td><button class="val" data-defanged="71f69978667dc421e7edf8885e9f3bde9dd527d9f7974228c9a6eac84c2ab71c">71f69978667dc421e7edf8885e9f3bde9dd527d9f7974228c9a6eac84c2ab71c</button></td>
+            <td class="ctx">index.js — Node.js backdoor inside patched Boostnote</td>
+            <td class="seen">JAN 15</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="dahieenloo[.]com">dahieenloo[.]com</button></td>
+            <td class="ctx">C2</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="oficiospolicia[.]com">oficiospolicia[.]com</button></td>
+            <td class="ctx">Lure / C2 — fake police notary theme</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="policiacivilmg[.]com">policiacivilmg[.]com</button></td>
+            <td class="ctx">Typosquat of Polícia Civil MG</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="185[.]219[.]83[.]191">185[.]219[.]83[.]191</button></td>
+            <td class="ctx">C2 (AS214943 RAILNET)</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="158[.]94[.]208[.]120">158[.]94[.]208[.]120</button></td>
+            <td class="ctx">C2 (AS202412, Seychelles)</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">uri</span></td>
+            <td><button class="val" data-defanged="GET /laravel[.]php?api=api&amp;hash=*&amp;message=PT1n*">GET /laravel[.]php?api=api&amp;hash=*&amp;message=PT1n*</button></td>
+            <td class="ctx">Gen-1 beacon pattern — hunt web/proxy logs</td>
+            <td class="seen">JAN</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">uri</span></td>
+            <td><button class="val" data-defanged="POST /nbw/">POST /nbw/</button></td>
+            <td class="ctx">Gen-2 beacon — JSON with COMPUTERNAME/USERNAME every 180s</td>
+            <td class="seen">JUL 12</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="is-*.tmp\&lt;Name&gt;Application\App.exe">is-*.tmp\&lt;Name&gt;Application\App.exe</button></td>
+            <td class="ctx">Dropped payload path from the Inno Setup installer</td>
+            <td class="seen">JAN</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="feeds/issue-001-iocs.txt">issue-001-iocs.txt</a>
+  <a class="file" href="feeds/issue-001-iocs.clean.txt">issue-001-iocs.clean.txt</a>
+  <a class="file" href="feeds/issue-001-iocs.csv">issue-001-iocs.csv</a>
+  <a class="file" href="feeds/issue-001.stix2.json">issue-001.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>

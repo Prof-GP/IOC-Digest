@@ -1,0 +1,321 @@
+{
+  "type": "bundle",
+  "id": "bundle--60647445-a8d4-5aec-a62c-21b95d978bb7",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a24b4ef5-ccb8-5383-99e7-c94f6f421f70",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ServiceCore.dll \u2014 initial loader",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[file:hashes.'SHA-256' = '2546a45f0e751dc02630ee48ae624f2cf536cbe1978122785e9d395c789c46c5']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5b1e628d-8675-5274-b28a-b49693973e13",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: MicrosoftEdgeUpdateCore.dll \u2014 sideloaded stage",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[file:hashes.'SHA-256' = 'd04208c041891beac90d0ef818310c7bd98b66d7bdb3d2ba523fb1939915ac90']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ee782756-7f57-57f8-98cc-05ca3dd14ced",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ACRStealer payload (inner PE)",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[file:hashes.'SHA-256' = 'cda84f0339e834c1d23572acc52cc02747776cc52d6b63f6ace9ea72d80a835e']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f8ffadf0-e05f-5107-87c2-539524886a6c",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: 1.exe \u2014 crypto-clipper module",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[file:hashes.'SHA-256' = '39ff5c82fce4e2d4a2b001fbfb2a4dd39ba4e11e88ef6844af4e2119b426b116']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0d005bff-ab86-55a7-a2f7-13ba3f88b3b8",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: Initial C2 over WebDAV (rotating subdomains)",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[domain-name:value = 'dn8xapil.in.net']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--eb8a0304-8c1a-5fbb-8b05-7fd1cfd1f185",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ACRStealer C2",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[domain-name:value = 'ctr.accrabbleshowm.cfd']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--47f8db6b-cac5-504c-b2e4-f769107cada1",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: ACRStealer C2 host",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[ipv4-addr:value = '145.249.109.147']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--62eabf3f-65ef-58c6-9de1-e238c178c8dd",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: Dead-drop page on legit Telegraph service \u2014 block the URL, not the domain",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[url:value = 'telegra.ph/function-c0a03']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--05b6fdde-fd24-5ae5-b147-50da0d526bc6",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "ACRStealer \u2014 fake Claude Code & AI-tool installer sites: Fake Claude Code docs lure (1 of 88 domains \u2014 full list in source)",
+      "description": "Source: https://www.straiker.ai/blog/acr-stealer-claude-code-impersonation-campaign",
+      "pattern": "[domain-name:value = 'claude-code-docs-page.duckdns.org']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0cc66248-d273-560f-a656-5353511cad8e",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Simba Service \u2014 WebDAV phishing delivering PureRAT: Typosquat of Mexican gov CURP portal \u2014 lure page",
+      "description": "Source: https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html; https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel",
+      "pattern": "[domain-name:value = 'gobf.mx']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--99c12c2d-c26d-54e6-84ea-d3fe2e7390d7",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Simba Service \u2014 WebDAV phishing delivering PureRAT: WebDAV payload host masquerading as OneDrive",
+      "description": "Source: https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html; https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel",
+      "pattern": "[domain-name:value = 'onedrive.cv']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--50d4bdb1-2f44-5023-ba38-d7563ebe14d9",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Simba Service \u2014 WebDAV phishing delivering PureRAT: Payload download URL",
+      "description": "Source: https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html; https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel",
+      "pattern": "[url:value = 'onedrive.cv/Downloads/6/HyperPackSetup.exe']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b22e6347-95cd-569f-be0e-539f22b3efa8",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Simba Service \u2014 WebDAV phishing delivering PureRAT: Delivery / C2 infrastructure",
+      "description": "Source: https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html; https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel",
+      "pattern": "[ipv4-addr:value = '138.124.123.87']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--6d4c0e34-8cab-5d0b-bf64-e56cb1cf6107",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "Simba Service \u2014 WebDAV phishing delivering PureRAT: Delivery / C2 infrastructure",
+      "description": "Source: https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html; https://github.com/rapid7/Rapid7-Labs/tree/main/IOCs/Simba%20Panel",
+      "pattern": "[ipv4-addr:value = '203.161.39.169']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a67fcf70-1f2a-55e1-a429-8f9d9d1fef6e",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: Procuracao_Digital.exe \u2014 Inno Setup installer",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[file:hashes.'SHA-256' = 'e0dae1a04b7a3b2ae07377b0fd00681e9633532788870b3709a9e149f3ccf0e0']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--18921337-df8f-59e5-bfa8-1d2cccdc518f",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: index.js \u2014 Node.js backdoor inside patched Boostnote",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[file:hashes.'SHA-256' = '71f69978667dc421e7edf8885e9f3bde9dd527d9f7974228c9a6eac84c2ab71c']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8a1e0f6d-ae8f-52bd-8651-0d4bd7eded38",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: C2",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[domain-name:value = 'dahieenloo.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a2e4ea0b-7eca-5641-b6a8-c0244d37cda2",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: Lure / C2 \u2014 fake police notary theme",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[domain-name:value = 'oficiospolicia.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--19dcbe44-eead-55f9-8eb3-6918d3a67f4c",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: Typosquat of Pol\u00edcia Civil MG",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[domain-name:value = 'policiacivilmg.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--986c53c2-c948-5d0e-b176-4de83a66e396",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: C2 (AS214943 RAILNET)",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[ipv4-addr:value = '185.219.83.191']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a2cecb33-3a5d-51a1-9c01-09c6854e59f5",
+      "created": "2026-07-20T00:00:00.000Z",
+      "modified": "2026-07-20T00:00:00.000Z",
+      "name": "PhantomEnigma \u2014 .gov.br portals spreading Node.js backdoor: C2 (AS202412, Seychelles)",
+      "description": "Source: https://any.run/cybersecurity-blog/phantomenigma-research/",
+      "pattern": "[ipv4-addr:value = '158.94.208.120']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-20T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}
