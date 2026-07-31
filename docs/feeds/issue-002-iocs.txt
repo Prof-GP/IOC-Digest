@@ -1,0 +1,99 @@
+# IOC//DIGEST issue 002 - week of 2026-07-31
+# DEFANGED values. Refang: replace [.] with .  (sed 's/\[\.\]/./g')
+#
+# --- Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2  (https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise, https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html)
+26351aed0397158d3a3b8cc8fd3047d4c015d264c9895f10f20f1521b974ed18
+36ff00b45e67baa7e3674b0c80f48e88737264c61e5c6b3b091200972de8157c
+166[.]88[.]134[.]62
+23[.]27[.]13[.]43
+198[.]105[.]127[.]210
+23[.]27[.]202[.]27
+A9-0135-3
+TMfKQEd7TJJa5xNZJZ2Lep838vrzrs7mAP
+@joyfill/components@4.0.0-rc24-2773.beta.4-6
+/$/boot, /u/e, /u/f, /0x/js, /verify-human/, /snv
+#
+# --- CVE-2026-16232 \u2014 Check Point SmartConsole authentication bypass  (https://support.checkpoint.com/results/sk/sk185169, https://www.rapid7.com/blog/post/ra-check-point-smartconsole-authentication-bypass-technical-analysis-cve-2026-16232/)
+CVE-2026-16232
+Jumbo Hotfix: R82.10 Take 36 / R82 Take 118
+Unauthenticated SIC DN read then replay
+#
+# --- CVE-2026-50522 \u2014 SharePoint deserialization RCE, machine-key theft  (https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-50522, https://thehackernews.com/2026/07/critical-sharepoint-rce-cve-2026-50522.html)
+CVE-2026-50522
+/_trust/default.aspx
+Forged SecurityContextToken w/ BinaryFormatter payload
+Machine-key theft via single request
+#
+# --- Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers  (https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon, https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html)
+AB:42:24:A6:36:1E:6F:82:6F:DB:26:22:76:41:1E:03:F8:17:7E:30
+c692ad120cc90548d48dbe57d006f2403c49833b8993af3c38fe031eb39999bd
+0376db397807c1f1e32a99a9db622f35f4fe5597bd05b4fd5e93117062e0131f
+4395db6ad53a415532673b16f5b64207d53cecc5b15a736c038cf3890368a164
+5dee5cde6f2874c582effe302960b21569ee007e9e0cd4f7499d418cceb9095b
+d8a82d7b4457352774772bfac094127d7f67526ae7011d838cc3f7ccc15fd86e
+82520e6aa6194b2de0b1c404805a5da7d3693acab8f7ae2dd5104f14baf82cd7
+7fe8d14e7a9cda92c79d5ae836ed95d772bcc853079c4020c5213c3894c7f7af
+110gongan[.]com
+alcs[.]xyttkx[.]cc
+txl[.]xyttkx[.]cc
+h5[.]xyttkx[.]cc
+ls[.]j2x8a[.]top
+s[.]orove[.]cn
+fusu666[.]cc
+207[.]56[.]30[.]188
+207[.]56[.]30[.]194
+108[.]187[.]7[.]66
+77[.]105[.]161[.]235
+85[.]137[.]253[.]48
+com.icontrol.protector
+#
+# --- Tengu botnet \u2014 Mirai-derived Linux malware that reboots hosts to survive cleanup  (https://thehackernews.com/2026/07/tengu-botnet-reboots-compromised-linux.html)
+64[.]89[.]163[.]8
+[kworker/0:0]
+/dev/watchdog
+/proc/self/exe
+#
+# --- Dysphoria IoT botnet \u2014 blockchain-hidden C2, rebuilt in 6 days after takedown  (https://thehackernews.com/2026/07/dysphoria-iot-botnet-adds-blockchain-c2.html)
+burrberry[.]eth
+24carnforth2merseyside[.]sol
+m3rnbvs5d[.]eth
+CVE-2025-9528
+#
+# --- Laundry Bear \u2014 Russian Zimbra webmail XSS espionage (CISA AA26-204A)  (https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-204a, https://connect.securonix.com/topic/show?tid=458&fid=62)
+CVE-2025-66376
+CSS @import directive in inbound email body
+Flowerbed
+cisa.gov/.../aa26-204a (STIX 2.1)
+#
+# --- SourTrade \u2014 malvertising that makes the browser assemble the malware in memory  (https://blog.confiant.com/p/sourtrade-browser-assembled-malware, https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html)
+9a29d26b94b708830c6eaea8a6c17616ec677adaf09114190d0e129564b2ca1b
+05c0d056a6b3e76736d4f378541d28f24ecdf40060eeed24d8aa283d2f0120f6
+ad542ed44df306bdcbb022ae210da74abad74e978cc1e3992016976282f31976
+noxani[.]info
+greensite[.]digital
+yuntaro[.]digital
+nexlisa[.]info
+campainter[.]digital
+form-engine[.]digital
+trustconnect[.]digital
+predictcore[.]digital
+solventa[.]club
+/config
+.bun PE section w/ JavaScriptCore bytecode (app.js)
+#
+# --- BlackSeeStealer \u2014 browser-credential stealer with a telltale User-Agent  (https://www.cyfirma.com/news/weekly-intelligence-report-31-jul-2026/)
+77be91fc4ee0154ee4b6d0a48c596de2bffca40f1aebbf888b9ee2f3e09c89e9
+IP Checker/1.0
+/upload
+ip-api[.]com
+UserInformation.txt
+#
+# --- VeilStealer \u2014 PowerShell infostealer with registry-run persistence  (https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/)
+ff99e0fbf4bffe07738630833155fccb0775deb29cf8e0d02a5019362072a9f5
+7dcc113684fe5bd9355866a59f4a901929ff5d07fb47a05d6c186d1e7b3f444f
+cf07f33f8727b3dc4b1d956b2a5e24a487470a8d74d2558c37249eca53976ba5
+42dd676a77e7fdcf2da653c4150ed2b339ce062fb91e5ff7e7a1f2b1c5e32f44
+4b660a310fc1125a079f8154a86edd0d43501edbbc4bc759dd55f1d4fd0c6d40
+d93d3701b17598fdf244e0eec2a87a13902baadde7c2c9253d60566215ef6df2
+37f9de776d211aead04a1e54f2a5d8b453a1a51d1e906f3f4306868ac31501e1
+d302ba5778fac5bb12d82810958c2136d2b86c0267499075e4d947c97b4940a0

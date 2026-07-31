@@ -1,0 +1,726 @@
+{
+  "type": "bundle",
+  "id": "bundle--c200ed0a-d776-5a52-8fdd-ae0bdb970ff6",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7b36e0bd-063e-5d93-9efd-0edbc236683c",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2: Socket.IO remote access trojan (final stage)",
+      "description": "Source: https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise; https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html",
+      "pattern": "[file:hashes.'SHA-256' = '26351aed0397158d3a3b8cc8fd3047d4c015d264c9895f10f20f1521b974ed18']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--4e13a0ce-4f43-5379-aec9-933e7168e73d",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2: Python credential stealer",
+      "description": "Source: https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise; https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html",
+      "pattern": "[file:hashes.'SHA-256' = '36ff00b45e67baa7e3674b0c80f48e88737264c61e5c6b3b091200972de8157c']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--aa97fed5-5ff2-58f1-a109-74c6053bf04f",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2: npm-vector C2 (ports 443/80) \u2014 HTTP-based Socket.IO",
+      "description": "Source: https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise; https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html",
+      "pattern": "[ipv4-addr:value = '166.88.134.62']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e97fc77e-bc3c-58b9-ad67-fec0b0f8a2ec",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2: Stage server \u2014 serves /$/boot",
+      "description": "Source: https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise; https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html",
+      "pattern": "[ipv4-addr:value = '23.27.13.43']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--427068b6-c528-5018-b3a9-2196818d83aa",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2: Alternate distribution infrastructure",
+      "description": "Source: https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise; https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html",
+      "pattern": "[ipv4-addr:value = '198.105.127.210']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--daf5b8bb-e637-57e9-a1ef-12969a3c3278",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Joyfill npm packages hijacked \u2014 import-time RAT with blockchain C2: Alternate distribution infrastructure",
+      "description": "Source: https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise; https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html",
+      "pattern": "[ipv4-addr:value = '23.27.202.27']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--1e8bfcf4-8f6e-586e-8390-2f1c5e478b25",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: autoclicker_pro.apk (builder-produced sample)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = 'c692ad120cc90548d48dbe57d006f2403c49833b8993af3c38fe031eb39999bd']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--aaf2cb74-32e9-5713-bd04-c90628b86fa1",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: ApkBuilder.php (server-side APK builder)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = '0376db397807c1f1e32a99a9db622f35f4fe5597bd05b4fd5e93117062e0131f']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ce1a49f4-3e4f-560b-ab8f-1e67590df36d",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: net.extractor.terminator.channel.apk",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = '4395db6ad53a415532673b16f5b64207d53cecc5b15a736c038cf3890368a164']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--50d12a10-efb6-5cb2-8ec5-540c624cd4e1",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: com.sequencer.classifier.processor.apk",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = '5dee5cde6f2874c582effe302960b21569ee007e9e0cd4f7499d418cceb9095b']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--229f0e92-2230-5a4d-856b-afb14fd551ba",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: net.listener.transactor.authorizer.apk",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = 'd8a82d7b4457352774772bfac094127d7f67526ae7011d838cc3f7ccc15fd86e']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--712d4deb-e32a-55b0-8bec-9363d4199687",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: BTMOB v4.5.5.zip (related builder archive)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = '82520e6aa6194b2de0b1c404805a5da7d3693acab8f7ae2dd5104f14baf82cd7']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--528a676c-2fb9-549c-9b5b-ba6b6426153a",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: BTMOB.exe (Windows component)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[file:hashes.'SHA-256' = '7fe8d14e7a9cda92c79d5ae836ed95d772bcc853079c4020c5213c3894c7f7af']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--204257b6-666b-53a6-b643-5e5b5f23a44c",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = '110gongan.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--122a4ec4-b183-568a-912d-ddd0d238f18b",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2 (matches default cert CN)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = 'alcs.xyttkx.cc']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--25715639-a538-558a-b761-38bfc374ccc5",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = 'txl.xyttkx.cc']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--cc6b8cfa-2514-570c-9f9a-3253be7bb82c",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = 'h5.xyttkx.cc']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5b7bed39-e162-566e-b3dd-e610e2a635ad",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = 'ls.j2x8a.top']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--fab72d7c-ba44-57c0-81a4-02905639f945",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = 's.orove.cn']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c756ba5b-aa87-5761-88fd-24e9409b2d73",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Flying Eagle C2",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[domain-name:value = 'fusu666.cc']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--da6b0ce1-51c0-5641-9509-d5028e530484",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Panel host (AS54801 Zillion Network, HK)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[ipv4-addr:value = '207.56.30.188']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--52900ec5-9ec3-5ea7-bd4e-397507ef0111",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Panel host (AS54801 Zillion Network, HK)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[ipv4-addr:value = '207.56.30.194']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--642e476c-39bf-5496-8736-de429a4b3135",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Panel host (AS138995 Antbox Networks, HK)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[ipv4-addr:value = '108.187.7.66']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--1a665d43-d69b-5069-99c6-8b42987c36cc",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Panel host :8000 (AS44493, Finland)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[ipv4-addr:value = '77.105.161.235']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--cdec2792-72b8-5eeb-89bc-6c1a51402bf0",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Flying Eagle Android RAT \u2014 leaked builder spawns 170 live servers: Panel host :8000 (AS215428, Germany)",
+      "description": "Source: https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon; https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html",
+      "pattern": "[ipv4-addr:value = '85.137.253.48']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a5ed9b91-b408-5084-a01e-b03183f62a76",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "Tengu botnet \u2014 Mirai-derived Linux malware that reboots hosts to survive cleanup: REST C2 :9931 (plaintext registration/heartbeat) and :8080 (IPFS gateway)",
+      "description": "Source: https://thehackernews.com/2026/07/tengu-botnet-reboots-compromised-linux.html",
+      "pattern": "[ipv4-addr:value = '64.89.163.8']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0e715516-c080-50b0-8bbf-83968c5f7875",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: Assembled SourTrade payload sample (per-session \u2014 low reuse)",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[file:hashes.'SHA-256' = '9a29d26b94b708830c6eaea8a6c17616ec677adaf09114190d0e129564b2ca1b']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e285a4bd-b8b5-5a0a-b749-b0fdde9b1972",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: Assembled SourTrade payload sample (per-session \u2014 low reuse)",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[file:hashes.'SHA-256' = '05c0d056a6b3e76736d4f378541d28f24ecdf40060eeed24d8aa283d2f0120f6']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--52b2c0a6-699e-55e3-ad2e-81404cc87f7f",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: Assembled SourTrade payload sample (per-session \u2014 low reuse)",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[file:hashes.'SHA-256' = 'ad542ed44df306bdcbb022ae210da74abad74e978cc1e3992016976282f31976']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8061c033-cde7-5175-af7f-92ff796c70c1",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain (1 of 96)",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'noxani.info']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5e78f55e-c7a0-55df-89f3-79ad436eb34b",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'greensite.digital']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--57c76f65-5edf-5d05-b1c8-5a74a4a27982",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'yuntaro.digital']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--3ffa9dec-6ba2-5783-81d2-be07f9b3fc38",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'nexlisa.info']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--057c6885-3b2e-53c9-be6d-e4b5db2f280f",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'campainter.digital']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ce562522-6812-5fbc-89f6-9b5cea395b06",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'form-engine.digital']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--375db379-e1f3-5ef9-aea0-24a4630280b4",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'trustconnect.digital']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f9273bf8-beeb-53a3-bd98-8af9ee813192",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'predictcore.digital']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f59fb440-770b-55cc-a4ef-99d0c8f2eef2",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "SourTrade \u2014 malvertising that makes the browser assemble the malware in memory: SourTrade landing/delivery domain",
+      "description": "Source: https://blog.confiant.com/p/sourtrade-browser-assembled-malware; https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html",
+      "pattern": "[domain-name:value = 'solventa.club']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f1384174-c37c-5176-99a4-dcbc13c92cdc",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "BlackSeeStealer \u2014 browser-credential stealer with a telltale User-Agent: BlackSeeStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-31-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '77be91fc4ee0154ee4b6d0a48c596de2bffca40f1aebbf888b9ee2f3e09c89e9']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a9f8db63-b0a5-51a1-a22b-ba448c54ff68",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "BlackSeeStealer \u2014 browser-credential stealer with a telltale User-Agent: Legit geo/IP service used for recon \u2014 hunt in context, don't blanket-block (also api[.]ipify[.]org)",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-31-jul-2026/",
+      "pattern": "[domain-name:value = 'ip-api.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0df7dbbf-1e21-5dd8-b91e-74f7bc233c74",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = 'ff99e0fbf4bffe07738630833155fccb0775deb29cf8e0d02a5019362072a9f5']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--da4d59d9-19ae-5ac5-b28a-d8ebd342b9d1",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '7dcc113684fe5bd9355866a59f4a901929ff5d07fb47a05d6c186d1e7b3f444f']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--12270de2-a685-59b2-bc74-a8facc12d5c0",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = 'cf07f33f8727b3dc4b1d956b2a5e24a487470a8d74d2558c37249eca53976ba5']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--d2f29b6d-961b-520e-ba47-460c15357ae2",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '42dd676a77e7fdcf2da653c4150ed2b339ce062fb91e5ff7e7a1f2b1c5e32f44']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a67b8520-a596-51e3-82bb-ea3df404b213",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '4b660a310fc1125a079f8154a86edd0d43501edbbc4bc759dd55f1d4fd0c6d40']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--320dba86-3351-594f-a614-f24d56674758",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = 'd93d3701b17598fdf244e0eec2a87a13902baadde7c2c9253d60566215ef6df2']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--96eefb71-256d-575d-8dbe-27988b2adf21",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '37f9de776d211aead04a1e54f2a5d8b453a1a51d1e906f3f4306868ac31501e1']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f11781e2-29b1-5970-b279-17bafb72f2e9",
+      "created": "2026-07-31T00:00:00.000Z",
+      "modified": "2026-07-31T00:00:00.000Z",
+      "name": "VeilStealer \u2014 PowerShell infostealer with registry-run persistence: VeilStealer sample",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/",
+      "pattern": "[file:hashes.'SHA-256' = 'd302ba5778fac5bb12d82810958c2136d2b86c0267499075e4d947c97b4940a0']",
+      "pattern_type": "stix",
+      "valid_from": "2026-07-31T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "issue": 2,
+  "week": "2026-07-31",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "joyfill",
+      "severity": "crit",
+      "wide": true,
+      "kind": "SUPPLY CHAIN · RAT",
+      "title": "Joyfill npm packages hijacked — import-time RAT with blockchain C2",
+      "summary": "Malicious 2773-beta builds of @joyfill/components and @joyfill/layouts ship an obfuscated five-stage chain that runs the moment the module is imported, then resolves its C2 from a Tron transaction (pivoting to Binance Smart Chain) before opening a Socket.IO RAT and dropping a Python credential stealer. <b>Payload executes at import time, so npm install --ignore-scripts does NOT stop it — the campaign marker A9-0135-3 and the C2 IPs are the durable catches.</b>",
+      "reported": "2026-07-28",
+      "first_seen": "2026-07-28",
+      "facts": ["2 PACKAGES · 6 BETA VERSIONS", "IMPORT-TIME EXEC · --ignore-scripts BYPASSED"],
+      "attack": ["T1195.001", "T1547.001", "T1555", "T1056.001", "T1113", "T1041"],
+      "sources": [
+        { "label": "StepSecurity analysis", "url": "https://www.stepsecurity.io/blog/joyfill-npm-supply-chain-compromise" },
+        { "label": "Hacker News write-up", "url": "https://thehackernews.com/2026/07/two-compromised-joyfill-npm-packages.html" }
+      ],
+      "action": "Audit lockfiles/CI for any 2773 prerelease of the two packages; pin to a clean release published before Jul 28, remove the versions, rotate every credential on affected machines (Git/npm tokens, wallet keys, browser secrets), and block the C2 IPs and the Sec-V: A9-0135-3 header.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "26351aed0397158d3a3b8cc8fd3047d4c015d264c9895f10f20f1521b974ed18", "context": "Socket.IO remote access trojan (final stage)", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "36ff00b45e67baa7e3674b0c80f48e88737264c61e5c6b3b091200972de8157c", "context": "Python credential stealer", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "166[.]88[.]134[.]62", "context": "npm-vector C2 (ports 443/80) — HTTP-based Socket.IO", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "23[.]27[.]13[.]43", "context": "Stage server — serves /$/boot", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "198[.]105[.]127[.]210", "context": "Alternate distribution infrastructure", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "23[.]27[.]202[.]27", "context": "Alternate distribution infrastructure", "seen": "JUL 28" },
+        { "type": "marker", "category": "net", "value": "A9-0135-3", "context": "Campaign tag — sent as Sec-V HTTP header / embedded global marker", "seen": "JUL 28" },
+        { "type": "wallet", "category": "host", "value": "TMfKQEd7TJJa5xNZJZ2Lep838vrzrs7mAP", "context": "Tron dead-drop address for C2 resolution (also TXfxHUet9pJVU1BgVkBAbrES4YUc1nGzcG, TA48dct6rFW8BXsiLAtjFaVFoSuryMjD3v)", "seen": "JUL 28" },
+        { "type": "package", "category": "host", "value": "@joyfill/components@4.0.0-rc24-2773.beta.4-6", "context": "Trojanized beta versions (also @joyfill/layouts@0.1.2-2773.beta.0-2)", "seen": "JUL 28" },
+        { "type": "path", "category": "host", "value": "/$/boot, /u/e, /u/f, /0x/js, /verify-human/, /snv", "context": "C2 request paths", "seen": "JUL 28" }
+      ]
+    },
+    {
+      "id": "flyingeagle",
+      "severity": "high",
+      "wide": true,
+      "kind": "MOBILE · ANDROID RAT",
+      "title": "Flying Eagle Android RAT — leaked builder spawns 170 live servers",
+      "summary": "The source for this SpyNote-class Android RAT leaked on criminal Telegram channels as a 388 MB archive (中国龙.zip); Hunt.io pivoted on its default TLS certificate and AdminPro panel fingerprint to find 170 active servers, HK-centric. It abuses Accessibility Services for gesture injection and overlay phishing against banking, Alipay and WeChat. <b>The default Let's Encrypt cert (SHA-1 AB:42:24:...:7E:30) and the AdminPro login-redirect fingerprint catch panels network-wide even after operators rebrand.</b>",
+      "reported": "2026-07-28",
+      "first_seen": "2026-04",
+      "facts": ["170 SERVERS (HK-CENTRIC)", "SPYNOTE-CLASS · ACCESSIBILITY ABUSE"],
+      "attack": ["T1566", "T1027", "T1036", "T1056.001", "T1555", "T1113", "T1115", "T1123", "T1071", "T1041"],
+      "sources": [
+        { "label": "Hunt.io research", "url": "https://hunt.io/blog/flying-eagle-android-rat-170-servers-night-dragon" },
+        { "label": "Hacker News write-up", "url": "https://thehackernews.com/2026/07/flying-eagle-android-rat-traces-found.html" }
+      ],
+      "action": "Block the C2 domains/IPs below; hunt egress for the default TLS cert SHA-1 and the AdminPro /login?redirect=list/basic-list panel fingerprint; on MDM, alert when a sideloaded APK is granted Accessibility Service.",
+      "iocs": [
+        { "type": "tls-sha1", "category": "host", "value": "AB:42:24:A6:36:1E:6F:82:6F:DB:26:22:76:41:1E:03:F8:17:7E:30", "context": "Default panel TLS cert (CN alcs.xyttkx[.]cc, Let's Encrypt R13, valid 2026-04-07 to 07-06)", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "c692ad120cc90548d48dbe57d006f2403c49833b8993af3c38fe031eb39999bd", "context": "autoclicker_pro.apk (builder-produced sample)", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "0376db397807c1f1e32a99a9db622f35f4fe5597bd05b4fd5e93117062e0131f", "context": "ApkBuilder.php (server-side APK builder)", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "4395db6ad53a415532673b16f5b64207d53cecc5b15a736c038cf3890368a164", "context": "net.extractor.terminator.channel.apk", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "5dee5cde6f2874c582effe302960b21569ee007e9e0cd4f7499d418cceb9095b", "context": "com.sequencer.classifier.processor.apk", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "d8a82d7b4457352774772bfac094127d7f67526ae7011d838cc3f7ccc15fd86e", "context": "net.listener.transactor.authorizer.apk", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "82520e6aa6194b2de0b1c404805a5da7d3693acab8f7ae2dd5104f14baf82cd7", "context": "BTMOB v4.5.5.zip (related builder archive)", "seen": "JUL 28" },
+        { "type": "sha256", "category": "hash", "value": "7fe8d14e7a9cda92c79d5ae836ed95d772bcc853079c4020c5213c3894c7f7af", "context": "BTMOB.exe (Windows component)", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "110gongan[.]com", "context": "Flying Eagle C2", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "alcs[.]xyttkx[.]cc", "context": "Flying Eagle C2 (matches default cert CN)", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "txl[.]xyttkx[.]cc", "context": "Flying Eagle C2", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "h5[.]xyttkx[.]cc", "context": "Flying Eagle C2", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "ls[.]j2x8a[.]top", "context": "Flying Eagle C2", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "s[.]orove[.]cn", "context": "Flying Eagle C2", "seen": "JUL 28" },
+        { "type": "domain", "category": "net", "value": "fusu666[.]cc", "context": "Flying Eagle C2", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "207[.]56[.]30[.]188", "context": "Panel host (AS54801 Zillion Network, HK)", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "207[.]56[.]30[.]194", "context": "Panel host (AS54801 Zillion Network, HK)", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "108[.]187[.]7[.]66", "context": "Panel host (AS138995 Antbox Networks, HK)", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "77[.]105[.]161[.]235", "context": "Panel host :8000 (AS44493, Finland)", "seen": "JUL 28" },
+        { "type": "ip", "category": "net", "value": "85[.]137[.]253[.]48", "context": "Panel host :8000 (AS215428, Germany)", "seen": "JUL 28" },
+        { "type": "package", "category": "host", "value": "com.icontrol.protector", "context": "Hardcoded default app id (randomized at build time)", "seen": "JUL 28" }
+      ]
+    },
+    {
+      "id": "tengu",
+      "severity": "high",
+      "wide": false,
+      "kind": "BOTNET · LINUX",
+      "title": "Tengu botnet — Mirai-derived Linux malware that reboots hosts to survive cleanup",
+      "summary": "A Mirai-derived, multi-architecture Linux botnet whose self-defense sets it apart: a guardian process re-checks the main binary every 60s, and it abuses the hardware watchdog so that killing the process forces a device reboot rather than a cleanup. <b>Durable catch: a background process masquerading as [kworker/0:0] that reopens /dev/watchdog and sends keepalives — no legitimate userland process does this.</b>",
+      "reported": "2026-07-27",
+      "first_seen": "2026",
+      "facts": ["MIRAI-DERIVED · MULTI-ARCH", "HW WATCHDOG SELF-DEFENSE"],
+      "attack": ["T1543.002", "T1547.004", "T1005", "T1018"],
+      "sources": [
+        { "label": "Nozomi Networks Labs (via Hacker News)", "url": "https://thehackernews.com/2026/07/tengu-botnet-reboots-compromised-linux.html" }
+      ],
+      "action": "Block the C2 IP below; on Linux/IoT fleet hunt for a process named [kworker/0:0] holding /dev/watchdog, unexpected watchdog keepalives, and fake systemd/init persistence. No sample hashes were published — URLhaus URLs were already offline at disclosure.",
+      "iocs": [
+        { "type": "ip", "category": "net", "value": "64[.]89[.]163[.]8", "context": "REST C2 :9931 (plaintext registration/heartbeat) and :8080 (IPFS gateway)", "seen": "JUL 27" },
+        { "type": "process", "category": "host", "value": "[kworker/0:0]", "context": "Masquerading watchdog process reopening /dev/watchdog*", "seen": "JUL 27" },
+        { "type": "path", "category": "host", "value": "/dev/watchdog", "context": "Abused to force reboot (~30s timeout) when malware is killed", "seen": "JUL 27" },
+        { "type": "path", "category": "host", "value": "/proc/self/exe", "context": "Referenced by cron persistence routine", "seen": "JUL 27" }
+      ]
+    },
+    {
+      "id": "dysphoria",
+      "severity": "high",
+      "wide": false,
+      "kind": "BOTNET · IoT · DDoS",
+      "title": "Dysphoria IoT botnet — blockchain-hidden C2, rebuilt in 6 days after takedown",
+      "summary": "A JackSkid-descended IoT botnet (~200,000 devices) that resolves its command servers through Ethereum ENS and Solana SNS domains, with C2 addresses concealed inside fake IPv6 strings and recovered by a custom byte transform. It sells DDoS-for-hire up to ~4 Tbps. <b>Durable catch: ENS/SNS name-service lookups originating from IoT/edge segments — a lookup no normal camera or router makes.</b>",
+      "reported": "2026-07-25",
+      "first_seen": "2026-03",
+      "facts": ["~200,000 IoT DEVICES", "ENS/SNS BLOCKCHAIN C2 · up to 4 Tbps"],
+      "attack": ["T1021.004", "T1021.023", "T1571", "T1008"],
+      "sources": [
+        { "label": "QiAnXin XLab + CNCERT (via Hacker News)", "url": "https://thehackernews.com/2026/07/dysphoria-iot-botnet-adds-blockchain-c2.html" }
+      ],
+      "action": "Alert on any ENS/SNS resolution from IoT/OT segments and block the blockchain domains below; patch CVE-2025-9528 (Linksys E1700), enforce strong telnet/SSH credentials, and disable UPnP on internet-facing edge devices.",
+      "iocs": [
+        { "type": "bc-domain", "category": "net", "value": "burrberry[.]eth", "context": "Ethereum ENS domain — encodes distribution-node IPv4s", "seen": "JUL 25" },
+        { "type": "bc-domain", "category": "net", "value": "24carnforth2merseyside[.]sol", "context": "Solana SNS domain — infrastructure records", "seen": "JUL 25" },
+        { "type": "bc-domain", "category": "net", "value": "m3rnbvs5d[.]eth", "context": "Ethereum ENS C2 domain (post-JackSkid rebuild)", "seen": "JUL 25" },
+        { "type": "cve", "category": "host", "value": "CVE-2025-9528", "context": "Linksys E1700 command injection — a spreading vector", "seen": "JUL 25" }
+      ]
+    },
+    {
+      "id": "veilstealer",
+      "severity": "med",
+      "wide": false,
+      "kind": "INFOSTEALER · WINDOWS",
+      "title": "VeilStealer — PowerShell infostealer with registry-run persistence",
+      "summary": "A Windows credential stealer that leans on PowerShell for execution, plants a Run-key for autostart, harvests browser credentials, and exfiltrates over its C2 channel. CYFIRMA published eight sample hashes and a YARA rule. <b>Network IOCs were not published, so the eight hashes plus the PowerShell-writes-Run-key behavior are the reliable catches.</b>",
+      "reported": "2026-07-24",
+      "first_seen": "2026",
+      "facts": ["8 SAMPLES · WINDOWS", "BROWSER CREDENTIAL THEFT"],
+      "attack": ["T1059.001", "T1547.001", "T1555.003", "T1041"],
+      "sources": [
+        { "label": "CYFIRMA weekly report (24 Jul)", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-24-jul-2026/" }
+      ],
+      "action": "Block the eight hashes and deploy CYFIRMA's YARA rule; hunt for PowerShell processes writing HKCU/HKLM Run keys and reading browser credential stores.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "ff99e0fbf4bffe07738630833155fccb0775deb29cf8e0d02a5019362072a9f5", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "7dcc113684fe5bd9355866a59f4a901929ff5d07fb47a05d6c186d1e7b3f444f", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "cf07f33f8727b3dc4b1d956b2a5e24a487470a8d74d2558c37249eca53976ba5", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "42dd676a77e7fdcf2da653c4150ed2b339ce062fb91e5ff7e7a1f2b1c5e32f44", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "4b660a310fc1125a079f8154a86edd0d43501edbbc4bc759dd55f1d4fd0c6d40", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "d93d3701b17598fdf244e0eec2a87a13902baadde7c2c9253d60566215ef6df2", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "37f9de776d211aead04a1e54f2a5d8b453a1a51d1e906f3f4306868ac31501e1", "context": "VeilStealer sample", "seen": "JUL 24" },
+        { "type": "sha256", "category": "hash", "value": "d302ba5778fac5bb12d82810958c2136d2b86c0267499075e4d947c97b4940a0", "context": "VeilStealer sample", "seen": "JUL 24" }
+      ]
+    },
+    {
+      "id": "laundrybear",
+      "severity": "high",
+      "wide": true,
+      "kind": "APT · ESPIONAGE",
+      "title": "Laundry Bear — Russian Zimbra webmail XSS espionage (CISA AA26-204A)",
+      "summary": "CISA and partners warned that Russian state-supported actor Laundry Bear has, since at least July 2025, exploited a Zimbra webmail XSS (CVE-2025-66376, insufficient sanitization of CSS @import in email) to silently exfiltrate ~90 days of mail plus Global Address Lists from Western government, defense and nuclear-sector targets. <b>Triggered just by viewing a crafted email — hunt bulk outbound mailbox exports to VPS ranges and inbound mail containing CSS @import.</b>",
+      "reported": "2026-07-23",
+      "first_seen": "2025-07",
+      "facts": ["CVE-2025-66376 · ZIMBRA XSS", "TARGET: WESTERN GOV / DEFENSE / NUCLEAR"],
+      "attack": ["T1566", "T1114.002", "T1539", "T1110.003", "T1041"],
+      "sources": [
+        { "label": "CISA AA26-204A", "url": "https://www.cisa.gov/news-events/cybersecurity-advisories/aa26-204a" },
+        { "label": "Securonix analysis", "url": "https://connect.securonix.com/topic/show?tid=458&fid=62" }
+      ],
+      "action": "Patch ZCS to the Nov-2025 (or later) build; import the full IP/domain/hash set from the CISA AA26-204A STIX bundle; alert on large outbound mailbox exports to VPS providers, pass-the-cookie reuse, and inbound mail bodies containing CSS @import directives.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2025-66376", "context": "Zimbra ZCS webmail XSS (CSS @import) — patched Nov 2025, still exploited", "seen": "JUL 23" },
+        { "type": "detection", "category": "net", "value": "CSS @import directive in inbound email body", "context": "View-based exploit trigger — flag/strip in mail gateway", "seen": "JUL 23" },
+        { "type": "tool", "category": "host", "value": "Flowerbed", "context": "Laundry Bear's mail-collection framework", "seen": "JUL 23" },
+        { "type": "feed", "category": "net", "value": "cisa.gov/.../aa26-204a (STIX 2.1)", "context": "Full IP / domain / hash IOC set — download from the CISA advisory", "seen": "JUL 23" }
+      ]
+    },
+    {
+      "id": "checkpoint-smartconsole",
+      "severity": "crit",
+      "wide": false,
+      "kind": "CVE · EXPLOITED 0-DAY",
+      "title": "CVE-2026-16232 — Check Point SmartConsole authentication bypass",
+      "summary": "An unauthenticated attacker with network access to a Check Point Security Management Server or MDS can read the server's SIC distinguished name over the bootstrap channel, replay it to log into SmartConsole with full administrator rights, and rewrite security policy. CVSS 9.1, exploited in the wild as a zero-day; Rapid7 has since published a PoC. <b>Default Trusted-Clients config leaves GUI clients unrestricted — patch and lock it down now.</b>",
+      "reported": "2026-07-22",
+      "first_seen": "2026",
+      "facts": ["CVSS 9.1 · EXPLOITED 0-DAY", "SEC MGMT SERVER & MDS"],
+      "attack": ["T1190", "T1556", "T1078"],
+      "sources": [
+        { "label": "Check Point sk185169", "url": "https://support.checkpoint.com/results/sk/sk185169" },
+        { "label": "Rapid7 technical analysis", "url": "https://www.rapid7.com/blog/post/ra-check-point-smartconsole-authentication-bypass-technical-analysis-cve-2026-16232/" }
+      ],
+      "action": "Emergency-apply Jumbo Hotfix R82.10 Take 36 / R82 Take 118; restrict Trusted Clients so GUI clients are not open by default; hunt for unauthenticated SIC bootstrap reads and unexpected SmartConsole admin logins / policy changes.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-16232", "context": "SmartConsole auth bypass — Security Management Server & MDS", "seen": "JUL 22" },
+        { "type": "patch", "category": "host", "value": "Jumbo Hotfix: R82.10 Take 36 / R82 Take 118", "context": "Fixed builds — apply on an emergency basis", "seen": "JUL 22" },
+        { "type": "detection", "category": "host", "value": "Unauthenticated SIC DN read then replay", "context": "Bootstrap channel reads mgmt SIC distinguished name, replayed for admin", "seen": "JUL 22" }
+      ]
+    },
+    {
+      "id": "sharepoint-rce",
+      "severity": "crit",
+      "wide": false,
+      "kind": "CVE · EXPLOITED",
+      "title": "CVE-2026-50522 — SharePoint deserialization RCE, machine-key theft",
+      "summary": "An unauthenticated .NET deserialization flaw in on-prem SharePoint (2016 / 2019 / Subscription Edition) lets an attacker POST a crafted SecurityContextToken to /_trust/default.aspx and execute code as the server. Public PoC drove active exploitation; CISA added it to KEV on Jul 22 with a Jul 25 fix deadline. <b>Attackers pull SharePoint machine keys in a single request, so patching alone is not enough — rotate ASP.NET machine keys.</b>",
+      "reported": "2026-07-22",
+      "first_seen": "2026-07",
+      "facts": ["CVSS 9.8 · ON-PREM SHAREPOINT", "MACHINE-KEY THEFT · CISA KEV"],
+      "attack": ["T1190", "T1505.003", "T1552.004"],
+      "sources": [
+        { "label": "Microsoft MSRC (CVE-2026-50522)", "url": "https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-50522" },
+        { "label": "Hacker News write-up (Jul 21)", "url": "https://thehackernews.com/2026/07/critical-sharepoint-rce-cve-2026-50522.html" }
+      ],
+      "action": "Apply Microsoft's July SharePoint update, then ROTATE ASP.NET machine keys and restart IIS; monitor POSTs to /_trust/default.aspx and forged SecurityContextToken sign-ins, and hunt for new webshells under the SharePoint web root.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-50522", "context": "On-prem SharePoint 2016/2019/SE — unauth .NET deserialization RCE", "seen": "JUL 22" },
+        { "type": "path", "category": "host", "value": "/_trust/default.aspx", "context": "Exploited endpoint — POST target for the forged token", "seen": "JUL 22" },
+        { "type": "detection", "category": "host", "value": "Forged SecurityContextToken w/ BinaryFormatter payload", "context": "Malicious .NET payload in WS-Federation sign-in cookie", "seen": "JUL 22" },
+        { "type": "detection", "category": "host", "value": "Machine-key theft via single request", "context": "Patch is insufficient — rotate ASP.NET machine keys", "seen": "JUL 22" }
+      ]
+    },
+    {
+      "id": "sourtrade",
+      "severity": "high",
+      "wide": true,
+      "kind": "MALVERTISING · INFOSTEALER",
+      "title": "SourTrade — malvertising that makes the browser assemble the malware in memory",
+      "summary": "A malvertising operation impersonating TradingView, Solana and Luno serves no finished binary: its landing page pulls build instructions from /config, fetches a clean Bun runtime plus per-session AES-CTR bytes, assembles a unique Windows executable in browser memory, and hands it over through a ServiceWorker-controlled same-origin download. <b>Every victim gets a different hash, so detection hinges on the /config build flow, the 96 domains, and the malicious JavaScriptCore bytecode in the PE's .bun section — not on a static hash.</b>",
+      "reported": "2026-07-23",
+      "first_seen": "2024",
+      "facts": ["96 DOMAINS · 12 COUNTRIES / 25 LANGS", "PER-SESSION EXE · HASH EVASION"],
+      "attack": ["T1583.008", "T1189", "T1204.001", "T1027", "T1555"],
+      "sources": [
+        { "label": "Confiant research", "url": "https://blog.confiant.com/p/sourtrade-browser-assembled-malware" },
+        { "label": "Hacker News write-up", "url": "https://thehackernews.com/2026/07/malvertising-sends-malware-in-pieces.html" }
+      ],
+      "action": "Block the domains below; alert on browser-delivered same-origin downloads of PE files that carry a .bun section, and on pages that fetch a Bun runtime plus a /config template then assemble a download via ServiceWorker. The per-session hashes are near-useless for blocking on their own.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "9a29d26b94b708830c6eaea8a6c17616ec677adaf09114190d0e129564b2ca1b", "context": "Assembled SourTrade payload sample (per-session — low reuse)", "seen": "JUL 23" },
+        { "type": "sha256", "category": "hash", "value": "05c0d056a6b3e76736d4f378541d28f24ecdf40060eeed24d8aa283d2f0120f6", "context": "Assembled SourTrade payload sample (per-session — low reuse)", "seen": "JUL 23" },
+        { "type": "sha256", "category": "hash", "value": "ad542ed44df306bdcbb022ae210da74abad74e978cc1e3992016976282f31976", "context": "Assembled SourTrade payload sample (per-session — low reuse)", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "noxani[.]info", "context": "SourTrade landing/delivery domain (1 of 96)", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "greensite[.]digital", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "yuntaro[.]digital", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "nexlisa[.]info", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "campainter[.]digital", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "form-engine[.]digital", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "trustconnect[.]digital", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "predictcore[.]digital", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "domain", "category": "net", "value": "solventa[.]club", "context": "SourTrade landing/delivery domain", "seen": "JUL 23" },
+        { "type": "path", "category": "net", "value": "/config", "context": "Returns build template + Bun runtime URL + per-session random values", "seen": "JUL 23" },
+        { "type": "detection", "category": "host", "value": ".bun PE section w/ JavaScriptCore bytecode (app.js)", "context": "In-memory-assembled payload marker", "seen": "JUL 23" }
+      ]
+    },
+    {
+      "id": "blackseestealer",
+      "severity": "med",
+      "wide": false,
+      "kind": "INFOSTEALER · WINDOWS",
+      "title": "BlackSeeStealer — browser-credential stealer with a telltale User-Agent",
+      "summary": "A Windows infostealer that raids credential stores across eight browsers — Chrome, Edge, Brave, Firefox, Opera, Vivaldi, Yandex and Tor — runs environment/sandbox checks first, stages loot into named text files, then exfiltrates over HTTP. <b>Durable catch: the hardcoded User-Agent \"IP Checker/1.0\" and the staged UserInformation.txt / browser_decryption.log artifacts.</b>",
+      "reported": "2026-07-31",
+      "first_seen": "2026",
+      "facts": ["8 BROWSERS INCL. TOR", "SANDBOX-EVASIVE"],
+      "attack": ["T1059", "T1497", "T1555", "T1185", "T1071"],
+      "sources": [
+        { "label": "CYFIRMA weekly report (31 Jul)", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-31-jul-2026/" }
+      ],
+      "action": "Block the hash; alert on the \"IP Checker/1.0\" User-Agent leaving the network and on creation of UserInformation.txt, browser_decryption.log, or installed_applications.txt in user temp/profile paths.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "77be91fc4ee0154ee4b6d0a48c596de2bffca40f1aebbf888b9ee2f3e09c89e9", "context": "BlackSeeStealer sample", "seen": "JUL 31" },
+        { "type": "user-agent", "category": "net", "value": "IP Checker/1.0", "context": "Hardcoded User-Agent — high-signal network catch", "seen": "JUL 31" },
+        { "type": "path", "category": "net", "value": "/upload", "context": "Exfiltration endpoint (HTTP POST of staged loot)", "seen": "JUL 31" },
+        { "type": "domain", "category": "net", "value": "ip-api[.]com", "context": "Legit geo/IP service used for recon — hunt in context, don't blanket-block (also api[.]ipify[.]org)", "seen": "JUL 31" },
+        { "type": "filename", "category": "host", "value": "UserInformation.txt", "context": "Staged loot (also browser_decryption.log, installed_applications.txt)", "seen": "JUL 31" }
+      ]
+    }
+  ]
+}
