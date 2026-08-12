@@ -1,0 +1,381 @@
+{
+  "type": "bundle",
+  "id": "bundle--802de5ec-d1ce-5030-95e2-72e62a982a1f",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--46f17ef3-885f-54ac-b942-5d8d3b3a91fa",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Go stealer executable (ARM64)",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[file:hashes.'SHA-256' = 'f0062f7e70e61493684a2f60748a475168e155bc2502163c844c42e87692abd0']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0d92a934-ed4a-5e87-bc5c-1df120b8abba",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Go stealer executable (x86_64)",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[file:hashes.'SHA-256' = '619a99ba4ee9d7f33db8045c7e03c4265424977993fe8a53b0f45157c5abd3e5']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--070c216e-3fe8-5f37-ad2c-ff7d49dd5280",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Profiler / loader Bash script",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[file:hashes.'SHA-256' = '5bad988affc1094f12b8b8bed659ef55b20e2988eb25441e1c1b34dd03b3eb52']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--38bfa5b3-489a-541b-83fb-431311069ca7",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Persistence payload",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[file:hashes.'SHA-256' = 'b43a909a01e954d6549558f2f7e9bb58e34959a0ae229f340d61091ab726bbd3']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f13a555e-cd3a-5625-8800-c9e8d124c4b1",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Hosted the initial loader script",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[ipv4-addr:value = '193.29.224.151']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--570dd034-d096-5fae-ae0d-0f185a35cd5a",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Hosted malware payloads",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[ipv4-addr:value = '77.221.152.34']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--9c48914e-06fb-5b58-abb8-c76159564138",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: C2 server (8133/tcp)",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[ipv4-addr:value = '138.124.118.69']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--4a40bb3e-4d39-5aa4-b0e9-c296592a1e42",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets: Domain used in the ClickFix phase",
+      "description": "Source: https://www.huntress.com/blog/mac-crypto-draining-malware; https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html",
+      "pattern": "[domain-name:value = 'profitnow.io']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b89c4188-dd93-5fee-a068-fb4ef7ad6430",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): Gen-1 FDMTP loader (Microsoft.ServiceHosting.Tools.dll)",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[file:hashes.'SHA-256' = '2b6cdafdfe427a3de1a94a8a2ca1f09fc4c8f90e4f59089fd9b35b73185ed01c']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5996c0c6-22e8-5754-b03b-5fb6ac2ba363",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): Gen-2 FDMTP loader",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[file:hashes.'SHA-256' = '795594ad5e6f2868cc4d8ed12dabf4f3999a1477c6b250527c5ede9a98528fb9']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--d2307176-b494-5cbd-9cc5-42ff4f4d015b",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): Encrypted FDMTP payload (update.bin)",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[file:hashes.'SHA-256' = 'dc666e9c148bbca5e21d8c9a97143575c075f53360f135e0191aed9e8278d396']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--23bb8e71-24a5-5303-bd0a-967b7f12b5dc",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): Masquerading update domain (registered 2025-06-09)",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[domain-name:value = 'cdns3.51quickfox.cn']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c3cd2165-8a0b-5f58-8605-a07a63d16d47",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): FDMTP registration C2",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[domain-name:value = 'www.icloud-cdn.net']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--ba2b9155-75ef-576a-99a6-a384a4d5436f",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): FDMTP registration C2",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[domain-name:value = 'www.google-apis.net']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--fc4a2d52-098f-5ddd-962e-c6ed771b80df",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): FDMTP C2",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[domain-name:value = 'www.techcheck1.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--1447983a-e5bf-50a7-9276-faf6859975a7",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): FDMTP infrastructure cluster",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[ipv4-addr:value = '47.238.64.56']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--d7d6cde0-4de7-5caa-9846-ceb06111bf0b",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): FDMTP infrastructure cluster",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[ipv4-addr:value = '154.223.75.206']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--38dbb559-3b08-5721-84d4-80c3ab2ed9de",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda): FDMTP infrastructure cluster",
+      "description": "Source: https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant; https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html",
+      "pattern": "[ipv4-addr:value = '45.158.180.250']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--dc0e55eb-81cb-5983-9014-d0b7e9998f89",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CVE-2026-18577 \u2014 N-able N-central auth bypass, RMM-to-endpoint pivot: Exploitation source IP",
+      "description": "Source: https://thehackernews.com/2026/08/cisa-adds-exploited-n-able-n-central.html; https://thehackernews.com/2026/08/n-able-says-attackers-take-over-n.html",
+      "pattern": "[ipv4-addr:value = '173.249.252.200']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--58399115-7695-531a-9d64-c8ee1ad85d23",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CVE-2026-18577 \u2014 N-able N-central auth bypass, RMM-to-endpoint pivot: Exploitation source IP",
+      "description": "Source: https://thehackernews.com/2026/08/cisa-adds-exploited-n-able-n-central.html; https://thehackernews.com/2026/08/n-able-says-attackers-take-over-n.html",
+      "pattern": "[ipv4-addr:value = '87.249.138.34']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--6b1f2633-8137-5964-a15c-b4fceb2b0c92",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CVE-2026-18577 \u2014 N-able N-central auth bypass, RMM-to-endpoint pivot: Exploitation source IP",
+      "description": "Source: https://thehackernews.com/2026/08/cisa-adds-exploited-n-able-n-central.html; https://thehackernews.com/2026/08/n-able-says-attackers-take-over-n.html",
+      "pattern": "[ipv4-addr:value = '37.19.210.32']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--913d1e70-551f-5800-99a7-d7050f0353c4",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CVE-2026-18577 \u2014 N-able N-central auth bypass, RMM-to-endpoint pivot: Exploitation source IP",
+      "description": "Source: https://thehackernews.com/2026/08/cisa-adds-exploited-n-able-n-central.html; https://thehackernews.com/2026/08/n-able-says-attackers-take-over-n.html",
+      "pattern": "[ipv4-addr:value = '68.235.46.214']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--bc56a48c-c95f-5052-9efc-91a5754b8a21",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CNBackdoor \u2014 multi-stage Windows backdoor with scheduled-task persistence: Installer_v3500_x64.exe (CNBackdoor installer)",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-7-aug-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '1d5d0dfa7d49213f59f48704305762a936492c57026336a0ff56eafdf5710a48']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8c9ce575-d4e3-583b-ac9a-b5b61acc2415",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CNBackdoor \u2014 multi-stage Windows backdoor with scheduled-task persistence: CNBackdoor C2 domain",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-7-aug-2026/",
+      "pattern": "[domain-name:value = 'tommysbakescodes.ws']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--2fb7032a-a141-59e5-98cc-6a52863d43c3",
+      "created": "2026-08-11T00:00:00.000Z",
+      "modified": "2026-08-11T00:00:00.000Z",
+      "name": "CNBackdoor \u2014 multi-stage Windows backdoor with scheduled-task persistence: C2 endpoint (also /mnlinmwv/insirs.php)",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-7-aug-2026/",
+      "pattern": "[url:value = 'https://tommysbakescodes.ws/mnlinmwv/insris.php']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}

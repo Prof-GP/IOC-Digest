@@ -1,0 +1,77 @@
+# IOC//DIGEST issue 003 - week of 2026-08-11
+# DEFANGED values. Refang: replace [.] with .  (sed 's/\[\.\]/./g')
+#
+# --- Metabase SQL-injection 0-day (GHSA-vwf4-m7j8-wcjf) \u2014 unauth admin takeover  (https://thehackernews.com/2026/08/metabase-zero-day-exploited-in-wild.html, https://github.com/metabase/metabase/security/advisories/GHSA-vwf4-m7j8-wcjf)
+GHSA-vwf4-m7j8-wcjf
+POST /api/session/reset_password (400) then GET /api/user/current (200)
+/api/session/reset_password
+Metabase 1.58.24 / 1.59.21 / 1.60.17 / 1.61.11 / 1.62.9 / 1.63.5
+#
+# --- CVE-2026-63077 \u2014 JetBrains TeamCity unauthenticated deserialization RCE  (https://thehackernews.com/2026/08/cisa-flags-teamcity-cve-2026-63077-rce.html, https://www.cisa.gov/known-exploited-vulnerabilities-catalog)
+CVE-2026-63077
+XStream deserialization via agent polling protocol
+.JSPWS files under TeamCity web/work dirs
+#
+# --- CVE-2026-68820 \u2014 Windows afd.sys use-after-free, SYSTEM privilege escalation  (https://www.securityweek.com/august-2026-patch-tuesday-microsoft-fixes-421-cves-one-exploited-zero-day/, https://www.tenable.com/blog/microsofts-august-2026-patch-tuesday-addresses-398-cves-cve-2026-68820)
+CVE-2026-68820
+CVE-2026-62832
+RCE fixes CVE-2026-62878 / -62893 / -62815 / -59124
+#
+# --- ClickFix macOS Go stealer \u2014 DRAIN routine empties crypto wallets  (https://www.huntress.com/blog/mac-crypto-draining-malware, https://thehackernews.com/2026/08/clickfix-attacks-deliver-macos-stealer.html)
+f0062f7e70e61493684a2f60748a475168e155bc2502163c844c42e87692abd0
+619a99ba4ee9d7f33db8045c7e03c4265424977993fe8a53b0f45157c5abd3e5
+5bad988affc1094f12b8b8bed659ef55b20e2988eb25441e1c1b34dd03b3eb52
+b43a909a01e954d6549558f2f7e9bb58e34959a0ae229f340d61091ab726bbd3
+193[.]29[.]224[.]151
+77[.]221[.]152[.]34
+138[.]124[.]118[.]69
+profitnow[.]io
+$HOME/Library/LaunchAgents/com.apple.softwareupdated.plist
+$HOME/Library/Caches/com.apple.trustd/com.apple.verified
+#
+# --- QuickFox VPN supply-chain compromise \u2014 FDMTP backdoor (Mustang Panda)  (https://www.fortinet.com/blog/threat-research/quickfox-supply-chain-attack-used-to-deploy-fdmtp-implant, https://thehackernews.com/2026/08/quickfox-supply-chain-attack-delivers.html)
+2b6cdafdfe427a3de1a94a8a2ca1f09fc4c8f90e4f59089fd9b35b73185ed01c
+795594ad5e6f2868cc4d8ed12dabf4f3999a1477c6b250527c5ede9a98528fb9
+dc666e9c148bbca5e21d8c9a97143575c075f53360f135e0191aed9e8278d396
+cdns3[.]51quickfox[.]cn
+www[.]icloud-cdn[.]net
+www[.]google-apis[.]net
+www[.]techcheck1[.]com
+47[.]238[.]64[.]56
+154[.]223[.]75[.]206
+45[.]158[.]180[.]250
+Microsoft.ServiceHosting.Tools.dll
+QuickFox v3.59.6
+#
+# --- CVE-2026-9198 \u2014 Langflow unauthenticated RCE mints SUPERUSER tokens  (https://thehackernews.com/2026/08/cisa-flags-langflow-rce-tomcat-and-n.html, https://www.bleepingcomputer.com/news/security/cisa-orders-feds-to-patch-actively-exploited-langflow-rce-flaw/)
+CVE-2026-9198
+/api/v1/auto_login
+SUPERUSER token issued to a non-loopback caller
+#
+# --- CVE-2026-18577 \u2014 N-able N-central auth bypass, RMM-to-endpoint pivot  (https://thehackernews.com/2026/08/cisa-adds-exploited-n-able-n-central.html, https://thehackernews.com/2026/08/n-able-says-attackers-take-over-n.html)
+CVE-2026-18577
+173[.]249[.]252[.]200
+87[.]249[.]138[.]34
+37[.]19[.]210[.]32
+68[.]235[.]46[.]214
+svchost.exe (in a user's Documents folder)
+Cloudflared
+Admin username "MSP Support"
+#
+# --- CVE-2026-20316 \u2014 Cisco Secure FMC static-credential zero-day  (https://www.cisco.com/c/en/us/support/docs/csa/cisco-sa-fmc-static-cred-BET3Cjh.html, https://thehackernews.com/2026/07/cisco-fmc-zero-day-actively-exploited.html)
+CVE-2026-20316
+Cisco FMC hotfixes: 7.0 / 7.2 / 7.4 / 7.6 / 7.7 / 10.0
+Login by the built-in low-privilege FMC account
+#
+# --- CNBackdoor \u2014 multi-stage Windows backdoor with scheduled-task persistence  (https://www.cyfirma.com/news/weekly-intelligence-report-7-aug-2026/)
+1d5d0dfa7d49213f59f48704305762a936492c57026336a0ff56eafdf5710a48
+tommysbakescodes[.]ws
+https://tommysbakescodes[.]ws/mnlinmwv/insris.php
+PathMarker.vbs
+%AppData%\\Roaming\\ExtendedMonitor\\
+Scheduled task "Extended API 0136301"
+#
+# --- KansasGroup ransomware \u2014 .kansas4life encryptor  (https://www.cyfirma.com/news/weekly-intelligence-report-7-aug-2026/)
+KANSASGROUP.txt
+.kansas4life
+Uncommon svchost command-line parameter (Sigma)
