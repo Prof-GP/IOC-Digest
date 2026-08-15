@@ -1,0 +1,49 @@
+# IOC//DIGEST issue 004 - week of 2026-08-14
+# CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
+#
+# --- CVE-2026-65400 \u2014 macOS Screen Sharing pre-auth RCE deploys Monero miners  (https://www.bleepingcomputer.com/news/security/hackers-exploit-macos-screen-sharing-flaw-to-deploy-monero-miner/, https://www.huntress.com/blog/macos-screen-sharing-rce-patched)
+CVE-2026-65400
+macOS Tahoe 26.6.1 / Sequoia 15.7.9 / Sonoma 14.8.9
+Unexplained Monero-mining process following Screen Sharing exposure on port 5900
+#
+# --- CVE-2026-59310 \u2014 VMware vCenter Syslog Server directory traversal, active reverse-SSH campaign  (https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html, https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/25765)
+CVE-2026-59310
+reverse_ssh (Go-based open-source reverse shell)
+Malicious cron job added to vCenter appliance
+vCenter 9.1.0.0300 / 9.0.2.0100 / 8.0 U3k / 8.0 U2f
+#
+# --- CVE-2026-55040 \u2014 SharePoint forged-JWT auth bypass, exploited within 48 hours of PoC  (https://thehackernews.com/2026/08/attackers-exploit-sharepoint.html, https://www.securityweek.com/sharepoint-vulnerability-exploited-shortly-after-poc-release/)
+CVE-2026-55040
+CVE-2026-63520
+JWT with header alg:none and unverifiable non-empty signature
+KB5002882 / KB5002883 / KB5002891
+#
+# --- LiteLLM/Trivy breach fallout \u2014 153GB stolen-credential archive surfaces and gets analyzed  (https://www.helpnetsecurity.com/2026/08/13/litellm-breach-stolen-credentials-leak/, https://www.securityweek.com/over-2500-organizations-impacted-by-litellm-supply-chain-attack/)
+litellm 1.82.7 / 1.82.8 (PyPI, published 2026-03-24)
+gitlab.adswizz.com
+153GB stolen-credential archive (433,909 files / 118,829 CI-runner dumps)
+#
+# --- CVE-2026-71362 \u2014 Adobe Commerce/Magento session-identity flaw, exploited within hours  (https://www.bleepingcomputer.com/news/security/hackers-exploit-critical-adobe-commerce-flaw-to-hijack-customer-accounts/, https://helpx.adobe.com/security/products/magento/apsb26-92.html)
+CVE-2026-71362
+Adobe APSB26-92 (Commerce 2.4.4-2.4.9, Magento OS 2.4.6-2.4.9)
+Customer session bound to a different account identity than the authenticated login
+#
+# --- CVE-2026-20349 \u2014 Cisco ASA/FTD SSL VPN heap-inspection DoS, added to KEV  (https://www.cisa.gov/news-events/alerts/2026/08/11/cisa-adds-three-known-exploited-vulnerabilities-catalog, https://securityarsenal.com/blog/cve-2026-20349-cisco-asa-and-ftd-heap-inspection-vulnerability-under-active-exploitation-detection-and-remediation-guide)
+CVE-2026-20349
+Reload/crash-traceback events (msg IDs 101001, 101002, 111008, 199013)
+>200 connections/min to SSL VPN interface (msg IDs 302013/302015/302020)
+#
+# --- PicMo Group ransomware \u2014 randomized extensions, shadow-copy wipe  (https://www.cyfirma.com/news/weekly-intelligence-report-14-aug-2026/)
+How to Restore Your Files.txt
+vssadmin.exe Delete Shadows /all /quiet ; wmic shadowcopy delete /nointeractive
+Sigma rule "Potential PicMo Activity"
+#
+# --- Umbral Stealer \u2014 .NET wallet/credential thief with Discord-webhook exfil  (https://www.cyfirma.com/news/weekly-intelligence-report-14-aug-2026/)
+90d78c79fed001f3568b4d4bc7618bd91258c0a8425c9d2d278f7ffa4c9a557a
+Mutex wE5p43lYJeQTllHUajMk
+Discord webhook exfil preceded by ip-api.com geolocation query
+YARA rule UmbralStealer_v1_3
+#
+# --- ExfilSquad extortion group breaches Wesco via cloud CRM, claims 2.6M records  (https://www.bleepingcomputer.com/news/security/wesco-confirms-security-incident-after-exfilsquad-claims-data-theft/, https://www.resecurity.com/blog/article/exfilsquad-targets-new-victims-shares-data-via-torrents)
+ExfilSquad data-leak site (onion, torrent-distributed dumps)
+Batch-compromise pattern: multiple unrelated victims sharing one ransom deadline

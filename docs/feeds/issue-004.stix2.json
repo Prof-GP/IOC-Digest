@@ -1,0 +1,21 @@
+{
+  "type": "bundle",
+  "id": "bundle--eccc4c73-c787-5221-ac51-1767f3056197",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--52198f69-fe27-5cb1-985a-e9775eb9765b",
+      "created": "2026-08-14T00:00:00.000Z",
+      "modified": "2026-08-14T00:00:00.000Z",
+      "name": "Umbral Stealer \u2014 .NET wallet/credential thief with Discord-webhook exfil: Umbral Stealer .NET payload",
+      "description": "Source: https://www.cyfirma.com/news/weekly-intelligence-report-14-aug-2026/",
+      "pattern": "[file:hashes.'SHA-256' = '90d78c79fed001f3568b4d4bc7618bd91258c0a8425c9d2d278f7ffa4c9a557a']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-14T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}

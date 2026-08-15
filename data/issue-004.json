@@ -1,0 +1,205 @@
+{
+  "issue": 4,
+  "week": "2026-08-14",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "vcenter-syslog",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · SUPPLY-CHAIN-SCALE",
+      "title": "CVE-2026-59310 — VMware vCenter Syslog Server directory traversal, active reverse-SSH campaign",
+      "summary": "A directory-traversal flaw in vCenter's Syslog server (CVSS 9.8) lets a network-adjacent attacker execute arbitrary code with no authentication. Exploitation began roughly five days after Broadcom's advisory and has now hit 361 victim IPs across 47 countries, with attackers deploying reverse_ssh, an open-source Go reverse-shell tool, via a malicious cron job for persistent access. <b>Durable catch: outbound cron-triggered connections from vCenter appliances and any reverse_ssh process on a vCenter host — there is no vendor workaround, only the patch.</b>",
+      "reported": "2026-08-12",
+      "first_seen": "2026-08-03",
+      "facts": ["CVSS 9.8 · 361 VICTIM IPs / 47 COUNTRIES", "reverse_ssh VIA MALICIOUS CRON"],
+      "attack": ["T1190", "T1053.003", "T1572", "T1105"],
+      "sources": [
+        { "label": "Hacker News write-up (Aug 12)", "url": "https://thehackernews.com/2026/08/attackers-exploit-vmware-vcenter.html" },
+        { "label": "Broadcom advisory VMSA-2026-0006", "url": "https://support.broadcom.com/web/ecx/support-content-notification/-/external/content/SecurityAdvisories/0/25765" }
+      ],
+      "action": "Patch vCenter to 9.1.0.0300 / 9.0.2.0100 / 8.0 U3k / 8.0 U2f immediately — there is no workaround; hunt for unexpected cron jobs on vCenter appliances and any reverse_ssh binary or process, and restrict vCenter's outbound network access.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-59310", "context": "vCenter Syslog Server directory traversal — unauth RCE", "seen": "AUG 12" },
+        { "type": "tool", "category": "host", "value": "reverse_ssh (Go-based open-source reverse shell)", "context": "Deployed post-exploitation for persistent access", "seen": "AUG 12" },
+        { "type": "detection", "category": "host", "value": "Malicious cron job added to vCenter appliance", "context": "Persistence mechanism for reverse_ssh", "seen": "AUG 12" },
+        { "type": "patch", "category": "host", "value": "vCenter 9.1.0.0300 / 9.0.2.0100 / 8.0 U3k / 8.0 U2f", "context": "Fixed builds per Broadcom VMSA-2026-0006", "seen": "AUG 12" }
+      ]
+    },
+    {
+      "id": "sharepoint-jwt",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · AUTH BYPASS",
+      "title": "CVE-2026-55040 — SharePoint forged-JWT auth bypass, exploited within 48 hours of PoC",
+      "summary": "A flaw in SharePoint's JWT validation pipeline accepts a token with alg:none, resolves a signing key from an actor-token x5t header that points at SharePoint's own STS certificate, then never verifies the resulting signature — letting an unauthenticated attacker impersonate any known site user or admin. Rapid7 published exploitation technical details Aug 11; honeypot firm Defused recorded live attempts the next day, with KEVIntel logging 8 of its 12 total attempts in the 48 hours after disclosure. Chained with CVE-2026-63520 it becomes unauthenticated RCE. <b>Durable catch: a JWT with header alg:none and a non-empty but unverifiable signature (e.g. AAAA) presented to SharePoint's STS.</b>",
+      "reported": "2026-08-12",
+      "first_seen": "2026-07-14",
+      "facts": ["CVSS 9.1 · FORGED-JWT IMPERSONATION", "8/12 EXPLOIT ATTEMPTS IN 48H POST-POC"],
+      "attack": ["T1190", "T1078", "T1550"],
+      "sources": [
+        { "label": "Hacker News write-up (Aug 13)", "url": "https://thehackernews.com/2026/08/attackers-exploit-sharepoint.html" },
+        { "label": "SecurityWeek (Aug 13)", "url": "https://www.securityweek.com/sharepoint-vulnerability-exploited-shortly-after-poc-release/" }
+      ],
+      "action": "Confirm SharePoint is patched to 16.0.19725.20434 (Subscription/KB5002882), 16.0.10417.20175 (2019/KB5002883), or 16.0.5561.1001 (2016/KB5002891); hunt STS logs for alg:none JWTs and unexpected admin-identity assertions; treat any farm that was unpatched through mid-August as potentially compromised.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-55040", "context": "SharePoint JWT validation bypass — unauth user/admin impersonation", "seen": "AUG 12" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-63520", "context": "Chained SharePoint flaw — turns impersonation into unauth RCE", "seen": "AUG 12" },
+        { "type": "detection", "category": "net", "value": "JWT with header alg:none and unverifiable non-empty signature", "context": "Forged-token signature accepted by SharePoint STS", "seen": "AUG 12" },
+        { "type": "patch", "category": "host", "value": "KB5002882 / KB5002883 / KB5002891", "context": "July 2026 Patch Tuesday fixes per SharePoint edition", "seen": "AUG 12" }
+      ]
+    },
+    {
+      "id": "adobe-commerce",
+      "severity": "high",
+      "wide": false,
+      "kind": "CVE · EXPLOITED · ACCOUNT TAKEOVER",
+      "title": "CVE-2026-71362 — Adobe Commerce/Magento session-identity flaw, exploited within hours",
+      "summary": "Adobe Commerce and Magento Open Source fail to correctly bind a customer's identity to their account session, letting an unauthenticated attacker switch a live session to another customer's account and read their PII and order data. Adobe shipped an isolated patch (APSB26-92) on Aug 11; Sansec's Shield WAF was already blocking exploitation attempts within hours of the advisory going public. <b>Durable catch: unexplained session-identity switches in Magento's customer session store — investigate any account-data access that doesn't match the authenticated session's login.</b>",
+      "reported": "2026-08-12",
+      "first_seen": "2026-08-11",
+      "facts": ["CVSS 9.1 · NO AUTH / NO USER INTERACTION", "PATCHED AUG 11 · EXPLOITED SAME DAY"],
+      "attack": ["T1190", "T1078", "T1213"],
+      "sources": [
+        { "label": "BleepingComputer (Aug 12)", "url": "https://www.bleepingcomputer.com/news/security/hackers-exploit-critical-adobe-commerce-flaw-to-hijack-customer-accounts/" },
+        { "label": "Adobe advisory APSB26-92", "url": "https://helpx.adobe.com/security/products/magento/apsb26-92.html" }
+      ],
+      "action": "Apply Adobe's APSB26-92 isolated patch immediately across all affected 2.4.4-2.4.9 lines; if you run a WAF, ensure it has current Magento/Commerce rules; audit for session-identity mismatches and force-reauthenticate customer sessions after patching.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-71362", "context": "Adobe Commerce / Magento session-identity mismatch — unauth account takeover", "seen": "AUG 12" },
+        { "type": "patch", "category": "host", "value": "Adobe APSB26-92 (Commerce 2.4.4-2.4.9, Magento OS 2.4.6-2.4.9)", "context": "Isolated security patch, released Aug 11", "seen": "AUG 12" },
+        { "type": "detection", "category": "host", "value": "Customer session bound to a different account identity than the authenticated login", "context": "Core exploitation signature", "seen": "AUG 12" }
+      ]
+    },
+    {
+      "id": "cisco-asa-ftd",
+      "severity": "high",
+      "wide": false,
+      "kind": "CVE · EXPLOITED · KEV",
+      "title": "CVE-2026-20349 — Cisco ASA/FTD SSL VPN heap-inspection DoS, added to KEV",
+      "summary": "Insufficient error checking in Cisco ASA and FTD's Remote Access SSL VPN service lets an unauthenticated remote attacker send a crafted HTTP request that forces the device to reload — a zero-credential denial-of-service against the perimeter. Cisco disclosed and confirmed active exploitation Aug 11; CISA added it to KEV the same day alongside the already-tracked afd.sys and Metabase CVEs. No workaround exists. <b>Durable catch: unexpected device reload/crash-traceback log events paired with a burst of over 200 connections/minute to the SSL VPN interface.</b>",
+      "reported": "2026-08-11",
+      "first_seen": "2026-08-11",
+      "facts": ["CVSS 8.6 · UNAUTH DoS", "NO WORKAROUND · CISA KEV"],
+      "attack": ["T1190", "T1499"],
+      "sources": [
+        { "label": "CISA KEV additions (Aug 11)", "url": "https://www.cisa.gov/news-events/alerts/2026/08/11/cisa-adds-three-known-exploited-vulnerabilities-catalog" },
+        { "label": "Security Arsenal detection guide (Aug 11)", "url": "https://securityarsenal.com/blog/cve-2026-20349-cisco-asa-and-ftd-heap-inspection-vulnerability-under-active-exploitation-detection-and-remediation-guide" }
+      ],
+      "action": "Patch ASA/FTD to the fixed build for your train per Cisco's advisory — do not assume a recent version is safe, verify against the fixed-software table; there is no workaround, so restrict SSL VPN exposure where patching is delayed; alert on reload events (msg IDs 101001/101002/111008/199013) correlated with connection bursts.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-20349", "context": "ASA/FTD Remote Access SSL VPN heap inspection — unauth DoS", "seen": "AUG 11" },
+        { "type": "detection", "category": "host", "value": "Reload/crash-traceback events (msg IDs 101001, 101002, 111008, 199013)", "context": "Device reload signature", "seen": "AUG 11" },
+        { "type": "detection", "category": "net", "value": ">200 connections/min to SSL VPN interface (msg IDs 302013/302015/302020)", "context": "Connection-burst precursor to forced reload", "seen": "AUG 11" }
+      ]
+    },
+    {
+      "id": "macos-screensharing",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · macOS RCE",
+      "title": "CVE-2026-65400 — macOS Screen Sharing pre-auth RCE deploys Monero miners",
+      "summary": "A flaw in Screen Sharing's Secure Remote Password implementation lets a remote attacker on the network authenticate with no valid credentials and gain full control — pre-auth RCE on every supported macOS version. Apple issued an emergency patch Aug 6; by Aug 14 an advisory confirmed active exploitation on internet-exposed hosts (port 5900 reachable), with attackers obtaining root and planting a Monero miner in every confirmed case. Standard hardening (removing approved users, rotating VNC passwords) doesn't help — it operates downstream of the bypassed authentication step. <b>Durable catch: port 5900 reachable from the internet plus an unexplained Monero-mining process — patch or disable Screen Sharing, don't just rotate credentials.</b>",
+      "reported": "2026-08-14",
+      "first_seen": "2026-08-06",
+      "facts": ["PRE-AUTH RCE · ROOT ACCESS", "PORT 5900 EXPOSED -> MONERO MINER"],
+      "attack": ["T1190", "T1133", "T1496"],
+      "sources": [
+        { "label": "BleepingComputer (Aug 14)", "url": "https://www.bleepingcomputer.com/news/security/hackers-exploit-macos-screen-sharing-flaw-to-deploy-monero-miner/" },
+        { "label": "Huntress technical analysis", "url": "https://www.huntress.com/blog/macos-screen-sharing-rce-patched" }
+      ],
+      "action": "Patch to macOS Tahoe 26.6.1 / Sequoia 15.7.9 / Sonoma 14.8.9 immediately, or disable Screen Sharing entirely if you cannot patch; never expose port 5900 to the internet; hunt for unexpected Monero-mining processes as a compromise indicator on any host that had Screen Sharing enabled and reachable.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-65400", "context": "macOS Screen Sharing SRP pre-auth RCE — full remote control", "seen": "AUG 14" },
+        { "type": "patch", "category": "host", "value": "macOS Tahoe 26.6.1 / Sequoia 15.7.9 / Sonoma 14.8.9", "context": "Apple emergency patch, Aug 6", "seen": "AUG 14" },
+        { "type": "detection", "category": "host", "value": "Unexplained Monero-mining process following Screen Sharing exposure on port 5900", "context": "Post-exploitation payload observed in every confirmed case", "seen": "AUG 14" }
+      ]
+    },
+    {
+      "id": "litellm-dump",
+      "severity": "high",
+      "wide": true,
+      "kind": "SUPPLY CHAIN · CREDENTIAL LEAK",
+      "title": "LiteLLM/Trivy breach fallout — 153GB stolen-credential archive surfaces and gets analyzed",
+      "summary": "The March 2026 TeamPCP compromise of Trivy's CI pipeline (which pushed two backdoored LiteLLM releases to PyPI) is back in the news: Hudson Rock obtained and analyzed the attacker's 153GB archive — 433,909 files including 118,829 CI-runner dumps with AWS keys, Salesforce and Slack secrets, Azure env vars, and AI-provider API keys from roughly 2,488 corporate domains including AWS, Samsung, Cisco, Salesforce, NVIDIA and Microsoft. <b>Durable catch: any org whose CI pipeline installed Trivy or LiteLLM 1.82.7/1.82.8 in March 2026 should assume every credential in that pipeline is burned, not just rotate the obvious ones.</b>",
+      "reported": "2026-08-13",
+      "first_seen": "2026-03-19",
+      "facts": ["153GB · 433,909 FILES · ~2,488 ORGS", "AWS/SALESFORCE/SLACK/AZURE/AI-API SECRETS"],
+      "attack": ["T1195.002", "T1552.001", "T1078"],
+      "sources": [
+        { "label": "Help Net Security (Aug 13)", "url": "https://www.helpnetsecurity.com/2026/08/13/litellm-breach-stolen-credentials-leak/" },
+        { "label": "SecurityWeek — 2,500 orgs impacted", "url": "https://www.securityweek.com/over-2500-organizations-impacted-by-litellm-supply-chain-attack/" }
+      ],
+      "action": "If your CI/CD ever ran Trivy or LiteLLM 1.82.7/1.82.8 pulled in March 2026, treat every secret that pipeline touched as compromised — rotate AWS keys, Salesforce/Slack secrets, Azure environment variables and AI-provider API keys, not just the ones you can confirm were used.",
+      "iocs": [
+        { "type": "package", "category": "host", "value": "litellm 1.82.7 / 1.82.8 (PyPI, published 2026-03-24)", "context": "Backdoored releases distributed via the compromised Trivy CI pipeline", "seen": "AUG 13" },
+        { "type": "host-name", "category": "net", "value": "gitlab[.]adswizz[.]com", "context": "Self-hosted GitLab instance referenced in the stolen-credential archive", "seen": "AUG 13" },
+        { "type": "detection", "category": "host", "value": "153GB stolen-credential archive (433,909 files / 118,829 CI-runner dumps)", "context": "Archive analyzed by Hudson Rock, covering ~2,488 corporate domains", "seen": "AUG 13" }
+      ]
+    },
+    {
+      "id": "exfilsquad-wesco",
+      "severity": "med",
+      "wide": false,
+      "kind": "DATA EXTORTION · SUPPLY CHAIN",
+      "title": "ExfilSquad extortion group breaches Wesco via cloud CRM, claims 2.6M records",
+      "summary": "ExfilSquad, a data-extortion group that emerged mid-2026 and skips encryption in favor of leak-site pressure, claimed theft of 2.6 million records from Wesco's cloud CRM — customer/employee PII, account and contact data, credit and business identifiers, and authentication metadata. Wesco confirmed it is investigating. Darkfield has tied 33 victims to the group since Jul 26, many sharing an identical ransom deadline, suggesting a batch compromise of shared SaaS/CRM infrastructure rather than 33 separate intrusions. <b>Durable catch: organizations sharing a CRM/SaaS vendor with any ExfilSquad victim should assume the platform itself, not each tenant individually, was the entry point.</b>",
+      "reported": "2026-08-11",
+      "first_seen": "2026-07-26",
+      "facts": ["2.6M RECORDS CLAIMED · CLOUD CRM", "33 VICTIMS SINCE JUL 26 · SHARED DEADLINE"],
+      "attack": ["T1213", "T1567.002", "T1078.004"],
+      "sources": [
+        { "label": "BleepingComputer (Aug 11)", "url": "https://www.bleepingcomputer.com/news/security/wesco-confirms-security-incident-after-exfilsquad-claims-data-theft/" },
+        { "label": "Resecurity — ExfilSquad targets new victims", "url": "https://www.resecurity.com/blog/article/exfilsquad-targets-new-victims-shares-data-via-torrents" }
+      ],
+      "action": "If you share a CRM/SaaS vendor with a known ExfilSquad victim, audit that platform's access logs and API tokens now rather than waiting for direct notification; treat leak-site claims of exact record counts as credible triage input even before formal confirmation.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "ExfilSquad data-leak site (onion, torrent-distributed dumps)", "context": "Extortion-without-encryption group active since mid-2026", "seen": "AUG 11" },
+        { "type": "detection", "category": "host", "value": "Batch-compromise pattern: multiple unrelated victims sharing one ransom deadline", "context": "Indicates shared SaaS/CRM platform compromise, not individual intrusions", "seen": "AUG 11" }
+      ]
+    },
+    {
+      "id": "picmo-ransomware",
+      "severity": "med",
+      "wide": false,
+      "kind": "RANSOMWARE · WINDOWS",
+      "title": "PicMo Group ransomware — randomized extensions, shadow-copy wipe",
+      "summary": "A newly-discovered double-extortion Windows ransomware that encrypts files under randomized names and extensions, drops a \"How to Restore Your Files.txt\" note, and deletes Volume Shadow Copies via vssadmin.exe Delete Shadows /all /quiet and wmic shadowcopy delete /nointeractive before demanding cryptocurrency payment. CYFIRMA published a Sigma rule. <b>Durable catch: the shadow-copy-deletion command pair plus the distinctly-named ransom note — the encrypted-file extension itself varies per run, so don't rely on it.</b>",
+      "reported": "2026-08-14",
+      "first_seen": "2026-08",
+      "facts": ["RANDOMIZED EXT PER RUN", "SIGMA: \"Potential PicMo Activity\""],
+      "attack": ["T1486", "T1490", "T1489", "T1543.003"],
+      "sources": [
+        { "label": "CYFIRMA weekly report (14 Aug)", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-14-aug-2026/" }
+      ],
+      "action": "Deploy CYFIRMA's \"Potential PicMo Activity\" Sigma rule; alert on vssadmin/wmic shadow-copy deletion commands regardless of the calling process; alert on creation of \"How to Restore Your Files.txt\"; keep offline, immutable backups since shadow copies are a explicit target.",
+      "iocs": [
+        { "type": "filename", "category": "host", "value": "How to Restore Your Files.txt", "context": "Ransom note filename", "seen": "AUG 14" },
+        { "type": "detection", "category": "host", "value": "vssadmin.exe Delete Shadows /all /quiet ; wmic shadowcopy delete /nointeractive", "context": "Shadow-copy deletion prior to encryption", "seen": "AUG 14" },
+        { "type": "detection", "category": "host", "value": "Sigma rule \"Potential PicMo Activity\"", "context": "CYFIRMA-published detection", "seen": "AUG 14" }
+      ]
+    },
+    {
+      "id": "umbral-stealer",
+      "severity": "med",
+      "wide": false,
+      "kind": "INFOSTEALER · WINDOWS",
+      "title": "Umbral Stealer — .NET wallet/credential thief with Discord-webhook exfil",
+      "summary": "A .NET-based infostealer targeting Electrum, Exodus and Jaxx crypto wallets alongside browser credentials, with sandbox-evasion checks and a distinctive mutex. It exfiltrates over Discord webhooks and queries ip-api.com for host geolocation/fingerprinting before dropping its payload. CYFIRMA shipped a YARA rule. <b>Durable catch: the mutex wE5p43lYJeQTllHUajMk and outbound traffic to Discord webhook endpoints paired with an ip-api.com lookup in the same process.</b>",
+      "reported": "2026-08-14",
+      "first_seen": "2026-08",
+      "facts": ["TARGETS Electrum/Exodus/Jaxx", "C2: DISCORD WEBHOOKS + ip-api.com"],
+      "attack": ["T1552.001", "T1027", "T1497", "T1071.001", "T1082"],
+      "sources": [
+        { "label": "CYFIRMA weekly report (14 Aug)", "url": "https://www.cyfirma.com/news/weekly-intelligence-report-14-aug-2026/" }
+      ],
+      "action": "Deploy CYFIRMA's UmbralStealer_v1_3 YARA rule; alert on the mutex wE5p43lYJeQTllHUajMk; flag processes that call ip-api[.]com and then post to a Discord webhook in short succession; users of Electrum/Exodus/Jaxx should move funds to hardware wallets if a host shows this pattern.",
+      "iocs": [
+        { "type": "sha256", "category": "hash", "value": "90d78c79fed001f3568b4d4bc7618bd91258c0a8425c9d2d278f7ffa4c9a557a", "context": "Umbral Stealer .NET payload", "seen": "AUG 14" },
+        { "type": "detection", "category": "host", "value": "Mutex wE5p43lYJeQTllHUajMk", "context": "Umbral Stealer process mutex", "seen": "AUG 14" },
+        { "type": "detection", "category": "net", "value": "Discord webhook exfil preceded by ip-api[.]com geolocation query", "context": "C2/exfil pattern", "seen": "AUG 14" },
+        { "type": "tool", "category": "host", "value": "YARA rule UmbralStealer_v1_3", "context": "CYFIRMA-published detection", "seen": "AUG 14" }
+      ]
+    }
+  ]
+}
