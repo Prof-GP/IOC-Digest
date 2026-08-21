@@ -155,6 +155,70 @@
         { "type": "tool", "category": "host", "value": "PwnForums listing by actor \"Satanic\"", "context": "Cybercrime forum post distributing the leaked Stripe merchant dataset", "seen": "AUG 18" },
         { "type": "detection", "category": "host", "value": "1,033 live Stripe API keys across 669 merchant account folders (~35GB)", "context": "Scope of the initial public release", "seen": "AUG 18" }
       ]
+    },
+    {
+      "id": "elementor-fileupload",
+      "severity": "high",
+      "wide": false,
+      "kind": "CVE · WORDPRESS · UNAUTH RCE",
+      "title": "CVE-2026-32475 — Elementor Pro File Upload flaw lets unauthenticated attackers plant PHP web shells",
+      "summary": "Elementor Pro's Forms module validates a file's extension and moves it to disk in two separate loops that handle empty file entries differently — submitting two file parts for the same upload field lets an unauthenticated attacker slip past the extension blocklist entirely and write a live PHP file straight into the public uploads directory. Any site with a published page containing a Form widget with a File Upload field is exposed, which Patchstack calls \"an extremely common, everyday configuration.\" Elementor shipped 4.2.2 on Aug 19, one day before Wordfence/Patchstack detail went public. <b>Durable catch: any .php file appearing under wp-content/uploads/elementor/forms/ — that path should never contain executable code.</b>",
+      "reported": "2026-08-20",
+      "first_seen": "2026-08-19",
+      "facts": ["CVSS 9.0 · UNAUTH WEB SHELL UPLOAD", "REQUIRES ONLY: A PUBLISHED FORM WIDGET WITH FILE UPLOAD"],
+      "attack": ["T1190", "T1505.003"],
+      "sources": [
+        { "label": "The Hacker News (Aug 20)", "url": "https://thehackernews.com/2026/08/elementor-pro-flaw-could-let.html" }
+      ],
+      "action": "Update Elementor Pro to 4.2.2 or later immediately on every site running a Form widget with File Upload enabled; scan wp-content/uploads/elementor/forms/ for any .php (or double-extension) files and remove them; review server access logs for POST requests with duplicate file-part uploads to the same field.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-32475", "context": "Elementor Pro Forms File Upload extension-check bypass — unauth PHP write", "seen": "AUG 20" },
+        { "type": "patch", "category": "host", "value": "Elementor Pro 4.2.2 (released Aug 19 2026)", "context": "Fixed release for all versions through 4.2.1", "seen": "AUG 20" },
+        { "type": "filename", "category": "host", "value": "wp-content/uploads/elementor/forms/<uniqid>.php", "context": "Web shell drop path from successful exploitation", "seen": "AUG 20" }
+      ]
+    },
+    {
+      "id": "evooo1bot",
+      "severity": "high",
+      "wide": false,
+      "kind": "BOTNET · IOT · LINUX",
+      "title": "Evooo1Bot — Mirai-derived botnet with encrypted C2 and SOCKS5 proxy relay hits routers and IoT devices",
+      "summary": "A previously undocumented Linux botnet built on Mirai's DDoS engine, active since July 2026 and disclosed by FortiGuard Labs Aug 18. It chains 18 known CVEs across Alcatel OmniPCX, NETGEAR, D-Link, and Tenda devices for initial access, brute-forces SSH, intercepts HTTP Basic Auth credentials and cookies, and offers operators a SOCKS5 proxy relay on port 1080 alongside DNS/TCP/UDP DDoS capability — all coordinated over encrypted C2 on port 443 to blend with normal HTTPS traffic. <b>Durable catch: unexpected SOCKS5 relay traffic on port 1080 from an IoT/router device, or that device making outbound port-443 connections it has no legitimate reason to make.</b>",
+      "reported": "2026-08-18",
+      "first_seen": "2026-07",
+      "facts": ["EXPLOITS 18 KNOWN CVEs (ALCATEL/NETGEAR/D-LINK/TENDA)", "SOCKS5 PROXY (PORT 1080) + ENCRYPTED C2 (PORT 443)"],
+      "attack": ["T1190", "T1499", "T1090.002", "T1557"],
+      "sources": [
+        { "label": "SecurityAffairs (Aug 18)", "url": "https://securityaffairs.com/197434/malware/new-mirai-based-evooo1bot-botnet-targets-linux-devices.html" }
+      ],
+      "action": "Patch firmware on routers/IoT devices against the 18 targeted CVEs (including CVE-2016-6277, CVE-2020-10987, CVE-2022-37055); replace default SSH credentials fleet-wide; monitor port 1080 for unexpected SOCKS5 activity and block unauthorized port-443 C2 traffic from IoT segments; inspect HTTP traffic for signs of Basic Auth/cookie interception.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "Evooo1Bot (Mirai-derived Linux botnet)", "context": "Hardcoded string \"evooo1\"; combines DDoS, SSH brute-force, SOCKS5 relay, HTTP credential theft", "seen": "AUG 18" },
+        { "type": "detection", "category": "net", "value": "SOCKS5 proxy relay traffic on port 1080 from IoT/router devices", "context": "Evooo1Bot relay-mode indicator", "seen": "AUG 18" },
+        { "type": "detection", "category": "net", "value": "Encrypted C2 beaconing over port 443 blending with legitimate HTTPS", "context": "Evooo1Bot command channel", "seen": "AUG 18" },
+        { "type": "cve", "category": "host", "value": "CVE-2016-6277 / CVE-2020-10987 / CVE-2022-37055 (of 18 total exploited)", "context": "Representative router/IoT CVEs used for initial access", "seen": "AUG 18" }
+      ]
+    },
+    {
+      "id": "interlock-seoku",
+      "severity": "med",
+      "wide": false,
+      "kind": "RANSOMWARE · DATA EXTORTION · EDUCATION",
+      "title": "InterLock ransomware publishes 710GB from Southeastern Oklahoma State University, 90,000+ students affected",
+      "summary": "InterLock published its claimed haul from the July 31 attack on Southeastern Oklahoma State University on Aug 19 — 710GB covering more than 90,000 students' records (SSNs, grades, financial aid, disciplinary and medical information under FERPA/HIPAA protection) plus employee personal and injury data. The university's Durant campus closed for three days during initial containment; normal operations had resumed by Aug 18, one day before the leak-site publication. <b>Durable catch: a ransomware group's leak-site publication date is a distinct, actionable event from the intrusion date — breach-notification and regulatory clocks (FERPA/HIPAA) often start running from disclosure, not from initial compromise.</b>",
+      "reported": "2026-08-19",
+      "first_seen": "2026-07-31",
+      "facts": ["710GB PUBLISHED · 90,000+ STUDENT RECORDS", "FERPA + HIPAA-PROTECTED DATA INCLUDED"],
+      "attack": ["T1486", "T1567.002", "T1078"],
+      "sources": [
+        { "label": "GalaxyWarden breach tracker", "url": "https://www.galaxywarden.com/blog/breach/southeastern-oklahoma-state-university-interlock-2026-07" },
+        { "label": "ransomware.live victim record", "url": "https://www.ransomware.live/id/U291dGhlYXN0ZXJuIE9rbGFob21hIFN0YXRlIFVuaXZlcnNpdHlAaW50ZXJsb2Nr" }
+      ],
+      "action": "Educational and healthcare-adjacent institutions should treat InterLock as an active threat to FERPA/HIPAA-covered data; verify backup integrity and segmentation between student-records systems and general campus IT; if you were a Southeastern Oklahoma State student or employee, monitor for identity-theft attempts given the SSN/medical data exposure.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "InterLock ransomware leak-site listing", "context": "Group's data-leak site publication of the stolen dataset", "seen": "AUG 19" },
+        { "type": "detection", "category": "host", "value": "710GB dataset spanning student and employee records (SSN, medical, financial aid)", "context": "Scope of published data per InterLock's claim", "seen": "AUG 19" }
+      ]
     }
   ]
 }

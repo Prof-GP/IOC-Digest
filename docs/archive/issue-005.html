@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 005 · WK 2026-08-21 · 7 INCIDENTS · 24 IOCs</span>
+  <span class="issue-meta">ISSUE 005 · WK 2026-08-21 · 10 INCIDENTS · 33 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>24</b></button>
+  <button class="fchip on" data-type="all">ALL<b>33</b></button>
   <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>5</b></button>
-  <button class="fchip" data-type="host">HOST<b>19</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>7</b></button>
+  <button class="fchip" data-type="host">HOST<b>26</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -603,6 +603,57 @@
       </table>
     </div>
   </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-32475 — Elementor Pro File Upload flaw lets unauthenticated attackers plant PHP web shells</h2>
+        </div>
+        <p class="inc-sum">Elementor Pro's Forms module validates a file's extension and moves it to disk in two separate loops that handle empty file entries differently — submitting two file parts for the same upload field lets an unauthenticated attacker slip past the extension blocklist entirely and write a live PHP file straight into the public uploads directory. Any site with a published page containing a Form widget with a File Upload field is exposed, which Patchstack calls "an extremely common, everyday configuration." Elementor shipped 4.2.2 on Aug 19, one day before Wordfence/Patchstack detail went public. <b>Durable catch: any .php file appearing under wp-content/uploads/elementor/forms/ — that path should never contain executable code.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-08-20</span><span>ACTIVE SINCE 2026-08-19</span>
+        <span>CVSS 9.0 · UNAUTH WEB SHELL UPLOAD</span>
+        <span>REQUIRES ONLY: A PUBLISHED FORM WIDGET WITH FILE UPLOAD</span>
+          <span class="attck">T1190 · T1505.003</span>
+          <span><a href="https://thehackernews.com/2026/08/elementor-pro-flaw-could-let.html" rel="noopener">The Hacker News (Aug 20)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · WORDPRESS · UNAUTH RCE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Update Elementor Pro to 4.2.2 or later immediately on every site running a Form widget with File Upload enabled; scan wp-content/uploads/elementor/forms/ for any .php (or double-extension) files and remove them; review server access logs for POST requests with duplicate file-part uploads to the same field.</span>
+      <button class="tbtn copy-inc" data-inc="elementor-fileupload">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="elementor-fileupload">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-32475">CVE-2026-32475</button></td>
+            <td class="ctx">Elementor Pro Forms File Upload extension-check bypass — unauth PHP write</td>
+            <td class="seen">AUG 20</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="Elementor Pro 4.2.2 (released Aug 19 2026)">Elementor Pro 4.2.2 (released Aug 19 2026)</button></td>
+            <td class="ctx">Fixed release for all versions through 4.2.1</td>
+            <td class="seen">AUG 20</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="wp-content/uploads/elementor/forms/&lt;uniqid&gt;.php">wp-content/uploads/elementor/forms/&lt;uniqid&gt;.php</button></td>
+            <td class="ctx">Web shell drop path from successful exploitation</td>
+            <td class="seen">AUG 20</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
   <section class="incident high wide">
     <div class="inc-head">
       <div class="inc-lead">
@@ -716,6 +767,63 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev high">HIGH</span>
+          <h2>Evooo1Bot — Mirai-derived botnet with encrypted C2 and SOCKS5 proxy relay hits routers and IoT devices</h2>
+        </div>
+        <p class="inc-sum">A previously undocumented Linux botnet built on Mirai's DDoS engine, active since July 2026 and disclosed by FortiGuard Labs Aug 18. It chains 18 known CVEs across Alcatel OmniPCX, NETGEAR, D-Link, and Tenda devices for initial access, brute-forces SSH, intercepts HTTP Basic Auth credentials and cookies, and offers operators a SOCKS5 proxy relay on port 1080 alongside DNS/TCP/UDP DDoS capability — all coordinated over encrypted C2 on port 443 to blend with normal HTTPS traffic. <b>Durable catch: unexpected SOCKS5 relay traffic on port 1080 from an IoT/router device, or that device making outbound port-443 connections it has no legitimate reason to make.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-08-18</span><span>ACTIVE SINCE 2026-07</span>
+        <span>EXPLOITS 18 KNOWN CVEs (ALCATEL/NETGEAR/D-LINK/TENDA)</span>
+        <span>SOCKS5 PROXY (PORT 1080) + ENCRYPTED C2 (PORT 443)</span>
+          <span class="attck">T1190 · T1499 · T1090.002 · T1557</span>
+          <span><a href="https://securityaffairs.com/197434/malware/new-mirai-based-evooo1bot-botnet-targets-linux-devices.html" rel="noopener">SecurityAffairs (Aug 18)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">BOTNET · IOT · LINUX</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch firmware on routers/IoT devices against the 18 targeted CVEs (including CVE-2016-6277, CVE-2020-10987, CVE-2022-37055); replace default SSH credentials fleet-wide; monitor port 1080 for unexpected SOCKS5 activity and block unauthorized port-443 C2 traffic from IoT segments; inspect HTTP traffic for signs of Basic Auth/cookie interception.</span>
+      <button class="tbtn copy-inc" data-inc="evooo1bot">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="evooo1bot">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Evooo1Bot (Mirai-derived Linux botnet)">Evooo1Bot (Mirai-derived Linux botnet)</button></td>
+            <td class="ctx">Hardcoded string &quot;evooo1&quot;; combines DDoS, SSH brute-force, SOCKS5 relay, HTTP credential theft</td>
+            <td class="seen">AUG 18</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="SOCKS5 proxy relay traffic on port 1080 from IoT/router devices">SOCKS5 proxy relay traffic on port 1080 from IoT/router devices</button></td>
+            <td class="ctx">Evooo1Bot relay-mode indicator</td>
+            <td class="seen">AUG 18</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Encrypted C2 beaconing over port 443 blending with legitimate HTTPS">Encrypted C2 beaconing over port 443 blending with legitimate HTTPS</button></td>
+            <td class="ctx">Evooo1Bot command channel</td>
+            <td class="seen">AUG 18</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2016-6277 / CVE-2020-10987 / CVE-2022-37055 (of 18 total exploited)">CVE-2016-6277 / CVE-2020-10987 / CVE-2022-37055 (of 18 total exploited)</button></td>
+            <td class="ctx">Representative router/IoT CVEs used for initial access</td>
+            <td class="seen">AUG 18</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
           <h2>CVE-2026-73570 — Zimbra Collaboration SNMP command injection, actively exploited</h2>
         </div>
         <p class="inc-sum">An OS command-injection flaw in Zimbra's SNMP monitoring path lets an unauthenticated remote attacker run arbitrary commands as the zimbra user, on any deployment with SNMP trap notifications (snmp_notify) and the swatchdog watchdog service enabled — swatchdog runs by default wherever zimbra-snmp is installed. Zimbra fixed it in 10.1.20 on Jul 20; CERT Polska's Alert 145/2026 (Aug 17) confirmed active in-the-wild exploitation against unpatched instances. <b>Durable catch: the Zimbra service restarting without an admin-initiated cause, paired with new files under /opt/zimbra/jetty/webapps/, /opt/zimbra/jetty_base/webapps/, or /tmp/ owned by the zimbra user.</b></p>
@@ -757,6 +865,51 @@
             <td><button class="val" data-defanged="Unexplained Zimbra service restart; new files under /opt/zimbra/jetty/webapps/, /opt/zimbra/jetty_base/webapps/, or /tmp/ owned by zimbra">Unexplained Zimbra service restart; new files under /opt/zimbra/jetty/webapps/, /opt/zimbra/jetty_base/webapps/, or /tmp/ owned by zimbra</button></td>
             <td class="ctx">Exploitation and post-compromise signature per CERT Polska</td>
             <td class="seen">AUG 17</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>InterLock ransomware publishes 710GB from Southeastern Oklahoma State University, 90,000+ students affected</h2>
+        </div>
+        <p class="inc-sum">InterLock published its claimed haul from the July 31 attack on Southeastern Oklahoma State University on Aug 19 — 710GB covering more than 90,000 students' records (SSNs, grades, financial aid, disciplinary and medical information under FERPA/HIPAA protection) plus employee personal and injury data. The university's Durant campus closed for three days during initial containment; normal operations had resumed by Aug 18, one day before the leak-site publication. <b>Durable catch: a ransomware group's leak-site publication date is a distinct, actionable event from the intrusion date — breach-notification and regulatory clocks (FERPA/HIPAA) often start running from disclosure, not from initial compromise.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-08-19</span><span>ACTIVE SINCE 2026-07-31</span>
+        <span>710GB PUBLISHED · 90,000+ STUDENT RECORDS</span>
+        <span>FERPA + HIPAA-PROTECTED DATA INCLUDED</span>
+          <span class="attck">T1486 · T1567.002 · T1078</span>
+          <span><a href="https://www.galaxywarden.com/blog/breach/southeastern-oklahoma-state-university-interlock-2026-07" rel="noopener">GalaxyWarden breach tracker</a> · <a href="https://www.ransomware.live/id/U291dGhlYXN0ZXJuIE9rbGFob21hIFN0YXRlIFVuaXZlcnNpdHlAaW50ZXJsb2Nr" rel="noopener">ransomware.live victim record</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · DATA EXTORTION · EDUCATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Educational and healthcare-adjacent institutions should treat InterLock as an active threat to FERPA/HIPAA-covered data; verify backup integrity and segmentation between student-records systems and general campus IT; if you were a Southeastern Oklahoma State student or employee, monitor for identity-theft attempts given the SSN/medical data exposure.</span>
+      <button class="tbtn copy-inc" data-inc="interlock-seoku">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="interlock-seoku">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="InterLock ransomware leak-site listing">InterLock ransomware leak-site listing</button></td>
+            <td class="ctx">Group&#x27;s data-leak site publication of the stolen dataset</td>
+            <td class="seen">AUG 19</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="710GB dataset spanning student and employee records (SSN, medical, financial aid)">710GB dataset spanning student and employee records (SSN, medical, financial aid)</button></td>
+            <td class="ctx">Scope of published data per InterLock&#x27;s claim</td>
+            <td class="seen">AUG 19</td>
           </tr>
         </tbody>
       </table>
