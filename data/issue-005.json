@@ -1,0 +1,160 @@
+{
+  "issue": 5,
+  "week": "2026-08-21",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "rust-supply-chain",
+      "severity": "crit",
+      "wide": true,
+      "kind": "SUPPLY CHAIN · CREDENTIAL THEFT",
+      "title": "Rust crates arrayref, internment, append-only-vec compromised with build-time credential stealer",
+      "summary": "A compromised maintainer account pushed malicious releases of three widely-used Rust crates — arrayref (245M+ total downloads, 403 dependents), internment, and append-only-vec — alongside a typosquat of proc-macro2. The build script downloads and runs a remote payload during compilation with no function call required, disables TLS validation, steals Chrome/Brave/Edge browser credentials, and installs OS-appropriate persistence (Registry, LaunchAgent, systemd). Nextron Systems caught it 07:15 UTC Aug 20; all three crates were pulled within 86-107 minutes, and researchers noted infrastructure overlap with prior North Korea-linked npm supply-chain operations. <b>Durable catch: HTTPS POST beacons to /49890878 or any host resolving hwsrv-798836[.]hostwindsdns[.]com — that traffic means the build-time implant ran, regardless of which crate pulled it in.</b>",
+      "reported": "2026-08-20",
+      "first_seen": "2026-08-20",
+      "facts": ["245M+ DOWNLOADS (arrayref) · 403 DEPENDENT CRATES", "PULLED WITHIN 86-107 MIN OF PUBLICATION"],
+      "attack": ["T1195.002", "T1555.003", "T1071.001", "T1543.003"],
+      "sources": [
+        { "label": "The Hacker News (Aug 20)", "url": "https://thehackernews.com/2026/08/rust-supply-chain-attack-puts-build.html" }
+      ],
+      "action": "Search ~/.cargo/registry/cache for deleted crate files matching arrayref 0.3.10, internment 0.8.7, or append-only-vec 0.1.9; pin arrayref to 0.3.9 or earlier (no patched version exists, no CVE assigned); rotate browser-stored credentials on any build host that compiled these crates between Aug 20 07:15-09:02 UTC; block hwsrv-798836[.]hostwindsdns[.]com and the payload/C2 IP.",
+      "iocs": [
+        { "type": "package", "category": "host", "value": "arrayref 0.3.10 / internment 0.8.7 / append-only-vec 0.1.9 (crates.io)", "context": "Compromised releases with build-time credential-stealing implant", "seen": "AUG 20" },
+        { "type": "package", "category": "host", "value": "proc-macro1 (typosquat of proc-macro2)", "context": "Additional malicious crate from the same campaign", "seen": "AUG 20" },
+        { "type": "ip", "category": "net", "value": "23[.]254[.]165[.]112", "context": "Payload host (port 9089) and C2 (port 443)", "seen": "AUG 20" },
+        { "type": "host-name", "category": "net", "value": "hwsrv-798836[.]hostwindsdns[.]com", "context": "C2 beacon domain, HTTPS POST to /49890878", "seen": "AUG 20" },
+        { "type": "filename", "category": "host", "value": "/tmp/rust-setup ; %TEMP%\\rust-setup.ps1 ; %TEMP%\\rust-setup-launch.vbs", "context": "Dropped implant/loader files by OS", "seen": "AUG 20" }
+      ]
+    },
+    {
+      "id": "ray-dns-rebinding",
+      "severity": "crit",
+      "wide": false,
+      "kind": "CVE · EXPLOITED · KEV",
+      "title": "CVE-2025-62593 — Ray framework DNS-rebinding RCE, now KEV-listed and tied to crypto-mining botnets",
+      "summary": "Ray's job-submission endpoints (/api/jobs, /api/job_agent/jobs/) ship with no authentication by default. Attackers use DNS rebinding — a crafted website or ad that rebinds a domain to a victim's local or network-adjacent IP after passing a same-origin check — to make a developer's own browser submit malicious jobs to any reachable Ray instance. CISA added it to KEV Aug 17; the RondoDox DDoS botnet had already incorporated it two days before public disclosure, and the ongoing ShadowRay 2.0 campaign uses it to plant crypto-mining botnets on GPU clusters. <b>Durable catch: any unauthenticated POST to a Ray cluster's /api/jobs or /api/job_agent/jobs/ endpoint from an unexpected origin — Ray was never meant to be reachable without a job submission client.</b>",
+      "reported": "2026-08-18",
+      "first_seen": "2026-08-17",
+      "facts": ["CVSS 9.4 · KEV ADDED AUG 17", "SHADOWRAY 2.0 -> GPU CRYPTO-MINING BOTNETS"],
+      "attack": ["T1190", "T1496"],
+      "sources": [
+        { "label": "The Hacker News (Aug 18)", "url": "https://thehackernews.com/2026/08/cisa-flags-actively-exploited-ray-flaw.html" }
+      ],
+      "action": "Upgrade Ray to 2.52.0 or later; never expose Ray dashboard/job endpoints directly to developer workstations or the internet — bind to localhost or place behind an authenticated proxy; audit GPU clusters for unexpected mining processes as a compromise indicator even after patching.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2025-62593", "context": "Ray framework unauthenticated job-endpoint RCE via DNS rebinding", "seen": "AUG 18" },
+        { "type": "patch", "category": "host", "value": "Ray 2.52.0", "context": "Fixed version; FCEB deadline Aug 20", "seen": "AUG 18" },
+        { "type": "detection", "category": "net", "value": "Unauthenticated request to /api/jobs or /api/job_agent/jobs/ from an unexpected browser origin", "context": "Core DNS-rebinding exploitation signature", "seen": "AUG 18" },
+        { "type": "tool", "category": "host", "value": "RondoDox DDoS botnet / ShadowRay 2.0 crypto-mining campaign", "context": "Threat activity actively weaponizing this flaw", "seen": "AUG 18" }
+      ]
+    },
+    {
+      "id": "windows-ike",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · WORMABLE",
+      "title": "CVE-2026-33824 — Windows IKE Extension double-free RCE, actively exploited",
+      "summary": "A double-free (CWE-415) in the Windows IKE and AuthIP Keying Modules service lets an unauthenticated remote attacker achieve code execution by sending malformed IKEv2 fragments to UDP port 500 or 4500 on any Windows 10, Windows 11, or Windows Server host with IKE enabled — no user interaction required. Microsoft shipped the fix in April 2026; CISA confirmed active exploitation and added it to KEV Aug 18 with a 3-day federal remediation deadline. <b>Durable catch: inbound UDP/500 or UDP/4500 traffic from outside your expected IPsec peer set — Ray-style scanning of these ports for unpatched IKE Extension hosts is the precursor to exploitation.</b>",
+      "reported": "2026-08-19",
+      "first_seen": "2026-08-18",
+      "facts": ["CWE-415 DOUBLE-FREE · UNAUTH RCE", "UDP 500/4500 · WORMABLE ACROSS ALL SUPPORTED WINDOWS"],
+      "attack": ["T1210", "T1190"],
+      "sources": [
+        { "label": "BleepingComputer (Aug 19)", "url": "https://www.bleepingcomputer.com/news/security/cisa-critical-windows-ike-extension-flaw-now-exploited-in-attacks/" }
+      ],
+      "action": "Apply Microsoft's April 2026 security update immediately if not already deployed; block inbound UDP/500 and UDP/4500 at the perimeter for hosts that don't use IKE; restrict remaining IKE traffic to known peer IP addresses via firewall rule.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-33824", "context": "Windows IKE/AuthIP double-free — unauth RCE via crafted IKEv2 fragments", "seen": "AUG 18" },
+        { "type": "detection", "category": "net", "value": "Unexpected inbound UDP/500 or UDP/4500 traffic outside known IPsec peers", "context": "Precursor/exploitation traffic pattern", "seen": "AUG 19" },
+        { "type": "patch", "category": "host", "value": "Microsoft April 2026 security update (KEV due date Aug 21)", "context": "Fix for CVE-2026-33824", "seen": "AUG 19" }
+      ]
+    },
+    {
+      "id": "gitlab-graphql",
+      "severity": "high",
+      "wide": false,
+      "kind": "CVE · EXPLOITED · UNAUTH",
+      "title": "CVE-2026-19478 — Critical GitLab GraphQL flaw lets unauthenticated attackers delete projects, exploited within minutes",
+      "summary": "A code-injection flaw in a GitLab GraphQL directive lets an unauthenticated remote attacker modify or delete public projects and user data with no victim interaction — the third major GraphQL-layer vulnerability GitLab has patched in 2026. GitLab shipped an out-of-cycle emergency patch Aug 17; WatchTowr reproduced the exploit within minutes of disclosure, and its honeypot network caught the first in-the-wild attempts shortly after. Only self-managed instances are exposed — GitLab.com and GitLab Dedicated were already patched. <b>Durable catch: GraphQL mutation calls against public project/user endpoints from unauthenticated sessions — GitLab's normal API access pattern never looks like this.</b>",
+      "reported": "2026-08-18",
+      "first_seen": "2026-08-17",
+      "facts": ["CVSS 9.4 · UNAUTH PROJECT DELETE/MODIFY", "3RD GRAPHQL-LAYER CVE IN GITLAB THIS YEAR"],
+      "attack": ["T1190", "T1485"],
+      "sources": [
+        { "label": "SecurityWeek (Aug 18)", "url": "https://www.securityweek.com/critical-gitlab-flaw-exploited-shortly-after-disclosure/" },
+        { "label": "The Hacker News", "url": "https://thehackernews.com/2026/08/critical-gitlab-graphql-flaw-could-let.html" }
+      ],
+      "action": "Patch self-managed GitLab to 19.2.4 / 19.1.6 / 19.0.8 / 18.11.11 immediately (GitLab.com/Dedicated already fixed); review GraphQL access logs for unauthenticated mutation calls against project-delete or user-data paths since Aug 17; restore any unexpectedly-deleted public project from backup.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-19478", "context": "GitLab GraphQL directive code injection — unauth project delete/modify", "seen": "AUG 18" },
+        { "type": "patch", "category": "host", "value": "GitLab 19.2.4 / 19.1.6 / 19.0.8 / 18.11.11", "context": "Out-of-cycle emergency patch, Aug 17", "seen": "AUG 18" },
+        { "type": "detection", "category": "net", "value": "Unauthenticated GraphQL mutation requests against public project or user-data endpoints", "context": "In-the-wild exploitation pattern caught by WatchTowr honeypots", "seen": "AUG 18" }
+      ]
+    },
+    {
+      "id": "zimbra-snmp",
+      "severity": "high",
+      "wide": false,
+      "kind": "CVE · EXPLOITED · RCE",
+      "title": "CVE-2026-73570 — Zimbra Collaboration SNMP command injection, actively exploited",
+      "summary": "An OS command-injection flaw in Zimbra's SNMP monitoring path lets an unauthenticated remote attacker run arbitrary commands as the zimbra user, on any deployment with SNMP trap notifications (snmp_notify) and the swatchdog watchdog service enabled — swatchdog runs by default wherever zimbra-snmp is installed. Zimbra fixed it in 10.1.20 on Jul 20; CERT Polska's Alert 145/2026 (Aug 17) confirmed active in-the-wild exploitation against unpatched instances. <b>Durable catch: the Zimbra service restarting without an admin-initiated cause, paired with new files under /opt/zimbra/jetty/webapps/, /opt/zimbra/jetty_base/webapps/, or /tmp/ owned by the zimbra user.</b>",
+      "reported": "2026-08-17",
+      "first_seen": "2026-08-17",
+      "facts": ["UNAUTH OS COMMAND INJECTION", "FIXED JUL 20 · EXPLOITED IN WILD BY AUG 17"],
+      "attack": ["T1190", "T1059"],
+      "sources": [
+        { "label": "The Hacker News (Aug 20)", "url": "https://thehackernews.com/2026/08/attackers-exploit-zimbra-snmp-flaw-for.html" },
+        { "label": "BleepingComputer", "url": "https://www.bleepingcomputer.com/news/security/critical-zimbra-rce-flaw-now-actively-exploited-in-attacks/" }
+      ],
+      "action": "Patch Zimbra Collaboration Suite to 10.1.20 or later immediately; if you cannot patch, disable snmp_notify and stop the swatchdog service; review logs for unexplained Zimbra service restarts and new files under the jetty webapps/ or /tmp/ paths created by the zimbra user over the last 30 days.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-73570", "context": "Zimbra SNMP OS command injection — unauth RCE as zimbra user", "seen": "AUG 17" },
+        { "type": "patch", "category": "host", "value": "Zimbra Collaboration Suite 10.1.20", "context": "Fixed release, Jul 20 2026", "seen": "AUG 17" },
+        { "type": "detection", "category": "host", "value": "Unexplained Zimbra service restart; new files under /opt/zimbra/jetty/webapps/, /opt/zimbra/jetty_base/webapps/, or /tmp/ owned by zimbra", "context": "Exploitation and post-compromise signature per CERT Polska", "seen": "AUG 17" }
+      ]
+    },
+    {
+      "id": "dahua-cameraswarm",
+      "severity": "high",
+      "wide": true,
+      "kind": "IOT · CREDENTIAL + AUTH BYPASS",
+      "title": "Operation CameraSwarm — 14,500+ Dahua IP cameras compromised via credential attacks and P2P relay abuse",
+      "summary": "A Russian-speaking, unattributed operator compromised 14,530+ Dahua IP camera IPs between Jun 17-Jul 22 using three converging techniques: direct credential attacks against 12,324 IPs, two-year-old authentication-bypass flaws (CVE-2021-33044, CVE-2021-33045) to configure 1,923 cameras with persistent accounts, and abuse of Dahua's Easy4IP P2P relay infrastructure to reach 283 NAT-protected devices with no prior authentication at all. Both 2021 auth-bypass CVEs remain in CISA's KEV catalog. <b>Durable catch: any Dahua device account creation or config change coming through the Easy4IP P2P relay path rather than direct admin access — that channel bypasses authentication entirely.</b>",
+      "reported": "2026-08-19",
+      "first_seen": "2026-06-17",
+      "facts": ["14,530+ DEVICES · JUN 17-JUL 22 WINDOW", "1,923 PERSISTENT ACCOUNTS · 283 VIA P2P RELAY (NO AUTH)"],
+      "attack": ["T1110", "T1190", "T1136"],
+      "sources": [
+        { "label": "The Hacker News (Aug 19)", "url": "https://thehackernews.com/2026/08/hackers-compromised-14500-dahua-devices.html" }
+      ],
+      "action": "Install Dahua's repair software or the latest firmware from official channels; disable P2P/Easy4IP where not required; restrict remaining Easy4IP connectivity; replace default/weak credentials fleet-wide; segment surveillance networks from the rest of the environment.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2021-33044 / CVE-2021-33045", "context": "Dahua NetKeyboard and loopback-login authentication bypass, still KEV-listed", "seen": "AUG 19" },
+        { "type": "cve", "category": "host", "value": "CVE-2025-31702", "context": "Privilege escalation requiring existing credentials, used post-compromise", "seen": "AUG 19" },
+        { "type": "tool", "category": "host", "value": "p2pwn (public repo, accepts Dahua serials) / dh-p2p PoC", "context": "Public tooling demonstrating the Easy4IPCloud P2P relay abuse path", "seen": "AUG 19" },
+        { "type": "detection", "category": "host", "value": "Camera account creation or config change via Easy4IP P2P relay rather than direct admin session", "context": "Authentication-bypass exploitation signature", "seen": "AUG 19" }
+      ]
+    },
+    {
+      "id": "stripe-satanic",
+      "severity": "med",
+      "wide": false,
+      "kind": "CREDENTIAL LEAK · MERCHANT API KEYS",
+      "title": "Threat actor \"Satanic\" leaks live Stripe merchant API keys and customer data for hundreds of accounts",
+      "summary": "A threat actor using the handle \"Satanic\" uploaded roughly 35GB of Stripe merchant data to the cybercrime forum PwnForums on Aug 18 — 1,033 live API keys across 669 merchant account folders, exposing 1,350,336 unique customer emails and 688,000 customer records with names, phone numbers, and IP addresses. Stripe's own platform was not breached; the keys belong to individual merchants, likely harvested from exposed code, misconfigured environments, or prior infostealer logs. Satanic told Hudson Rock researchers this dump is a fraction of a claimed 20,000-key haul and threatened further releases. <b>Durable catch: any Stripe API key that appears in a public repo, CI log, or infostealer dump should be treated as burned the moment it's found — rotation, not monitoring, is the only real fix.</b>",
+      "reported": "2026-08-18",
+      "first_seen": "2026-08-18",
+      "facts": ["1,033 LIVE KEYS · 669 MERCHANT ACCOUNTS", "1.35M EMAILS / 688K CUSTOMER RECORDS EXPOSED"],
+      "attack": ["T1552.001", "T1078.004"],
+      "sources": [
+        { "label": "Hudson Rock (Aug 18)", "url": "https://www.hudsonrock.com/blog/analyzing-stripe-breach-confirmed-vendor-exposure-and-claims-of-20000-compromised-apis" },
+        { "label": "HackRead", "url": "https://hackread.com/hacker-leak-stripe-merchant-api-keys-customer-records/" }
+      ],
+      "action": "Audit your Stripe account for API keys ever committed to a public repo, logged in CI output, or present on a developer machine previously infected by an infostealer, and rotate them now regardless of whether you appear in this specific dump; enable Stripe's restricted-key scoping so a leaked key can't fully drain an account.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "PwnForums listing by actor \"Satanic\"", "context": "Cybercrime forum post distributing the leaked Stripe merchant dataset", "seen": "AUG 18" },
+        { "type": "detection", "category": "host", "value": "1,033 live Stripe API keys across 669 merchant account folders (~35GB)", "context": "Scope of the initial public release", "seen": "AUG 18" }
+      ]
+    }
+  ]
+}

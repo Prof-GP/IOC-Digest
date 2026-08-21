@@ -1,0 +1,21 @@
+{
+  "type": "bundle",
+  "id": "bundle--0d598195-bc77-5c1b-830f-85d7caf29650",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--05e9ebd7-7841-51e6-8ae6-de79ac46d1e8",
+      "created": "2026-08-21T00:00:00.000Z",
+      "modified": "2026-08-21T00:00:00.000Z",
+      "name": "Rust crates arrayref, internment, append-only-vec compromised with build-time credential stealer: Payload host (port 9089) and C2 (port 443)",
+      "description": "Source: https://thehackernews.com/2026/08/rust-supply-chain-attack-puts-build.html",
+      "pattern": "[ipv4-addr:value = '23.254.165.112']",
+      "pattern_type": "stix",
+      "valid_from": "2026-08-21T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}
