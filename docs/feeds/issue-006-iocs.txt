@@ -18,6 +18,7 @@ x.php ; z.php
 # --- CVE-2026-21962 \u2014 Oracle HTTP Server/WebLogic Proxy flaw fuels 7-month China-linked campaign across 100+ countries  (https://www.securityweek.com/cisa-warns-of-exploited-oracle-weblogic-vulnerability/, https://thehackernews.com/2026/08/actively-exploited-oracle-weblogic-flaw.html)
 CVE-2026-21962
 Oracle January 2026 Critical Patch Update
+SNOWLIGHT downloader
 Unauthenticated HTTP requests to Oracle HTTP Server/WebLogic Proxy Plug-in endpoints from unexpected sources
 #
 # --- IRGC-linked CyberAv3ngers shut down a UK power plant for four days \u2014 first confirmed British power-generation standstill  (https://www.securityweek.com/iran-linked-hackers-shut-down-uk-power-plant-for-four-days/, https://www.cnbc.com/2026/08/23/small-uk-power-plant-shut-down-after-iran-linked-cyberattack-report.html)
@@ -52,10 +53,13 @@ api[.]keyval[.]org
 #
 # --- ReliaQuest employee tricked into approving spoofed MFA push; ShinyHunters claims deeper breach, ReliaQuest disputes it  (https://www.bleepingcomputer.com/news/security/reliaquest-confirms-failed-data-theft-attack-after-shinyhunters-breach/, https://www.helpnetsecurity.com/2026/08/25/reliaquest-breach-social-engineering/)
 ShinyHunters-linked leak-site listing
-Spoofed domain mimicking ReliaQuest infrastructure paired with an Okta login-page clone
+Lookalike domain fronted by a CDN, hosting a cloned Okta SSO page (domain not publicly named by ReliaQuest)
 #
 # --- AnonyMousKIT \u2014 AI voice-calling phishing-as-a-service bypasses Apple Activation Lock on stolen devices  (https://socradar.io/blog/anonymouskit-ai-phaas-supply-chain/, https://thehackernews.com/2026/08/fake-apple-support-ai-calls-target.html)
 AnonyMousKIT (AI voice-calling phishing-as-a-service)
+anomkit[.]shop ; apple-login-imaps[.]com ; apple-thailand[.]co ; findsupport[.]live ; irealm-server[.]com
+apple-unlock[.]com ; key-unlock[.]com ; icloud-findmy[.]app ; gon-unlocker[.]pro ; projectpartapple[.]com ; kit-pro-bot[.]click ; center-one[.]online ; uktservice[.]sa[.]com
+noreplyapple00000[at]gmail[.]com ; apple[.]nonreply[.]fmi[at]gmail[.]com ; applerecoverymanager[at]gmail[.]com
 Inbound call posing as Apple Support investigating a stolen/impounded device, requesting passcode or 2FA
 #
 # --- South Korean government startup platform exposes personal data after encryption key shipped inside its own API  (https://www.bleepingcomputer.com/news/security/south-korean-startup-platform-breach-exposes-key-management-failures/)

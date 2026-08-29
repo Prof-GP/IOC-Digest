@@ -12,17 +12,18 @@
       "summary": "A maximum-severity authentication bypass in the Oracle HTTP Server and WebLogic Server Proxy Plug-in lets an unauthenticated attacker with plain HTTP access compromise the instance and access or modify critical data. Oracle patched it in January 2026, but SOCRadar reported in July that a China-linked threat actor had been exploiting it since at least February against government and commercial networks in more than 100 countries — CISA added it to KEV Aug 24 with an Aug 27 federal deadline. <b>Durable catch: any unpatched Oracle HTTP Server/WebLogic Proxy Plug-in reachable over HTTP has likely already been probed — this campaign ran undetected for seven months before public confirmation.</b>",
       "reported": "2026-08-24",
       "first_seen": "2026-02",
-      "facts": ["CVSS 10.0 · UNAUTH ACCESS BYPASS", "EXPLOITED 7+ MONTHS ACROSS 100+ COUNTRIES"],
-      "attack": ["T1190", "T1078", "T1071.001"],
+      "facts": ["CVSS 10.0 · UNAUTH ACCESS BYPASS", "EXPLOITED 7+ MONTHS ACROSS 100+ COUNTRIES", "CLOUDSEK HONEYPOT: 140,000+ ATTEMPTS FROM 21 COUNTRIES IN 12 DAYS"],
+      "attack": ["T1190", "T1078", "T1071.001", "T1105"],
       "sources": [
         { "label": "SecurityWeek (Aug 25)", "url": "https://www.securityweek.com/cisa-warns-of-exploited-oracle-weblogic-vulnerability/" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/08/actively-exploited-oracle-weblogic-flaw.html" }
       ],
-      "action": "Patch Oracle HTTP Server and WebLogic Server Proxy Plug-in immediately if the January 2026 CPU has not been applied; assume compromise on any internet-facing instance that was unpatched between February and August 2026 and hunt for unauthorized data access or modification; restrict Proxy Plug-in endpoints from public HTTP access where patching is delayed.",
+      "action": "Patch Oracle HTTP Server and WebLogic Server Proxy Plug-in immediately if the January 2026 CPU has not been applied; assume compromise on any internet-facing instance that was unpatched between February and August 2026 and hunt for unauthorized data access or modification; restrict Proxy Plug-in endpoints from public HTTP access where patching is delayed; hunt for SNOWLIGHT downloader activity as the China-linked actor's follow-on payload.",
       "iocs": [
         { "type": "cve", "category": "host", "value": "CVE-2026-21962", "context": "Oracle HTTP Server/WebLogic Proxy Plug-in unauth access bypass, CVSS 10.0", "seen": "AUG 24" },
         { "type": "patch", "category": "host", "value": "Oracle January 2026 Critical Patch Update", "context": "Fix released 7 months before public confirmation of active exploitation", "seen": "AUG 24" },
-        { "type": "detection", "category": "net", "value": "Unauthenticated HTTP requests to Oracle HTTP Server/WebLogic Proxy Plug-in endpoints from unexpected sources", "context": "China-linked exploitation pattern per SOCRadar", "seen": "AUG 24" }
+        { "type": "tool", "category": "host", "value": "SNOWLIGHT downloader", "context": "Follow-on payload delivered by the China-linked actor exploiting CVE-2026-21962", "seen": "AUG 24" },
+        { "type": "detection", "category": "net", "value": "Unauthenticated HTTP requests to Oracle HTTP Server/WebLogic Proxy Plug-in endpoints from unexpected sources", "context": "China-linked exploitation pattern per SOCRadar; CloudSEK honeypot recorded 140,000+ attempts from 21 countries over 12 days", "seen": "AUG 24" }
       ]
     },
     {
@@ -31,10 +32,10 @@
       "wide": false,
       "kind": "ICS/OT · NATION-STATE · CRITICAL INFRASTRUCTURE",
       "title": "IRGC-linked CyberAv3ngers shut down a UK power plant for four days — first confirmed British power-generation standstill",
-      "summary": "CyberAv3ngers, a hacking group affiliated with Iran's Islamic Revolutionary Guard Corps that specializes in breaching internet-exposed industrial PLCs, brought a small UK power station to a complete standstill for four days in July 2026 — the first time a hostile state has succeeded in halting British power generation outright. The Telegraph broke the story Aug 22; officials kept it low-key since the facility was small enough that the outage caused no disruption to the wider national grid, but the UK's National Cyber Security Centre wrote directly to energy companies with new guidance afterward. <b>Durable catch: CyberAv3ngers' pattern is targeting small utilities and rural operators that expose PLCs directly to the public internet — that exposure, not the target's size, is what invites this actor.</b>",
+      "summary": "CyberAv3ngers, a hacking group affiliated with Iran's Islamic Revolutionary Guard Corps that specializes in breaching internet-exposed industrial PLCs, brought a small UK power station to a complete standstill for four days in July 2026 — the first time a hostile state has succeeded in halting British power generation outright. The Telegraph broke the story Aug 22; officials kept it low-key since the facility was small enough that the outage caused no disruption to the wider national grid, but the UK's National Cyber Security Centre wrote directly to energy companies with new guidance afterward. No PLC brand, malware family, or other technical indicator has been publicly disclosed for this specific intrusion — reporting rests on a single Telegraph source, and even SecurityWeek's coverage flags that gap directly. CyberAv3ngers' documented toolkit from prior campaigns (the IOCONTROL malware family, MQTT-over-TLS C2 on port 8883, targeting of Unitronics/Red Lion/Orpak equipment left on factory-default passwords) is background on how this actor typically operates, not a confirmed match to this incident. <b>Durable catch: CyberAv3ngers' pattern is targeting small utilities and rural operators that expose PLCs directly to the public internet — that exposure, not the target's size, is what invites this actor.</b>",
       "reported": "2026-08-22",
       "first_seen": "2026-07",
-      "facts": ["FIRST CONFIRMED UK POWER-PLANT STANDSTILL FROM CYBERATTACK", "4-DAY OUTAGE · NO WIDER GRID IMPACT"],
+      "facts": ["FIRST CONFIRMED UK POWER-PLANT STANDSTILL FROM CYBERATTACK", "4-DAY OUTAGE · NO WIDER GRID IMPACT", "NO TECHNICAL IOCs PUBLICLY DISCLOSED FOR THIS INTRUSION"],
       "attack": ["T1190", "T1489", "T1078"],
       "sources": [
         { "label": "SecurityWeek (Aug 23)", "url": "https://www.securityweek.com/iran-linked-hackers-shut-down-uk-power-plant-for-four-days/" },
@@ -55,7 +56,7 @@
       "summary": "A pre-authentication heap memory overflow in NetScaler ADC/Gateway's SAML SSO message parser lets an unauthenticated attacker achieve remote code execution on any appliance configured as an AAA virtual server or a Gateway running SSL VPN, ICA Proxy, CVPN, or RDP Proxy. Citrix patched it the same day it was disclosed, Jun 30, but WatchTowr reproduced pre-auth RCE and released working PoC Aug 14; Previdian then observed live exploitation dropping web shells and running discovery commands. CISA added it to KEV Aug 26 with an Aug 29 federal deadline. <b>Durable catch: web shells named x.php or z.php in a NetScaler-reachable path — even on an already-patched appliance, since exploitation predates some organizations' patch timelines.</b>",
       "reported": "2026-08-26",
       "first_seen": "2026-08-14",
-      "facts": ["CVSS 8.8 · PRE-AUTH RCE VIA SAML PARSER OVERFLOW", "WEB SHELLS x.php / z.php OBSERVED IN THE WILD"],
+      "facts": ["CVSS 8.8 · PRE-AUTH RCE VIA SAML PARSER OVERFLOW", "WEB SHELLS x.php / z.php OBSERVED IN THE WILD", "PREVIDIAN: 36 EXPLOIT ATTEMPTS FROM 12 UNIQUE IPs OVER 12 DAYS (IPs NOT PUBLICLY NAMED)"],
       "attack": ["T1190", "T1505.003", "T1082"],
       "sources": [
         { "label": "Help Net Security (Aug 27)", "url": "https://www.helpnetsecurity.com/2026/08/27/netscaler-adc-gateway-cve-2026-8452/" },
@@ -136,7 +137,7 @@
       "wide": true,
       "kind": "DATA BREACH · EXTORTION · AVIATION",
       "title": "Manchester Airports Group breach exposes 8.7 million customers, hackers demand ransom, MAG refuses",
-      "summary": "Manchester Airports Group disclosed that attackers accessed customer data tied to car park, lounge, and Fast Track bookings plus airport Wi-Fi registrations across Manchester, London Stansted, and East Midlands airports — email addresses, phone numbers, postcodes, and vehicle registrations for roughly 8.7 million customers. Payment data was not compromised and flight operations/aviation security were unaffected. Per the BBC, the attackers demanded a ransom, which MAG refused to pay; the company says initial access likely predated discovery by a few days. <b>Durable catch: the exposed data (email + phone + postcode + vehicle plate) is a purpose-built phishing/impersonation kit even without payment data — affected customers should expect targeted follow-on social engineering, not just spam.</b>",
+      "summary": "Manchester Airports Group disclosed that attackers accessed customer data tied to car park, lounge, and Fast Track bookings plus airport Wi-Fi registrations across Manchester, London Stansted, and East Midlands airports — email addresses, phone numbers, postcodes, and vehicle registrations for roughly 8.7 million customers. Payment data was not compromised and flight operations/aviation security were unaffected. Per the BBC, the attackers demanded a ransom, which MAG refused to pay; the company says initial access likely predated discovery by a few days. MAG has told authorities it knows the identity of the group responsible but has not named it publicly, and no extortion group has claimed the attack on a leak site as of this writing. <b>Durable catch: the exposed data (email + phone + postcode + vehicle plate) is a purpose-built phishing/impersonation kit even without payment data — affected customers should expect targeted follow-on social engineering, not just spam.</b>",
       "reported": "2026-08-28",
       "first_seen": "2026-08-28",
       "facts": ["8.7M CUSTOMERS AFFECTED · 3 UK AIRPORTS", "RANSOM DEMANDED AND REFUSED · PAYMENT DATA NOT TOUCHED"],
@@ -156,10 +157,10 @@
       "wide": false,
       "kind": "RANSOMWARE · GOVERNMENT · MAJOR INCIDENT",
       "title": "Qilin ransomware claims ATF hack; DOJ designates it a 'major incident'",
-      "summary": "The Bureau of Alcohol, Tobacco, Firearms and Explosives confirmed a cyberattack Aug 26 after the Qilin ransomware gang publicly claimed responsibility. The affected system operated standalone from ATF's main network but held information tied to active investigations; ATF cut access immediately and began forensic response. Senior DOJ officials designated the event a 'major incident' under federal guidelines, escalating departmental involvement. ATF has not disclosed how the intrusion occurred or whether data was exfiltrated. <b>Durable catch: Qilin's double-extortion model means a leak-site listing — not a ransom payment — is the next milestone to watch for confirmation of what data was actually taken from an isolated investigative system.</b>",
+      "summary": "The Bureau of Alcohol, Tobacco, Firearms and Explosives confirmed a cyberattack Aug 26 after the Qilin ransomware gang publicly claimed responsibility. The affected system operated standalone from ATF's main network but held information tied to active investigations; ATF cut access immediately and began forensic response. Senior DOJ officials designated the event a 'major incident' under federal guidelines, escalating departmental involvement. ATF has not disclosed how the intrusion occurred or whether data was exfiltrated. Notably, Qilin listed ATF alongside five other victims without posting timestamps, data-size estimates, or sample files — a contrast to how it substantiated claims against other listed victims the same week, which leaves the claim's scope unverified even as ATF treats it as real. <b>Durable catch: Qilin's double-extortion model means a leak-site listing with actual proof files — not a ransom payment or the listing itself — is the next milestone to watch for confirmation of what data was actually taken from an isolated investigative system.</b>",
       "reported": "2026-08-27",
       "first_seen": "2026-08-26",
-      "facts": ["STANDALONE SYSTEM HOLDING INVESTIGATION DATA", "DOJ 'MAJOR INCIDENT' DESIGNATION"],
+      "facts": ["STANDALONE SYSTEM HOLDING INVESTIGATION DATA", "DOJ 'MAJOR INCIDENT' DESIGNATION", "QILIN POSTED NO PROOF FILES FOR THIS LISTING, UNLIKE OTHER VICTIMS"],
       "attack": ["T1486", "T1567.002", "T1078"],
       "sources": [
         { "label": "SecurityWeek (Aug 27)", "url": "https://www.securityweek.com/atf-confirms-cyber-incident-after-ransomware-group-claims-attack/" },
@@ -218,7 +219,7 @@
       "wide": false,
       "kind": "SOCIAL ENGINEERING · SECURITY VENDOR",
       "title": "ReliaQuest employee tricked into approving spoofed MFA push; ShinyHunters claims deeper breach, ReliaQuest disputes it",
-      "summary": "On Aug 22, an attacker registered a domain spoofing ReliaQuest's infrastructure and used vishing (posing as named ReliaQuest security-team members) to trick an employee into approving an MFA push on a spoofed Okta login page, gaining view-only access to that one employee's identity dashboard. Device-trust controls blocked further attempts to reach applications through the dashboard; ReliaQuest says no other identities, business applications, or customer data were touched and no persistence was established. A listing naming ReliaQuest appeared on a ShinyHunters-linked leak site Aug 23 claiming a deeper compromise, which ReliaQuest disputes — no customer notifications or regulatory filings have followed. <b>Durable catch: MFA-push approval on a spoofed login domain is still the core failure mode here — number-matching or phishing-resistant MFA (FIDO2/WebAuthn) would have stopped this regardless of how convincing the vishing pretext was.</b>",
+      "summary": "On Aug 22, an attacker registered a domain spoofing ReliaQuest's infrastructure and used vishing (posing as named ReliaQuest security-team members) to trick an employee into approving an MFA push on a spoofed Okta login page, gaining view-only access to that one employee's identity dashboard. Device-trust controls blocked further attempts to reach applications through the dashboard; ReliaQuest says no other identities, business applications, or customer data were touched and no persistence was established. A listing naming ReliaQuest appeared on a ShinyHunters-linked leak site Aug 23 claiming a deeper compromise, which ReliaQuest disputes — no customer notifications or regulatory filings have followed. ReliaQuest's own writeup describes a lookalike domain and a fake SSO page fronted by a CDN but does not name the domain itself, so no domain/IP indicator is publicly available for this specific attack. <b>Durable catch: MFA-push approval on a spoofed login domain is still the core failure mode here — number-matching or phishing-resistant MFA (FIDO2/WebAuthn) would have stopped this regardless of how convincing the vishing pretext was.</b>",
       "reported": "2026-08-25",
       "first_seen": "2026-08-22",
       "facts": ["SPOOFED OKTA LOGIN + VISHING PRETEXT", "VIEW-ONLY, SINGLE-IDENTITY ACCESS · NO PERSISTENCE PER VENDOR"],
@@ -230,7 +231,7 @@
       "action": "Move privileged and identity-platform accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; train staff to verify security-team callers through an out-of-band channel before approving any authentication prompt; treat leak-site claims that a vendor disputes as unconfirmed until independent evidence (customer notification, regulatory filing) appears.",
       "iocs": [
         { "type": "tool", "category": "host", "value": "ShinyHunters-linked leak-site listing", "context": "Claim of deeper compromise disputed by ReliaQuest", "seen": "AUG 23" },
-        { "type": "detection", "category": "net", "value": "Spoofed domain mimicking ReliaQuest infrastructure paired with an Okta login-page clone", "context": "Phishing infrastructure used in the social-engineering attempt", "seen": "AUG 22" }
+        { "type": "detection", "category": "net", "value": "Lookalike domain fronted by a CDN, hosting a cloned Okta SSO page (domain not publicly named by ReliaQuest)", "context": "Phishing infrastructure used in the social-engineering attempt — vendor withheld the specific domain", "seen": "AUG 22" }
       ]
     },
     {
@@ -269,9 +270,12 @@
         { "label": "SOCRadar (Aug 24)", "url": "https://socradar.io/blog/anonymouskit-ai-phaas-supply-chain/" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/08/fake-apple-support-ai-calls-target.html" }
       ],
-      "action": "Warn users of stolen or lost Apple devices that Apple Support will never call to request a passcode, 2FA code, or Apple ID credentials to 'release' a device; treat any such inbound call as AnonyMousKIT-style fraud and hang up, then contact Apple directly through official channels; device-recovery/insurance programs should brief customers on this specific pretext.",
+      "action": "Warn users of stolen or lost Apple devices that Apple Support will never call to request a passcode, 2FA code, or Apple ID credentials to 'release' a device; treat any such inbound call as AnonyMousKIT-style fraud and hang up, then contact Apple directly through official channels; block the listed domains and flag the listed sender addresses at the mail gateway; device-recovery/insurance programs should brief customers on this specific pretext.",
       "iocs": [
         { "type": "tool", "category": "host", "value": "AnonyMousKIT (AI voice-calling phishing-as-a-service)", "context": "PhaaS platform targeting Apple credentials/Activation Lock bypass across 506 domains, 168 storefronts", "seen": "AUG 24" },
+        { "type": "host-name", "category": "net", "value": "anomkit[.]shop ; apple-login-imaps[.]com ; apple-thailand[.]co ; findsupport[.]live ; irealm-server[.]com", "context": "Primary AnonyMousKIT infrastructure domains", "seen": "AUG 24" },
+        { "type": "host-name", "category": "net", "value": "apple-unlock[.]com ; key-unlock[.]com ; icloud-findmy[.]app ; gon-unlocker[.]pro ; projectpartapple[.]com ; kit-pro-bot[.]click ; center-one[.]online ; uktservice[.]sa[.]com", "context": "Cross-brand storefront/backend domains sharing the same infrastructure", "seen": "AUG 24" },
+        { "type": "email", "category": "net", "value": "noreplyapple00000[at]gmail[.]com ; apple[.]nonreply[.]fmi[at]gmail[.]com ; applerecoverymanager[at]gmail[.]com", "context": "Sender/relay accounts impersonating Apple in phishing emails", "seen": "AUG 24" },
         { "type": "detection", "category": "host", "value": "Inbound call posing as Apple Support investigating a stolen/impounded device, requesting passcode or 2FA", "context": "Core social-engineering pretext used by the platform's AI voice agents", "seen": "AUG 24" }
       ]
     },
