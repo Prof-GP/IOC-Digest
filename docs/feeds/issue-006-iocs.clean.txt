@@ -1,0 +1,62 @@
+# IOC//DIGEST issue 006 - week of 2026-08-28
+# CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
+#
+# --- CVE-2026-18431 \u2014 Avada theme's 6-step exploit chain lets unauthenticated attackers run PHP on 1M+ WordPress sites  (https://www.bleepingcomputer.com/news/security/critical-avada-wordpress-theme-flaw-enables-zero-click-rce/)
+CVE-2026-18431
+Avada 7.16.1 / Fusion Builder 3.16.1 (released Aug 27 2026)
+#
+# --- ServiceNow patches three CVSS 10.0 flaws in the Now/AI Platform enabling unauthenticated RCE and SQL injection  (https://thehackernews.com/2026/08/three-cvss-100-servicenow-flaws-could.html, https://www.bleepingcomputer.com/news/security/servicenow-warns-of-three-max-severity-security-vulnerabilities/)
+CVE-2026-18885 / CVE-2026-18886 / CVE-2026-74820 / CVE-2026-6876
+KB3152242 \u2014 Xanadu Patch 11 HF 7a / Yokohama Patch 12 HF 3b / Zurich Patch 7b HF 3
+Unauthenticated requests to GraphQL Composite Data API or system-configuration image-upload processor
+#
+# --- CVE-2026-8452 \u2014 Citrix NetScaler pre-auth RCE exploited in the wild to drop web shells  (https://www.helpnetsecurity.com/2026/08/27/netscaler-adc-gateway-cve-2026-8452/, https://www.securityweek.com/recent-citrix-netscaler-vulnerability-exploited-in-the-wild/)
+CVE-2026-8452
+NetScaler 14.1-72.61 / 13.1-63.18 / 13.1-37.272
+x.php ; z.php
+#
+# --- CVE-2026-21962 \u2014 Oracle HTTP Server/WebLogic Proxy flaw fuels 7-month China-linked campaign across 100+ countries  (https://www.securityweek.com/cisa-warns-of-exploited-oracle-weblogic-vulnerability/, https://thehackernews.com/2026/08/actively-exploited-oracle-weblogic-flaw.html)
+CVE-2026-21962
+Oracle January 2026 Critical Patch Update
+Unauthenticated HTTP requests to Oracle HTTP Server/WebLogic Proxy Plug-in endpoints from unexpected sources
+#
+# --- IRGC-linked CyberAv3ngers shut down a UK power plant for four days \u2014 first confirmed British power-generation standstill  (https://www.securityweek.com/iran-linked-hackers-shut-down-uk-power-plant-for-four-days/, https://www.cnbc.com/2026/08/23/small-uk-power-plant-shut-down-after-iran-linked-cyberattack-report.html)
+CyberAv3ngers (IRGC-affiliated ICS/PLC-focused actor)
+Internet-exposed PLC management interfaces reachable without VPN/gateway restriction
+#
+# --- Manchester Airports Group breach exposes 8.7 million customers, hackers demand ransom, MAG refuses  (https://therecord.media/cyberattack-on-manchester-airports-group-exposes-millions-customer-info, https://cybernews.com/security/manchester-airport-cyber-attack-9-million-wifi-data-breach/)
+Unauthorized access to car park, lounge, Fast Track, and Wi-Fi registration databases across Manchester/Stansted/East Midlands airports
+#
+# --- Qilin ransomware claims ATF hack; DOJ designates it a 'major incident'  (https://www.securityweek.com/atf-confirms-cyber-incident-after-ransomware-group-claims-attack/, https://techcrunch.com/2026/08/27/atf-declares-major-incident-as-ransomware-gang-claims-hack/)
+Qilin ransomware (double-extortion group)
+#
+# --- Two root RCE chains disclosed in Unitree G1 EDU humanoid robot \u2014 one exploitable over Bluetooth  (https://thehackernews.com/2026/08/two-unitree-g1-edu-humanoid-robot-flaws.html, https://boschko.ca/g1-ble-rce/)
+CVE-2026-76639 / CVE-2026-76640
+Unexpected BLE pairing attempts or chat_go knowledge-base upload requests against a G1 EDU unit
+#
+# --- GPUThor Rowhammer attack defeats ECC on NVIDIA RTX A6000, achieves host root shell  (https://thehackernews.com/2026/08/gputhor-rowhammer-defeats-ecc-on-nvidia.html, https://www.bleepingcomputer.com/news/security/new-gputhor-attack-defeats-nvidia-ecc-protection-for-root-access/)
+GPUThor Rowhammer technique (no CVE assigned)
+Elevated ECC error counts or unexplained GPU resets (~every 2 hours) on shared/multi-tenant GPU infrastructure
+#
+# --- Boston Scientific cyberattack disrupts global order processing and shipping  (https://techcrunch.com/2026/08/26/medical-device-maker-boston-scientific-says-a-cyberattack-is-causing-a-global-disruption-to-its-operations/, https://www.theregister.com/security/2026/08/26/boston-scientific-discloses-global-disruption-in-ongoing-cyberattack/5292641)
+Loss of access to order-processing and shipping business applications across a multinational manufacturing environment
+#
+# --- Two Australians charged over TeamPCP's Trivy/Checkmarx KICS/LiteLLM supply-chain compromises  (https://thehackernews.com/2026/08/alleged-teampcp-hackers-charged-in.html, https://www.bleepingcomputer.com/news/security/australia-arrests-alleged-teampcp-hackers-behind-supply-chain-attacks/)
+Trivy / Checkmarx KICS / LiteLLM (poisoned releases, March 2026)
+tpcp-docs ; docs-tpcp
+#
+# --- 24 npm packages abuse unpkg mirror infrastructure to host fake Cloudflare CAPTCHA / ClickFix phishing pages  (https://thehackernews.com/2026/08/24-npm-packages-abuse-unpkg-mirrors-to.html, https://www.ox.security/blog/research-clickfix-phishing-npm-packages/)
+bgzxcuite2, prezdentkxheiw, egair0810, mnteckets, airdzticket, egypt0811, passport811, vxhjkseuiaqkb, ndmushdkeqe, ndmxchdjxn2, ndmfguyhoxc3, mjsdqwocvn, m2fcsfyjkuxb, m3fdfocdoewn, @worrisome/reutil, testdgdbcsd, tesgfvbncsdbcv, mndsxcusiwlk1, mn2adskhweox, mn3sadkoiewu, mn4xcouzvhus, mbxcnsuwgs1, skxcmwuncbg2, mobiwaefhxc3
+login.microsofte.live
+api.keyval.org
+#
+# --- ReliaQuest employee tricked into approving spoofed MFA push; ShinyHunters claims deeper breach, ReliaQuest disputes it  (https://www.bleepingcomputer.com/news/security/reliaquest-confirms-failed-data-theft-attack-after-shinyhunters-breach/, https://www.helpnetsecurity.com/2026/08/25/reliaquest-breach-social-engineering/)
+ShinyHunters-linked leak-site listing
+Spoofed domain mimicking ReliaQuest infrastructure paired with an Okta login-page clone
+#
+# --- AnonyMousKIT \u2014 AI voice-calling phishing-as-a-service bypasses Apple Activation Lock on stolen devices  (https://socradar.io/blog/anonymouskit-ai-phaas-supply-chain/, https://thehackernews.com/2026/08/fake-apple-support-ai-calls-target.html)
+AnonyMousKIT (AI voice-calling phishing-as-a-service)
+Inbound call posing as Apple Support investigating a stolen/impounded device, requesting passcode or 2FA
+#
+# --- South Korean government startup platform exposes personal data after encryption key shipped inside its own API  (https://www.bleepingcomputer.com/news/security/south-korean-startup-platform-breach-exposes-key-management-failures/)
+Encryption key material present in the same API response as the ciphertext it protects
