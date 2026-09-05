@@ -1,0 +1,1073 @@
+<title>IOC Digest — Issue 007 · Week of 2026-09-04</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+  .inc-meta .reported { color: var(--accent); font-weight: 600; }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 007 · WK 2026-09-04 · 12 INCIDENTS · 25 IOCs</span>
+  <a class="navlink" href="index.html">← ALL ISSUES</a>
+  <button class="fchip on" data-type="all">ALL<b>25</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>6</b></button>
+  <button class="fchip" data-type="host">HOST<b>19</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-9586 — unauthenticated SQLi in Sangoma Switchvox VoIP platform exploited to drop reverse shells</h2>
+        </div>
+        <p class="inc-sum">Sangoma Switchvox's /pa endpoint, which parses XML requests from supported IP phones, passes user-supplied input straight into PostgreSQL queries without sanitization — CVE-2026-9586, CVSS 9.3. Horizon3.ai researcher Zach Hanley observed valid exploitation attempts against internet-exposed Switchvox devices starting Aug 30, with attackers using the SQLi to modify user records, escalate privilege inside the application, run OS commands on the underlying server, and drop reverse shells for remote access; CISA added it to KEV Sep 2 alongside evidence the same actors chained it with a JFrog Artifactory flaw to mint admin tokens for follow-on credential harvesting. <b>Durable catch: a Switchvox box showing outbound connections to 176[.]65[.]148[.]184 on port 39323, or suspicious entries in /var/log/switchvox/db-quirks.log, has already been hit — those are Horizon3's specific observed indicators, not a hypothetical.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-08-30</span>
+        <span>CVE-2026-9586 CVSS 9.3 · UNAUTH SQLI IN /pa ENDPOINT</span>
+        <span>HORIZON3: EXPLOITATION OBSERVED FROM AUG 30</span>
+        <span>REAL ATTACKER IP AND LOG PATH PUBLISHED</span>
+          <span class="attck">T1190 · T1059 · T1071.001</span>
+          <span><a href="https://www.helpnetsecurity.com/2026/09/02/exploitation-of-sangoma-switchvox-flaw-underway-cve-2026-9586/" rel="noopener">Help Net Security (Sep 2)</a> · <a href="https://horizon3.ai/attack-research/disclosures/cve-2026-9586-sangoma-switchvox-rce/" rel="noopener">Horizon3.ai</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · REVERSE SHELL</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Upgrade Switchvox to 8.4.0.2 or later immediately; check /var/log/switchvox/db-quirks.log for suspicious statements and review network logs for connections to 176[.]65[.]148[.]184, particularly on port 39323; audit user records and privilege levels within Switchvox for unauthorized modification since Aug 30.</span>
+      <button class="tbtn copy-inc" data-inc="sangoma-switchvox-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="sangoma-switchvox-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-9586">CVE-2026-9586</button></td>
+            <td class="ctx">Sangoma Switchvox unauth SQL injection via /pa endpoint, CVSS 9.3</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="176[.]65[.]148[.]184">176[.]65[.]148[.]184</button></td>
+            <td class="ctx">Observed attacker IP exploiting Switchvox, connecting on port 39323</td>
+            <td class="seen">AUG 30</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="/var/log/switchvox/db-quirks.log">/var/log/switchvox/db-quirks.log</button></td>
+            <td class="ctx">Log file containing suspicious statements left by exploitation attempts</td>
+            <td class="seen">AUG 30</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="Switchvox 8.4.0.2">Switchvox 8.4.0.2</button></td>
+            <td class="ctx">Fixed release</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-49869 — Kestra OSS auth-bypass RCE exploited within days of disclosure to deploy crypto miners</h2>
+        </div>
+        <p class="inc-sum">Kestra OSS's AuthenticationFilter skips authentication for any request path ending in /configs, a suffix-match bug that lets an unauthenticated attacker create and execute arbitrary workflows as root — CVE-2026-49869, CVSS 10.0. WatchTowr observed in-the-wild exploitation starting Sep 1, four days after disclosure, with attackers minting admin tokens and enumerating users, groups, and credential sets; Microsoft separately reported the same flaw was likely exploited as far back as late June to establish reverse shells, run Docker container discovery, and deploy XMRig cryptocurrency miners. CISA added it to KEV Sep 2. <b>Durable catch: any Kestra instance reachable at a URL path ending in /configs bypasses auth entirely — the bug is the routing suffix itself, not a credential or session flaw, so network-layer path restriction is the only mitigation short of patching.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-06</span>
+        <span>CVE-2026-49869 CVSS 10.0 · AUTH BYPASS VIA /configs PATH SUFFIX</span>
+        <span>WATCHTOWR: EXPLOITATION FROM SEP 1, 4 DAYS POST-DISCLOSURE</span>
+        <span>MICROSOFT: LIKELY EXPLOITED SINCE LATE JUNE FOR XMRIG DEPLOYMENT</span>
+          <span class="attck">T1190 · T1611 · T1496</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html" rel="noopener">The Hacker News (Sep 3)</a> · <a href="https://aicybr.com/blog/kestra-cve-2026-49869-kev-rce-remediation" rel="noopener">AiCybr</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · CRYPTOMINING</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch Kestra OSS to the fixed release immediately; block or restrict any request path ending in /configs at the reverse proxy/WAF layer as a compensating control; hunt for unexpected workflow creation, Docker socket access, or XMRig-pattern CPU spikes on any internet-reachable Kestra host, especially since possible exploitation predates public disclosure by months.</span>
+      <button class="tbtn copy-inc" data-inc="kestra-oss-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="kestra-oss-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-49869">CVE-2026-49869</button></td>
+            <td class="ctx">Kestra OSS unauthenticated command injection RCE via AuthenticationFilter suffix-match bypass, CVSS 10.0</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="XMRig cryptocurrency miner">XMRig cryptocurrency miner</button></td>
+            <td class="ctx">Payload deployed post-exploitation per Microsoft reporting</td>
+            <td class="seen">JUN 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthenticated requests to any URL path ending in /configs against a Kestra instance">Unauthenticated requests to any URL path ending in /configs against a Kestra instance</button></td>
+            <td class="ctx">Exact exploitation pattern for the AuthenticationFilter bypass</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-83548/83549 — chained SonicWall SMA1000 flaws give unauthenticated attackers root, actively exploited</h2>
+        </div>
+        <p class="inc-sum">SonicWall disclosed two SMA1000 vulnerabilities Sep 1: CVE-2026-83548, a CVSS 10.0 pre-auth SSRF in the Workplace interface that lets an unauthenticated attacker reach sensitive functionality through an unintended access path, and CVE-2026-83549, an OS command injection in the Appliance Management Console that normally needs admin authentication — but chained behind the SSRF, becomes unauthenticated arbitrary command execution. SonicWall confirmed active exploitation and CISA added both to KEV the same week with no public proof-of-concept, attribution, or technical indicators released alongside the advisory. <b>Durable catch: SonicWall and CISA explicitly withheld IOCs for active exploitation of a CVSS 10.0 flaw — the absence of a hash or IP to hunt for is itself the signal that this is being exploited quietly, and patching is the only reliable defense right now.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-01</span><span>ACTIVE SINCE 2026-09-01</span>
+        <span>CVE-2026-83548 CVSS 10.0 · SSRF CHAINED TO CVE-2026-83549 OS COMMAND INJECTION</span>
+        <span>CONFIRMED ACTIVELY EXPLOITED · ADDED TO CISA KEV</span>
+        <span>NO PUBLIC IOCs, POC, OR ATTRIBUTION RELEASED</span>
+          <span class="attck">T1190 · T1078 · T1059</span>
+          <span><a href="https://www.rapid7.com/blog/post/etr-critical-sonicwall-sma1000-vulnerabilities-cve-2026-83548-cve-2026-83549-exploited-in-the-wild/" rel="noopener">Rapid7 (Sep 1)</a> · <a href="https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog" rel="noopener">CISA KEV Catalog (Sep 2)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · UNAUTH RCE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch SMA1000 appliances (models 6210, 7210, 8200v) to 12.4.3-03526 platform-hotfix or 12.5.0-02952 platform-hotfix immediately; treat any internet-facing Workplace interface or Appliance Management Console as a probable target regardless of whether an IOC has surfaced yet; review appliance logs for anomalous Workplace-interface requests or unexpected command execution since Sep 1.</span>
+      <button class="tbtn copy-inc" data-inc="sonicwall-sma1000-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="sonicwall-sma1000-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-83548 / CVE-2026-83549">CVE-2026-83548 / CVE-2026-83549</button></td>
+            <td class="ctx">SonicWall SMA1000 pre-auth SSRF chained to OS command injection, CVSS 10.0</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix">SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix</button></td>
+            <td class="ctx">Fixed releases</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Invisible Unicode tag characters split keywords to evade filters across a 3-month, multi-million-email phishing wave</h2>
+        </div>
+        <p class="inc-sum">Microsoft and Fortra's FIRE team detailed a phishing campaign that inserted invisible Unicode Tags-block characters (U+E0000-U+E007F) inside financial lure words — turning 'funding' into 'fun[invisible-char]ding' — so filters and regex-based keyword matching miss the term while the word renders normally to the recipient. Microsoft's detection signature recorded a spike from roughly 21,000 hits on Feb 8 to over 1.3 million the next day, peaking above 2.3 million messages on Feb 26 and staying elevated for about three months on a weekday-only cadence; the campaign used hundreds of disposable finance-themed sender domains and relayed messages through legitimate ActiveCampaign marketing-platform infrastructure to inherit its sending reputation. <b>Durable catch: any inbound message containing Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in the visible text is definitionally this evasion technique — no legitimate email uses that block, so its mere presence is a higher-confidence filter signal than any keyword match it's being used to evade.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-04</span><span>ACTIVE SINCE 2026-02-08</span>
+        <span>PEAKED AT 2.37M MESSAGES/DAY · 3-MONTH WEEKDAY-ONLY CAMPAIGN</span>
+        <span>UNICODE TAGS BLOCK (U+E0000-U+E007F) SPLITS KEYWORDS INVISIBLY</span>
+        <span>RELAYED THROUGH ACTIVECAMPAIGN INFRASTRUCTURE FOR SENDER REPUTATION</span>
+          <span class="attck">T1566.002 · T1027</span>
+          <span><a href="https://thehackernews.com/2026/09/phishing-campaign-sends-millions-of.html" rel="noopener">The Hacker News (Sep 4)</a> · <a href="https://www.microsoft.com/en-us/security/blog/2026/08/26/when-ai-infrastructure-becomes-target-securing-gateways-control-points/" rel="noopener">Microsoft Security Blog</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">PHISHING · EVASION · EMAIL SECURITY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Add a mail-gateway rule flagging any message containing Unicode codepoints in the U+E0000-U+E007F Tags block, regardless of surrounding content — that block has no legitimate use in email; block or scrutinize the listed sender domains and the acemlnd[.]com/activehosted[.]com relay domains at the gateway; strip or normalize invisible Unicode characters before keyword-based filtering runs, not after.</span>
+      <button class="tbtn copy-inc" data-inc="invisible-unicode-phishing">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="invisible-unicode-phishing">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">host-name</span></td>
+            <td><button class="val" data-defanged="guardiangrowthfunding[.]com ; digitalcapitalboost[.]com ; thebusinessloanexpress[.]com ; yourlocfunding[.]com ; advancefundingboost[.]com">guardiangrowthfunding[.]com ; digitalcapitalboost[.]com ; thebusinessloanexpress[.]com ; yourlocfunding[.]com ; advancefundingboost[.]com</button></td>
+            <td class="ctx">Top disposable finance-themed sender domains used in the campaign</td>
+            <td class="seen">FEB-MAY 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">host-name</span></td>
+            <td><button class="val" data-defanged="guardiancapitalway[.]com ; harboradvancefunding[.]com ; unitedfundingwave[.]com ; directcapitalboost[.]com ; onlinedirectfinance[.]com">guardiancapitalway[.]com ; harboradvancefunding[.]com ; unitedfundingwave[.]com ; directcapitalboost[.]com ; onlinedirectfinance[.]com</button></td>
+            <td class="ctx">Additional disposable finance-themed sender domains used in the campaign</td>
+            <td class="seen">FEB-MAY 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">host-name</span></td>
+            <td><button class="val" data-defanged="acemlnd[.]com ; activehosted[.]com">acemlnd[.]com ; activehosted[.]com</button></td>
+            <td class="ctx">Legitimate ActiveCampaign relay domains abused to inherit sending reputation</td>
+            <td class="seen">FEB-MAY 2026</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Presence of Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in message text">Presence of Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in message text</button></td>
+            <td class="ctx">Direct technical indicator of the keyword-splitting evasion technique</td>
+            <td class="seen">SEP 4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-82329 — JFrog Artifactory authentication bypass added to KEV, chained for admin token minting</h2>
+        </div>
+        <p class="inc-sum">CISA added CVE-2026-82329, a CVSS 9.8 improper-authentication flaw in JFrog Artifactory, to its Known Exploited Vulnerabilities catalog Sep 2 as part of a seven-CVE batch. CISA's advisory states unknown threat actors have weaponized this flaw alongside the Sangoma Switchvox SQLi (CVE-2026-9586) to deploy reverse shells and mint admin tokens for follow-on enumeration of users, groups, credential sets, and federated access topologies — meaning a compromised Artifactory instance becomes a pivot point into whatever CI/CD credentials and federated identities it holds. Neither CISA nor the researchers who reported it have published specific IOCs (IPs, hashes) tied to Artifactory exploitation specifically. <b>Durable catch: Artifactory sits at the center of a CI/CD trust chain by design — an attacker who mints an admin token here doesn't need to compromise anything downstream, since Artifactory's own federated-access model does the enumeration for them.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-09-02</span>
+        <span>CVE-2026-82329 CVSS 9.8 · IMPROPER AUTHENTICATION</span>
+        <span>PART OF THE SAME 7-CVE CISA KEV BATCH AS SONICWALL/SWITCHVOX/KESTRA</span>
+        <span>USED TO MINT ADMIN TOKENS FOR CREDENTIAL/FEDERATED-ACCESS ENUMERATION</span>
+          <span class="attck">T1190 · T1078 · T1552.001</span>
+          <span><a href="https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog" rel="noopener">CISA KEV Catalog (Sep 2)</a> · <a href="https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html" rel="noopener">The Hacker News</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · CI/CD</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch JFrog Artifactory to the fixed release immediately; audit admin token creation events and federated-identity provider logs for unexpected enumeration activity since disclosure; treat Artifactory as a CI/CD credential store during incident response, not just an artifact cache, and rotate any secrets it held if compromise is suspected.</span>
+      <button class="tbtn copy-inc" data-inc="jfrog-artifactory-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="jfrog-artifactory-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-82329">CVE-2026-82329</button></td>
+            <td class="ctx">JFrog Artifactory improper authentication bypassing default access controls, CVSS 9.8</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies">Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies</button></td>
+            <td class="ctx">Attacker activity pattern per CISA advisory</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Cyberattack on Luminis Health knocks two Maryland hospitals' systems offline, ambulances reroute</h2>
+        </div>
+        <p class="inc-sum">Luminis Health disclosed a cybersecurity incident Sep 2 that took certain computer systems offline across its Anne Arundel Medical Center (Annapolis) and Doctors Community Medical Center (Lanham) facilities, forcing some ambulances carrying non-critical patients to reroute to other hospitals and pushing patients toward a dedicated helpline while the online patient portal remained down. The disclosure came days after the health system had also been the target of a bomb threat, though no link between the two events has been established. No attacker or ransomware group has publicly claimed responsibility, and Luminis has not disclosed the initial access vector or whether patient data was exfiltrated. <b>Durable catch: ambulance diversion is a direct patient-safety consequence of a cyberattack, not just an IT outage — any healthcare system's incident-response plan needs a pre-agreed diversion protocol with regional EMS, because this is now a recurring failure mode, not a one-off.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-09-02</span>
+        <span>2 MARYLAND HOSPITALS AFFECTED · AMBULANCE REROUTING FOR NON-CRITICAL PATIENTS</span>
+        <span>PATIENT PORTAL DOWN · NO ATTACKER HAS CLAIMED RESPONSIBILITY</span>
+          <span class="attck">T1489 · T1078</span>
+          <span><a href="https://www.wypr.org/wypr-news/2026-09-02/two-maryland-hospitals-hit-by-cyberattack-compromising-systems" rel="noopener">WYPR (Sep 2)</a> · <a href="https://hoodline.com/2026/09/luminis-health-hospitals-hit-by-cyberattack-portals-down-days-after-bomb-threat/" rel="noopener">Hoodline</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CYBERATTACK · HEALTHCARE · AMBULANCE DIVERSION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Healthcare systems should maintain a pre-agreed ambulance-diversion protocol with regional EMS for cyber-driven outages, not just natural-disaster scenarios; verify offline/downtime procedures for patient registration and records access are rehearsed, not theoretical; monitor for a ransomware leak-site claim or data-breach notification as the incident develops.</span>
+      <button class="tbtn copy-inc" data-inc="luminis-health-maryland">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="luminis-health-maryland">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion">Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion</button></td>
+            <td class="ctx">Reported operational impact pattern</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Unit 42 documents ransomware attacker using AI agents to run an entire enterprise intrusion in under 10 hours</h2>
+        </div>
+        <p class="inc-sum">Palo Alto Networks' Unit 42 disclosed a ransomware intrusion in which a human attacker directed frontier AI models and agentic attack frameworks to carry out nearly every step of the attack chain — initial access through a public API endpoint, credential harvesting, privilege escalation to root, hijacking CI/CD pipelines to steal cloud access keys, and pivoting through the victim's own cloud AI services as post-compromise infrastructure — compressing an intrusion Unit 42 says would normally take human operators about two weeks into under 10 hours across more than 50 distinct ATT&CK techniques. The attacker had a documentation agent produce an 80-page technical security audit of the victim's environment as a parting artifact. Unit 42 has not named the victim organization, the AI framework or model used, or published technical indicators (IPs, hashes, tool names) tied to this specific intrusion. <b>Durable catch: the compression from two weeks to under 10 hours, not any single novel technique, is the actual finding here — detection and response timelines built around human-speed attacker dwell time no longer hold against an agentic operator.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026</span>
+        <span>INTRUSION COMPRESSED FROM ~2 WEEKS TO UNDER 10 HOURS</span>
+        <span>50+ ATT&amp;CK TECHNIQUES · CI/CD AND CLOUD AI INFRASTRUCTURE HIJACKED</span>
+        <span>VICTIM, FRAMEWORK, AND TECHNICAL IOCs NOT DISCLOSED BY UNIT 42</span>
+          <span class="attck">T1190 · T1552.001 · T1078.004</span>
+          <span><a href="https://www.theregister.com/security/2026/09/02/ai-agents-carried-out-every-step-of-this-ransomware-attack-then-left-the-victim-an-80-page-security-audit/5294009" rel="noopener">The Register (Sep 2)</a> · <a href="https://unit42.paloaltonetworks.com/ai-assisted-cyber-attack-inside-a-unit-42-investigation/" rel="noopener">Unit 42</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RESEARCH · AGENTIC AI · RANSOMWARE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Assume attacker dwell time can now compress to hours rather than weeks when planning detection and response SLAs; harden public API endpoints as a primary initial-access path, since that&#x27;s how this intrusion began; restrict CI/CD pipeline access to cloud credentials and monitor for anomalous, rapid-fire actions across identity, CI/CD, container, and SaaS environments in sequence, which is the behavioral signature of an agent-driven attack chain rather than a human operator.</span>
+      <button class="tbtn copy-inc" data-inc="ai-agent-ransomware-unit42">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="ai-agent-ransomware-unit42">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks">Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks</button></td>
+            <td class="ctx">Behavioral signature of the agentic attack chain per Unit 42</td>
+            <td class="seen">SEP 2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>SPACEBEARS ransomware posts three new victims across US retail, US legal, and Italian healthcare</h2>
+        </div>
+        <p class="inc-sum">The SPACEBEARS ransomware gang published three new victims to its leak site between Sep 3-4: Sports Endeavors (US retail/e-commerce), Schwartz, Giannini, Lantsberger & Adamson (SGLA, US professional/legal services), and Studio Oculistico Ciraci (Italian ophthalmology practice). No victim has confirmed the claims publicly, and SPACEBEARS has not published technical IOCs (initial access, malware, C2) alongside any of the three listings. <b>Durable catch: three unrelated victims across three countries and three sectors in two days shows SPACEBEARS is running an opportunistic, high-volume operation rather than targeted sector campaigns — any organization matching common ransomware entry points (exposed RDP, unpatched VPN, phished credentials) is in scope, not just firms resembling these three.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-04</span><span>ACTIVE SINCE 2026-09-03</span>
+        <span>3 VICTIMS ACROSS US RETAIL, US LEGAL, IT HEALTHCARE IN 2 DAYS</span>
+        <span>NO TECHNICAL IOCs DISCLOSED FOR ANY OF THE THREE LISTINGS</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://securityarsenal.com/blog/spacebears-ransomware-gang-3-fresh-leak-site-victims-usit-sector-pressure-kev-edge-exposure-and-pre-encryption-hunt-rules" rel="noopener">Security Arsenal (Sep 4)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · LEAK SITE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations resembling any of the three victim profiles should verify common ransomware entry points are closed (exposed RDP, unpatched edge/VPN devices, phishing-resistant MFA on remote access); monitor SPACEBEARS&#x27; leak site for proof files that would substantiate scope for any of the three listed victims; treat the group&#x27;s opportunistic, cross-sector pattern as a reason not to assume industry-specific exemption.</span>
+      <button class="tbtn copy-inc" data-inc="spacebears-leak-site">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="spacebears-leak-site">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="SPACEBEARS ransomware">SPACEBEARS ransomware</button></td>
+            <td class="ctx">Group behind all three listings (Sports Endeavors, SGLA, Studio Oculistico Ciraci)</td>
+            <td class="seen">SEP 3-4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Settra ransomware claims Italian biotech DiaSorin, uses vulnerable driver to blind EDR before encryption</h2>
+        </div>
+        <p class="inc-sum">Settra, a double-extortion ransomware and data-theft group first identified in June 2026, listed Italian biotech firm DiaSorin S.p.A. on its Tor leak site Sep 3, claiming data theft from an estimated Aug 25 intrusion and threatening publication absent negotiation over Tox messaging. Across its confirmed victims, Settra has used a known-vulnerable Safetica process-monitoring driver, STProcessMonitor_v114.sys (CVE-2025-70795), in a bring-your-own-vulnerable-driver technique to kill EDR/AV processes from kernel context, paired with a tool called edr_blind, and manually clears Windows event logs afterward to cover its tracks. DiaSorin has not confirmed the claim publicly as of this writing. <b>Durable catch: STProcessMonitor_v114.sys has no legitimate reason to be installed outside an environment already running Safetica DLP — its presence anywhere else is a kernel-level EDR-killing precursor, not a false positive to dismiss.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-03</span><span>ACTIVE SINCE 2026-08-25</span>
+        <span>CLAIMED VIA TOR LEAK SITE SEP 3 · ESTIMATED INTRUSION AUG 25</span>
+        <span>BYOVD VIA STProcessMonitor_v114.sys (CVE-2025-70795) · edr_blind TOOL · MANUAL EVENT-LOG CLEARING</span>
+          <span class="attck">T1068 · T1562.001 · T1070.001</span>
+          <span><a href="https://malware.news/t/settra-ransomware-attack-on-diasorin-s-p-a/125325" rel="noopener">Malware News (Sep 4)</a> · <a href="https://www.moxfive.com/blog/settra-ransomware-ttps-victims-and-defense-guide" rel="noopener">MoxFive</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · BYOVD · BIOTECH</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Blocklist the STProcessMonitor_v114.sys driver hash/name via Microsoft&#x27;s vulnerable-driver blocklist or WDAC; alert on any new kernel driver installation outside change-managed maintenance windows; monitor for mass Windows event-log clearing as a late-stage precursor to encryption; DiaSorin partners/customers should watch the group&#x27;s leak site for confirmation before treating any data claim as verified.</span>
+      <button class="tbtn copy-inc" data-inc="settra-diasorin">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="settra-diasorin">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Settra ransomware (double-extortion, active since Jun 2026)">Settra ransomware (double-extortion, active since Jun 2026)</button></td>
+            <td class="ctx">Group claiming the DiaSorin S.p.A. compromise</td>
+            <td class="seen">SEP 3</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="STProcessMonitor_v114.sys">STProcessMonitor_v114.sys</button></td>
+            <td class="ctx">Vulnerable Safetica driver (CVE-2025-70795) abused via BYOVD to kill EDR/AV from kernel context</td>
+            <td class="seen">SEP 3</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="edr_blind">edr_blind</button></td>
+            <td class="ctx">Companion tool used alongside the vulnerable driver to disable endpoint detection</td>
+            <td class="seen">SEP 3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads</h2>
+        </div>
+        <p class="inc-sum">Malwarebytes disclosed StreamRat, an Android banking trojan and infostealer distributed through Meta ads for a fake free streaming service running Jun 11-Jul 3, 2026, with the same promotional banners simultaneously pushed on TikTok; the campaign exposed an estimated 570,000 people, overwhelmingly Spanish-speaking users located in Spain. Victims received social-engineering instructions tailored to their entry point (Instagram, TikTok, Facebook, or a plain browser) that coached them past Android's unknown-sources installation warnings; once installed, StreamRat can monitor the screen, capture keystrokes, overlay fake login screens to steal credentials, and grant attackers remote device control. Malwarebytes detects the payload under three signatures but did not publish package names, APK hashes, or C2 infrastructure. <b>Durable catch: any Android install flow that walks a user step-by-step through disabling the unknown-sources warning, tailored to the specific app/ad the victim just clicked, is StreamRat's exact delivery mechanism — the coaching itself is the tell, regardless of which streaming brand is being impersonated this month.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-03</span><span>ACTIVE SINCE 2026-06-11</span>
+        <span>~570,000 USERS EXPOSED VIA META + TIKTOK ADS, JUN 11-JUL 3 2026</span>
+        <span>TARGETS SPANISH-SPEAKING USERS, PREDOMINANTLY IN SPAIN</span>
+        <span>PACKAGE NAMES/APK HASHES/C2 NOT DISCLOSED BY MALWAREBYTES</span>
+          <span class="attck">T1204.002 · T1417</span>
+          <span><a href="https://www.malwarebytes.com/blog/news/2026/09/streamrat-android-malware-spreads-through-meta-and-tiktok-ads" rel="noopener">Malwarebytes (Sep 3)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">MOBILE MALWARE · MALVERTISING · BANKING TROJAN</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Block installation from unknown sources by policy on managed Android fleets; warn Spanish-speaking user populations specifically about free-streaming-service ads on Meta/TikTok that walk them through enabling sideloading; flag Malwarebytes detections Android/Trojan.Agent.ACRAEEF8A36H36, Android/Trojan.Agent.ACR02DB0614H7, and Android/Trojan.Dropper.ACR9B7ECE83D1 in mobile threat-defense tooling.</span>
+      <button class="tbtn copy-inc" data-inc="streamrat-android">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="streamrat-android">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1">Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1</button></td>
+            <td class="ctx">Malwarebytes detection signatures for the StreamRat payload</td>
+            <td class="seen">SEP 3</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Black X ransomware claims two South Korean auto-parts manufacturers within days of each other</h2>
+        </div>
+        <p class="inc-sum">Black X, an emerging ransomware group, listed South Korean automotive-parts manufacturer i-one on its leak site Aug 28 claiming roughly 1TB of technical, sales, drawings, quality, logistics, and supply-chain data taken from its corporate environment, then listed a second South Korean car-parts maker, iwin (www.iwin[.]kr), Sep 1 with a similar 1TB data-theft claim and a threat to leak absent negotiation. Neither victim has publicly confirmed the intrusions, and no technical IOCs (initial access vector, malware family, C2 infrastructure) have been disclosed for either claim. <b>Durable catch: two South Korean automotive-parts suppliers hit by the same group within four days is a sector-targeting pattern, not a coincidence — other Korean auto-parts manufacturers should treat this as an active-targeting warning regardless of whether either claim is independently verified.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-01</span><span>ACTIVE SINCE 2026-08-28</span>
+        <span>2 SOUTH KOREAN AUTO-PARTS MAKERS CLAIMED IN 4 DAYS (i-one AUG 28, iwin SEP 1)</span>
+        <span>~1TB CLAIMED PER VICTIM · NO TECHNICAL IOCs DISCLOSED</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://asec.ahnlab.com/en/95223/" rel="noopener">ASEC (Sep 1)</a> · <a href="https://www.ransomware.live/id/aXdpbkBCbGFjayBY" rel="noopener">Ransomware.live</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · SUPPLY CHAIN · AUTOMOTIVE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>South Korean automotive supply-chain manufacturers should treat Black X as an actively targeting group and review perimeter/remote-access exposure now rather than after a listing; monitor Black X&#x27;s leak site for proof files that would substantiate the claims against i-one and iwin; downstream OEMs sourcing from either supplier should ask about incident status before assuming supply continuity.</span>
+      <button class="tbtn copy-inc" data-inc="black-x-korea-auto">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="black-x-korea-auto">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Black X ransomware (emerging group, active Aug 2026)">Black X ransomware (emerging group, active Aug 2026)</button></td>
+            <td class="ctx">Group claiming both i-one and iwin compromises</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">host-name</span></td>
+            <td><button class="val" data-defanged="iwin[.]kr">iwin[.]kr</button></td>
+            <td class="ctx">Second claimed South Korean auto-parts victim&#x27;s domain</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>ZaWoo data-extortion group adds a German sports-research institute and a New Zealand CRO to its victim list</h2>
+        </div>
+        <p class="inc-sum">ZaWoo, a steal-first double-extortion group active since mid-2026, listed Institut für Forschung und Entwicklung von Sportgeräten (FES) — a German institute specializing in high-performance sports equipment technology — and Zenith Technology Corporation Limited, a New Zealand-based contract research organization, among its recent claimed victims. ZaWoo's stated pressure tactic if a victim refuses to pay is to directly email stolen files, chat history, and mailbox contents to the victim's own customers rather than only posting to a leak site, escalating reputational damage beyond the initial listing. Neither organization has publicly confirmed the extent of data taken, and no malware family or technical IOC has been published for either intrusion. <b>Durable catch: ZaWoo's customer-email tactic means the blast radius of one intrusion extends to every client/partner in the stolen mailbox — incident response needs to plan customer notification proactively rather than waiting for a leak-site posting to force the timeline.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-01</span><span>ACTIVE SINCE 2026-08</span>
+        <span>VICTIMS: FES (GERMANY, SPORTS-TECH RESEARCH), ZENITH TECHNOLOGY (NEW ZEALAND, CRO)</span>
+        <span>TACTIC: DIRECT CUSTOMER EMAIL OF STOLEN DATA IF RANSOM UNPAID</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://asec.ahnlab.com/en/95223/" rel="noopener">ASEC (Sep 1)</a> · <a href="https://www.dexpose.io/zawoo-ransomware-attack-on-german-sports-institute-fes/" rel="noopener">DeXpose</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA EXTORTION · DOUBLE EXTORTION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations in technology, manufacturing, and research sectors should treat ZaWoo as an active threat and review mailbox/data-loss-prevention controls given its customer-notification-as-pressure tactic; if compromised, prepare proactive customer communication rather than waiting for the group to contact them directly; monitor ZaWoo&#x27;s leak site for confirmation of scope for both named victims.</span>
+      <button class="tbtn copy-inc" data-inc="zawoo-extortion">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="zawoo-extortion">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="ZaWoo (double-extortion data-theft group, active since mid-2026)">ZaWoo (double-extortion data-theft group, active since mid-2026)</button></td>
+            <td class="ctx">Group claiming FES (Germany) and Zenith Technology (New Zealand) as victims</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="../feeds/issue-007-iocs.txt">issue-007-iocs.txt</a>
+  <a class="file" href="../feeds/issue-007-iocs.clean.txt">issue-007-iocs.clean.txt</a>
+  <a class="file" href="../feeds/issue-007-iocs.csv">issue-007-iocs.csv</a>
+  <a class="file" href="../feeds/issue-007.stix2.json">issue-007.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>

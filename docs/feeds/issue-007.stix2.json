@@ -1,0 +1,21 @@
+{
+  "type": "bundle",
+  "id": "bundle--e3dd1266-d67c-5350-83c8-1741a256c7e3",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c821b3a4-8485-514a-9a2b-294cfe123b40",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "CVE-2026-9586 \u2014 unauthenticated SQLi in Sangoma Switchvox VoIP platform exploited to drop reverse shells: Observed attacker IP exploiting Switchvox, connecting on port 39323",
+      "description": "Source: https://www.helpnetsecurity.com/2026/09/02/exploitation-of-sangoma-switchvox-flaw-underway-cve-2026-9586/; https://horizon3.ai/attack-research/disclosures/cve-2026-9586-sangoma-switchvox-rce/",
+      "pattern": "[ipv4-addr:value = '176.65.148.184']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}
