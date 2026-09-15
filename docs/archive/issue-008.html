@@ -1,0 +1,1094 @@
+<title>IOC Digest — Issue 008 · Week of 2026-09-11</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+  .inc-meta .reported { color: var(--accent); font-weight: 600; }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 008 · WK 2026-09-11 · 13 INCIDENTS · 22 IOCs</span>
+  <a class="navlink" href="index.html">← ALL ISSUES</a>
+  <button class="fchip on" data-type="all">ALL<b>22</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>2</b></button>
+  <button class="fchip" data-type="host">HOST<b>20</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident crit">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-85706 — max-severity GitLab path traversal in the commits API added to KEV under emergency directive</h2>
+        </div>
+        <p class="inc-sum">GitLab's repository commits API has an improper path-confinement and missing-authentication flaw, CVE-2026-85706 (CVSS 10.0), that lets an unauthenticated attacker read arbitrary files from an affected self-managed GitLab server under certain conditions. CISA added it to KEV Sep 11 with confirmed active-exploitation evidence, invoking emergency federal directive BOD 26-04 requiring immediate patching outside the normal cycle rather than the standard deadline window. GitLab.com and GitLab Dedicated were already patched before disclosure; affected self-managed versions span 18.7 through 19.3.1. No public IOCs (attacker IPs, request signatures) accompanied the advisory. <b>Durable catch: an unauthenticated arbitrary-file-read against a self-managed GitLab instance can pull CI/CD secrets, SSH keys, or config files straight off the server — treat this as a credential-exposure incident requiring rotation, not just a patch-and-move-on vulnerability.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-09-11</span>
+        <span>CVE-2026-85706 CVSS 10.0 · UNAUTH ARBITRARY FILE READ VIA COMMITS API</span>
+        <span>CISA INVOKED EMERGENCY DIRECTIVE BOD 26-04 (IMMEDIATE PATCH, NOT STANDARD DEADLINE)</span>
+        <span>AFFECTS SELF-MANAGED 18.7-19.3.1 · GITLAB.COM/DEDICATED ALREADY PATCHED</span>
+          <span class="attck">T1190 · T1005</span>
+          <span><a href="https://www.rapid7.com/blog/post/etr-cve-2026-85706-critical-gitlab-path-traversal-exploited-in-the-wild/" rel="noopener">Rapid7 (Sep 14)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · SELF-MANAGED</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch self-managed GitLab to 19.1.8, 19.2.6, or 19.3.2 immediately per CISA&#x27;s emergency directive; rotate any secrets, SSH keys, or credentials that were readable via the filesystem on an affected instance prior to patching; audit commits-API access logs for anomalous file-path requests.</span>
+      <button class="tbtn copy-inc" data-inc="gitlab-path-traversal-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="gitlab-path-traversal-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-85706">CVE-2026-85706</button></td>
+            <td class="ctx">GitLab repository commits API path traversal enabling unauthenticated arbitrary file read, CVSS 10.0</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="GitLab 19.1.8 / 19.2.6 / 19.3.2">GitLab 19.1.8 / 19.2.6 / 19.3.2</button></td>
+            <td class="ctx">Fixed releases for self-managed instances</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-20079 — max-severity Cisco Secure FMC auth bypass exploited by Sandworm and Qilin to drop web shells</h2>
+        </div>
+        <p class="inc-sum">Cisco confirmed active exploitation of CVE-2026-20079, a CVSS 10.0 authentication bypass in Secure Firewall Management Center's web interface that lets an unauthenticated remote attacker execute scripts and commands as root. Cisco Talos tracked three distinct post-compromise clusters — UAT-12197, UAT-11823, and UAT-11988 — with UAT-12197 dropping a JSP web shell into the FMC's Tomcat webroot that decodes a parameter and loads a Java class into the running process, alongside a JAR-based command executor and credential exfiltration; reporting attributes exploitation to both Sandworm and Qilin-linked activity. CISA added it to KEV as part of a Sep 10 batch with Cisco NetScaler and Fortinet, setting a Sep 12 federal patch deadline. <b>Durable catch: any unexpected .jsp file appearing in an FMC's Tomcat webroot, or an unfamiliar JAR file sitting alongside it, is a near-certain sign of this specific exploitation chain — check that path first, before broader log review.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-10</span><span>ACTIVE SINCE 2026-08</span>
+        <span>CVE-2026-20079 CVSS 10.0 · UNAUTH ROOT VIA WEB INTERFACE</span>
+        <span>3 TALOS-TRACKED CLUSTERS: UAT-12197, UAT-11823, UAT-11988</span>
+        <span>ATTRIBUTED TO SANDWORM AND QILIN-LINKED ACTIVITY</span>
+          <span class="attck">T1190 · T1505.003 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" rel="noopener">The Hacker News (Sep 10)</a> · <a href="https://blog.talosintelligence.com/fmc-ongoing-exploitation/" rel="noopener">Cisco Talos</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · WEB SHELL</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch Secure Firewall Management Center to the fixed release immediately; inspect the Tomcat webroot for unexpected .jsp files and adjacent JAR files; review audit logs for authentication events tied to the related static-credential issue (CVE-2026-20316); rotate any credentials that may have transited a compromised FMC instance.</span>
+      <button class="tbtn copy-inc" data-inc="cisco-fmc-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="cisco-fmc-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-20079">CVE-2026-20079</button></td>
+            <td class="ctx">Cisco Secure FMC web-interface authentication bypass enabling unauthenticated root command execution, CVSS 10.0</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor">Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor</button></td>
+            <td class="ctx">UAT-12197 post-exploitation artifact per Cisco Talos</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-19490 — second Citrix NetScaler auth-bypass flaw in weeks, 56 honeypot exploit attempts recorded</h2>
+        </div>
+        <p class="inc-sum">A second Citrix NetScaler ADC/Gateway authentication bypass, CVE-2026-19490 (CVSS 9.3), affects appliances configured as AAA virtual servers or Gateways running SSL VPN, ICA Proxy, CVPN, or RDP Proxy — the same appliance roles hit by CVE-2026-8452 weeks earlier. CISA added it to KEV Sep 10 in the same batch as the Cisco FMC and Fortinet flaws; honeypot telemetry recorded 56 exploitation attempts since Sep 3, with 36 of those on Sep 8 alone, showing exploitation intensified sharply once the flaw became public rather than trickling in gradually. <b>Durable catch: NetScaler AAA/Gateway appliances have now had two independent KEV-listed auth-bypass flaws in the same short window — treat any unpatched NetScaler appliance from either disclosure as compromised rather than merely exposed, given how fast exploitation ramped after each one went public.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-10</span><span>ACTIVE SINCE 2026-09-03</span>
+        <span>CVE-2026-19490 CVSS 9.3 · AAA/GATEWAY AUTH BYPASS</span>
+        <span>56 HONEYPOT EXPLOIT ATTEMPTS SINCE SEP 3 · 36 IN A SINGLE DAY (SEP 8)</span>
+        <span>SECOND KEV-LISTED NETSCALER AUTH-BYPASS FLAW IN WEEKS (AFTER CVE-2026-8452)</span>
+          <span class="attck">T1190 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" rel="noopener">The Hacker News (Sep 10)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · HONEYPOT DATA</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch NetScaler ADC/Gateway to the fixed release addressing CVE-2026-19490 immediately; treat any appliance that was unpatched between disclosure and patch application as a probable target given the honeypot attempt volume; review AAA/Gateway authentication logs for anomalies since Sep 3.</span>
+      <button class="tbtn copy-inc" data-inc="citrix-netscaler-19490-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="citrix-netscaler-19490-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-19490">CVE-2026-19490</button></td>
+            <td class="ctx">Citrix NetScaler ADC/Gateway AAA/Gateway authentication bypass, CVSS 9.3</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)">Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)</button></td>
+            <td class="ctx">Observed exploitation intensity pattern</td>
+            <td class="seen">SEP 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices</h2>
+        </div>
+        <p class="inc-sum">A Russian-speaking-attributed campaign has been exploiting CVE-2025-25249, a heap-based buffer overflow in FortiOS, FortiSwitchManager, and FortiSASE (CVSS 7.3), to deliver the PivotC2 remote-access trojan via crafted requests, with exploitation evidence dating back to July 2026. CISA added it to KEV Sep 10 alongside the Cisco and Citrix flaws; the campaign has targeted over 3,000 IP addresses and successfully infected 178 devices, concentrated mostly in the United States, using shell scripts that drop exploit binaries and establish reverse shells via single-line Node.js commands. <b>Durable catch: a compromised Fortinet device running an unfamiliar single-line Node.js process is PivotC2's specific reverse-shell mechanism — that process signature is more reliable to hunt for than the exploit request itself, since exploitation has been running undetected since July.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-10</span><span>ACTIVE SINCE 2026-07</span>
+        <span>CVE-2025-25249 CVSS 7.3 · HEAP OVERFLOW → PivotC2 RAT</span>
+        <span>3,000+ IPs TARGETED · 178 DEVICES INFECTED</span>
+        <span>EXPLOITATION DATES TO JULY 2026 · RUSSIAN-SPEAKING ACTOR ASSESSED</span>
+          <span class="attck">T1190 · T1071.001 · T1105</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" rel="noopener">The Hacker News (Sep 10)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · RAT</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch FortiOS/FortiSwitchManager/FortiSASE to the fixed release for CVE-2025-25249 immediately; hunt for unfamiliar single-line Node.js processes on Fortinet appliances as PivotC2&#x27;s reverse-shell mechanism; treat any device that was internet-facing and unpatched since July 2026 as potentially already infected regardless of current patch status.</span>
+      <button class="tbtn copy-inc" data-inc="fortinet-pivotc2">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="fortinet-pivotc2">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2025-25249">CVE-2025-25249</button></td>
+            <td class="ctx">FortiOS/FortiSwitchManager/FortiSASE heap-based buffer overflow enabling RCE, CVSS 7.3</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="PivotC2 RAT">PivotC2 RAT</button></td>
+            <td class="ctx">Remote-access trojan delivered via exploitation of CVE-2025-25249</td>
+            <td class="seen">JUL 2026</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Reverse shell established via a single-line Node.js command on a Fortinet appliance">Reverse shell established via a single-line Node.js command on a Fortinet appliance</button></td>
+            <td class="ctx">PivotC2 post-exploitation mechanism</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>'StyleSmuggler' — CVE-2026-75650 lets attackers turn Adobe Commerce's own template engine into unauthenticated RCE</h2>
+        </div>
+        <p class="inc-sum">Sansec disclosed CVE-2026-75650 ('StyleSmuggler'), a CVSS 10.0 unauthenticated RCE affecting Adobe Commerce 2.4.4-2.4.9 and Magento Open Source 2.4.6-2.4.9, where an attacker injects PHP through Magento's email-template system by exploiting the fact that style properties are treated as harmless layout data and pass through template safeguards unchecked — the payload then rides Magento's own dependency-injection machinery into execution. Sansec observed active exploitation beginning Sep 4, three days before Adobe's out-of-band patch shipped Sep 7; CrowdSec has tracked 500 unique IPs sending matching requests since Sep 9, and 23 of the 410 addresses probing StyleSmuggler also tried last year's SessionReaper flaw (CVE-2025-54236) — the same actor set revisiting Magento. <b>Durable catch: exploitation began three days before a patch existed — any Magento/Adobe Commerce store that applied hotfix VULN-39341 without also checking for a planted backdoor from that pre-patch window should assume compromise, not just apply the fix and move on.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-09</span><span>ACTIVE SINCE 2026-09-04</span>
+        <span>CVE-2026-75650 CVSS 10.0 · UNAUTH RCE VIA EMAIL TEMPLATE ENGINE</span>
+        <span>EXPLOITED FROM SEP 4, 3 DAYS BEFORE PATCH (SEP 7)</span>
+        <span>CROWDSEC: 500 UNIQUE IPs SINCE SEP 9 · 23/410 OVERLAP WITH SESSIONREAPER PROBING</span>
+          <span class="attck">T1190 · T1505.003</span>
+          <span><a href="https://sansec.io/research/stylesmuggler-0day" rel="noopener">Sansec</a> · <a href="https://www.crowdsec.net/vulntracking-report/cve-2026-75650-stylesmuggler-rce-adobe-commerce-magento" rel="noopener">CrowdSec</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · EXPLOITED · WEB APPLICATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Apply hotfix VULN-39341 immediately, then scan the store for backdoors planted during the Sep 4-7 pre-patch exploitation window rather than assuming the hotfix alone resolves prior compromise; review email-template configuration for unauthorized modifications; block or heighten monitoring on IPs previously seen probing SessionReaper (CVE-2025-54236) given the documented actor overlap.</span>
+      <button class="tbtn copy-inc" data-inc="adobe-commerce-stylesmuggler">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="adobe-commerce-stylesmuggler">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-75650">CVE-2026-75650</button></td>
+            <td class="ctx">Adobe Commerce/Magento email-template engine injection, unauthenticated RCE, CVSS 10.0</td>
+            <td class="seen">SEP 9</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="Hotfix VULN-39341">Hotfix VULN-39341</button></td>
+            <td class="ctx">Out-of-band fix released Sep 7, 2026</td>
+            <td class="seen">SEP 9</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)">Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)</button></td>
+            <td class="ctx">CrowdSec-tracked exploitation telemetry</td>
+            <td class="seen">SEP 9</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>The Gentlemen ransomware claims Air Canada, alleges 51,409 critical files taken</h2>
+        </div>
+        <p class="inc-sum">TheGentlemen ransomware group claimed a cyberattack against Air Canada Sep 9, alleging exfiltration of over 51,409 critical files and disrupting parts of the airline's operations — the second major claim from the same group within a week, following its Sep 5 listing of healthcare vendor Veradigm. Coverage of the claim notes the standard caveat for leak-site postings: the file count could be genuine, recycled from an earlier incident, exaggerated, or fabricated, and Air Canada has not independently confirmed the scope. <b>Durable catch: two Gentlemen claims against unrelated sectors (healthcare vendor, airline) four days apart shows the group is running high-volume opportunistic claims rather than sector-targeted campaigns — the specific number of files claimed matters less than confirming initial access and containment independently of the leak-site post.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-09</span><span>ACTIVE SINCE 2026-09-09</span>
+        <span>51,409 CRITICAL FILES CLAIMED · CANADA&#x27;S LARGEST AIRLINE</span>
+        <span>SECOND THEGENTLEMEN CLAIM IN A WEEK (AFTER VERADIGM, SEP 5)</span>
+        <span>CLAIM UNVERIFIED · AIR CANADA HAS NOT CONFIRMED SCOPE</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://socradar.io/free-tools/ransomware-intelligence/victims/air-canada-thegentlemen-6edb45b0" rel="noopener">SOCRadar</a> · <a href="https://thecyberexpress.com/cyberattack-on-air-canada-bianlian-data-risk/" rel="noopener">The Cyber Express</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · AVIATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Air Canada customers/partners should watch for official confirmation before treating the 51,409-file claim as verified; airlines and other high-profile targets should assume opportunistic ransomware groups will claim attacks regardless of actual access depth, and should have a rapid-verification process to confirm or refute leak-site claims quickly; monitor TheGentlemen&#x27;s leak site for any proof files substantiating this listing.</span>
+      <button class="tbtn copy-inc" data-inc="air-canada-gentlemen">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="air-canada-gentlemen">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="TheGentlemen ransomware (double extortion, ransomware-as-a-service)">TheGentlemen ransomware (double extortion, ransomware-as-a-service)</button></td>
+            <td class="ctx">Group claiming both the Air Canada and Veradigm incidents within the same week</td>
+            <td class="seen">SEP 9</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-86218 — pre-auth RCE in N-able N-central RMM exploited, fourth patch in five weeks</h2>
+        </div>
+        <p class="inc-sum">N-able confirmed active exploitation of CVE-2026-86218 (CVSS 10.0), a static code injection flaw (CWE-96) in N-central that lets an unauthenticated attacker send crafted requests the server evaluates without validation, executing arbitrary OS commands as root with no authentication or user interaction required. Because N-central is an RMM platform used by managed service providers, a compromised instance is a foothold into every downstream endpoint that MSP manages, not just the N-central server itself; researchers note it can potentially be chained with two authentication-bypass flaws (CVE-2026-86206, CVE-2026-86207) to bypass console auth and create attacker-controlled admin accounts. CISA added it to KEV Sep 8; it was patched in N-central 2026.3 Hotfix 4 on Sep 5, marking N-able's fourth patch to the product in five weeks. <b>Durable catch: N-central's role as an RMM makes this a supply-chain-shaped vulnerability — any MSP running an unpatched instance should assume every client endpoint it manages is in the blast radius, not just the RMM server.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-09-05</span>
+        <span>CVE-2026-86218 CVSS 10.0 · UNAUTH PRE-AUTH RCE AS ROOT</span>
+        <span>4TH N-CENTRAL PATCH IN 5 WEEKS</span>
+        <span>CHAINABLE WITH CVE-2026-86206/86207 FOR ADMIN ACCOUNT CREATION</span>
+          <span class="attck">T1190 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/n-able-n-central-pre-auth-rce-flaw.html" rel="noopener">The Hacker News (Sep 8)</a> · <a href="https://arcticwolf.com/resources/blog/cve-2026-86218/" rel="noopener">Arctic Wolf</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · MSP RMM</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch N-central to 2026.3 Hotfix 4 or later immediately; MSPs should audit for unauthorized admin accounts created via the CVE-2026-86206/86207 chain and treat any client endpoint managed through an unpatched instance as potentially exposed; review N-central access logs for crafted requests predating the patch.</span>
+      <button class="tbtn copy-inc" data-inc="nable-ncentral-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="nable-ncentral-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-86218">CVE-2026-86218</button></td>
+            <td class="ctx">N-able N-central static code injection, unauthenticated pre-auth RCE as root, CVSS 10.0</td>
+            <td class="seen">SEP 8</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="N-central 2026.3 Hotfix 4 (released Sep 5, 2026)">N-central 2026.3 Hotfix 4 (released Sep 5, 2026)</button></td>
+            <td class="ctx">Fixed release</td>
+            <td class="seen">SEP 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Microsoft's record 964-CVE Patch Tuesday includes two actively exploited Windows zero-days</h2>
+        </div>
+        <p class="inc-sum">Microsoft's September Patch Tuesday addressed 964 CVEs — a record volume — including two zero-days confirmed exploited in the wild: CVE-2026-81963, an improper link-resolution ('link following') flaw in the Windows Update Stack that is the first such component to be exploited as a zero-day since 2022, and CVE-2026-85880, a heap-based buffer overflow in Windows ALPC. Both are elevation-of-privilege bugs rated CVSS 7.8 that let an attacker with initial local access escalate to SYSTEM, turning an initial foothold into full device control; CISA added both to KEV Sep 8 with a Sep 22 federal remediation deadline. No public IOCs (samples, attacker groups) were disclosed alongside either advisory. <b>Durable catch: both zero-days require local access to start — they're the second stage of an intrusion that began another way, so patching them closes the escalation path but doesn't address however the attacker got a foothold in the first place.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-09-08</span>
+        <span>CVE-2026-81963 (WINDOWS UPDATE STACK) · CVE-2026-85880 (WINDOWS ALPC) · BOTH CVSS 7.8</span>
+        <span>FIRST WINDOWS UPDATE STACK ZERO-DAY EXPLOITED SINCE 2022</span>
+        <span>964 TOTAL CVEs PATCHED · RECORD VOLUME FOR A SINGLE PATCH TUESDAY</span>
+          <span class="attck">T1068</span>
+          <span><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-september-2026-patch-tuesday-fixes-966-flaws-2-zero-days/" rel="noopener">BleepingComputer (Sep 8)</a> · <a href="https://www.securityweek.com/microsoft-patches-record-974-vulnerabilities-including-two-exploited-zero-days/" rel="noopener">SecurityWeek</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · KEV · PRIVILEGE ESCALATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Apply September 2026 Windows cumulative updates immediately to close both elevation-of-privilege zero-days; since both require existing local access, prioritize investigating how attackers are gaining initial footholds (phishing, exposed RDP, etc.) rather than treating the patch alone as sufficient; meet the Sep 22 federal KEV remediation deadline where applicable.</span>
+      <button class="tbtn copy-inc" data-inc="windows-patch-tuesday-zerodays">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="windows-patch-tuesday-zerodays">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-81963 / CVE-2026-85880">CVE-2026-81963 / CVE-2026-85880</button></td>
+            <td class="ctx">Windows Update Stack link-following and Windows ALPC heap overflow, both local privilege escalation to SYSTEM, CVSS 7.8</td>
+            <td class="seen">SEP 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CenterPoint Energy investigates alleged 7.49 million-record breach tied to its guest bill-pay feature</h2>
+        </div>
+        <p class="inc-sum">A threat actor using the alias '4d722e4d656f77' posted on an open forum Sep 1 claiming theft of a CenterPoint Energy customer database containing 7.49 million raw records (6.73 million after filtering) — names, phone numbers, service/billing addresses, account and premise IDs, billing amounts, payment status, autopay/paperless settings, and partial Social Security numbers — and provided sample data to back the claim. Subsequent lawsuits allege the intrusion window ran Aug 17-Sep 1 and point specifically at CenterPoint's online guest bill-pay feature as the likely weak point, though the company has not publicly confirmed the breach or its scope as of this writing. <b>Durable catch: a 'guest' payment flow that doesn't require an account is, by definition, a path with weaker identity verification than the authenticated account system sitting next to it — any utility or biller offering guest bill-pay should audit that specific flow's access controls independently of its main login system.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-08-17</span>
+        <span>7.49M RAW RECORDS CLAIMED (6.73M FILTERED) · SAMPLE DATA PROVIDED</span>
+        <span>GUEST BILL-PAY FEATURE IDENTIFIED AS LIKELY ENTRY POINT</span>
+        <span>COMPANY HAS NOT PUBLICLY CONFIRMED BREACH SCOPE AS OF THIS WRITING</span>
+          <span class="attck">T1190 · T1005</span>
+          <span><a href="https://therecord.media/texas-utility-firm-investigating-potential-data-leak-moveit-breach" rel="noopener">The Record</a> · <a href="https://www.yahoo.com/news/us/articles/centerpoint-energy-hit-multiple-proposed-235213317.html" rel="noopener">Yahoo News</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · UTILITY · GUEST BILL PAY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>CenterPoint Energy customers should monitor for phishing using the leaked billing/account details and consider a credit freeze given the partial-SSN exposure; utilities and billers offering an unauthenticated guest bill-pay flow should audit that path&#x27;s access controls and rate limiting specifically, since it&#x27;s the suspected entry point here; watch for the company&#x27;s own confirmation to establish verified scope.</span>
+      <button class="tbtn copy-inc" data-inc="centerpoint-energy-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="centerpoint-energy-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Threat actor alias &#x27;4d722e4d656f77&#x27;">Threat actor alias &#x27;4d722e4d656f77&#x27;</button></td>
+            <td class="ctx">Individual who posted the claimed CenterPoint Energy database for sale on an open forum</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)">Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)</button></td>
+            <td class="ctx">Suspected entry point for the claimed breach</td>
+            <td class="seen">SEP 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Veradigm discloses patient data breach after The Gentlemen ransomware gang claims 3.5 million records via vendor API</h2>
+        </div>
+        <p class="inc-sum">Healthcare technology firm Veradigm disclosed that stolen login credentials within a third-party vendor's environment granted unauthorized access to a Veradigm API used for service delivery, which the attacker used to download patient records; Veradigm says the breach was contained to that vendor-facing interface with no disruption to internal systems and no clinical/medical data exposed. The Gentlemen ransomware-as-a-service gang added Veradigm to its leak site Sep 5, claiming 3.5 million patient records including names, addresses, phone numbers, email addresses, and other PII, including Social Security numbers for a subset of customers. <b>Durable catch: the attacker never touched Veradigm's own network — stolen vendor credentials against a narrow, purpose-built API endpoint were sufficient to reach 3.5 million patient records, which is the actual lesson for any organization exposing a vendor-facing API scoped to 'just' service delivery.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-09-05</span>
+        <span>3.5M PATIENT RECORDS CLAIMED BY THE GENTLEMEN (LEAK SITE POST SEP 5)</span>
+        <span>INITIAL ACCESS: STOLEN VENDOR CREDENTIALS AGAINST A VERADIGM SERVICE API</span>
+        <span>SSNs INCLUDED FOR A SUBSET OF CUSTOMERS · NO CLINICAL DATA EXPOSED PER VENDOR</span>
+          <span class="attck">T1078 · T1567.002</span>
+          <span><a href="https://www.bleepingcomputer.com/news/security/veradigm-discloses-patient-data-breach-after-gentlemen-gang-claims-attack/" rel="noopener">BleepingComputer</a> · <a href="https://www.hipaajournal.com/veradigm-data-breach-2026/" rel="noopener">HIPAA Journal</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · THIRD-PARTY VENDOR · HEALTHCARE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Veradigm-affiliated customers and patients should watch for identity-theft/phishing risk given the SSN exposure for a subset of records; organizations exposing vendor-facing APIs should scope and monitor those endpoints as tightly as customer-facing ones, since narrow API access was sufficient here to reach millions of records; require MFA on all vendor-facing service accounts, not just customer-facing logins.</span>
+      <button class="tbtn copy-inc" data-inc="veradigm-gentlemen">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="veradigm-gentlemen">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="The Gentlemen (ransomware-as-a-service, double extortion)">The Gentlemen (ransomware-as-a-service, double extortion)</button></td>
+            <td class="ctx">Group claiming the Veradigm patient-data theft via a compromised third-party vendor</td>
+            <td class="seen">SEP 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>AUDIT TEAM extortion group claims four victims across South Korea, Germany, and Argentina</h2>
+        </div>
+        <p class="inc-sum">A data-extortion group operating under the name AUDIT TEAM claimed four victim organizations spanning South Korea, Germany, and Argentina in the second week of September, per AhnLab's weekly dark-web tracking. As with most fresh extortion-group listings, no victim has publicly confirmed the claims and no technical indicators (initial access vector, malware family, sample data) have been disclosed for any of the four. <b>Durable catch: a newly visible extortion brand claiming victims across three countries and continents in a single week is either an established access broker relabeling old intrusions under a new name, or a genuinely fast-moving new operation — either way, the geographic and sector spread argues against assuming any one victim profile is exempt.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-09-08</span>
+        <span>4 VICTIMS CLAIMED · SOUTH KOREA, GERMANY, ARGENTINA</span>
+        <span>NO TECHNICAL IOCs DISCLOSED FOR ANY LISTING</span>
+        <span>NAME/BRAND APPEARS NEWLY ACTIVE THIS WEEK PER ASEC TRACKING</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://asec.ahnlab.com/en/95338/" rel="noopener">ASEC — Ransom &amp; Dark Web Issues, Week 2 September 2026</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA EXTORTION · MULTI-COUNTRY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations in South Korea, Germany, and Argentina across any sector should treat AUDIT TEAM as an active, geographically opportunistic extortion group and review common ransomware entry points; monitor AUDIT TEAM&#x27;s leak site for proof files that would substantiate any of the four claims before treating them as confirmed.</span>
+      <button class="tbtn copy-inc" data-inc="audit-team-extortion">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="audit-team-extortion">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="AUDIT TEAM (data-extortion group, newly active Sep 2026)">AUDIT TEAM (data-extortion group, newly active Sep 2026)</button></td>
+            <td class="ctx">Group claiming four victims across South Korea, Germany, and Argentina</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>LAPSUS$ resumes activity, teases a new victim disclosure without naming a target</h2>
+        </div>
+        <p class="inc-sum">AhnLab's weekly dark-web tracking flagged renewed LAPSUS$ activity in the second week of September, with the group teasing an upcoming victim disclosure without naming a target as of this writing. The group, part of the broader Scattered LAPSUS$ Hunters collective that has been rebuilding under a brokered-access operational model after 2022-2023 law-enforcement arrests, has no confirmed new victim, technique, or technical indicator tied to this specific tease yet — it is a signal to watch rather than a confirmed incident. <b>Durable catch: LAPSUS$'s historical playbook runs through social engineering against help desks and MFA fatigue rather than software exploits — any organization seeing this resurgence news should re-verify help-desk identity-verification procedures now, before a named victim (possibly their own environment) surfaces.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-09-08</span>
+        <span>GROUP TEASED A NEW VICTIM DISCLOSURE, NO TARGET NAMED YET</span>
+        <span>PART OF THE BROADER SCATTERED LAPSUS$ HUNTERS RESURGENCE</span>
+        <span>NO CONFIRMED VICTIM OR TECHNIQUE FOR THIS SPECIFIC TEASE</span>
+          <span class="attck">T1078 · T1566.004</span>
+          <span><a href="https://asec.ahnlab.com/en/95338/" rel="noopener">ASEC — Ransom &amp; Dark Web Issues, Week 2 September 2026</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SOCIAL ENGINEERING · RESURGENT ACTOR</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Re-verify help-desk and IT-support identity-verification procedures against social-engineering/vishing pretexts, LAPSUS$&#x27;s historical primary technique; move privileged accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; monitor for the group&#x27;s promised victim disclosure to confirm scope and technique once named.</span>
+      <button class="tbtn copy-inc" data-inc="lapsus-resumed">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="lapsus-resumed">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)">LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)</button></td>
+            <td class="ctx">Group teasing a new, unnamed victim disclosure</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Elixir Medical discloses HR data breach affecting current and former employees, two-month gap before detection</h2>
+        </div>
+        <p class="inc-sum">Elixir Medical Corporation determined that an unauthorized party accessed its network Jul 20-21, 2026, but did not identify until Aug 11 that the accessed files contained sensitive HR information on current and former employees, consultants, and some of their beneficiaries and dependents — including Social Security numbers, driver's license numbers, payment card data, medical information, and direct deposit bank account details. The company reported the breach to the California Attorney General Sep 4 and notified affected individuals; no technical details of the initial intrusion method have been disclosed. <b>Durable catch: a three-week gap between initial access (Jul 20-21) and detection of what was actually taken (Aug 11) is the real story here — HR/finance data with SSNs, driver's licenses, and bank details sitting in a network segment that took weeks to fully scope after an intrusion was already known.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-09</span><span>ACTIVE SINCE 2026-07-20</span>
+        <span>INTRUSION JUL 20-21 · SCOPE OF HR DATA ACCESS NOT CONFIRMED UNTIL AUG 11</span>
+        <span>SSNs, DRIVER&#x27;S LICENSES, PAYMENT CARD DATA, DIRECT-DEPOSIT BANK DETAILS EXPOSED</span>
+        <span>REPORTED TO CALIFORNIA AG SEP 4 · NO INTRUSION-VECTOR TECHNICAL DETAILS DISCLOSED</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://www.globenewswire.com/news-release/2026/09/09/3359120/0/en/elixir-medical-corporation-data-breach-exposes-personal-information-murphy-law-firm-investigates-legal-claims.html" rel="noopener">GlobeNewswire (Sep 9)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · HR DATA · MEDICAL DEVICE MANUFACTURER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Affected current/former Elixir Medical employees and dependents should place a credit freeze given the SSN, driver&#x27;s license, and bank-account exposure; organizations should audit how long it takes to fully scope data accessed after an intrusion is detected, since the gap between access and understanding impact was the operative failure here, not just the initial access itself.</span>
+      <button class="tbtn copy-inc" data-inc="elixir-medical-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="elixir-medical-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized network access to HR/finance file stores containing SSNs, driver&#x27;s license numbers, payment card, and direct-deposit bank data">Unauthorized network access to HR/finance file stores containing SSNs, driver&#x27;s license numbers, payment card, and direct-deposit bank data</button></td>
+            <td class="ctx">Scope of the confirmed breach</td>
+            <td class="seen">SEP 9</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="../feeds/issue-008-iocs.txt">issue-008-iocs.txt</a>
+  <a class="file" href="../feeds/issue-008-iocs.clean.txt">issue-008-iocs.clean.txt</a>
+  <a class="file" href="../feeds/issue-008-iocs.csv">issue-008-iocs.csv</a>
+  <a class="file" href="../feeds/issue-008.stix2.json">issue-008.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>

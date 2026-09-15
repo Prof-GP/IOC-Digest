@@ -1,4 +1,4 @@
-<title>IOC Digest — Issue 007 · Week of 2026-09-04</title>
+<title>IOC Digest — Issue 008 · Week of 2026-09-11</title>
 <style>
   /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
      spent semantically (type, severity, interactivity), the ground stays neutral. */
@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 007 · WK 2026-09-04 · 12 INCIDENTS · 25 IOCs</span>
+  <span class="issue-meta">ISSUE 008 · WK 2026-09-11 · 13 INCIDENTS · 22 IOCs</span>
   <a class="navlink" href="archive/">ARCHIVE ▾</a>
-  <button class="fchip on" data-type="all">ALL<b>25</b></button>
+  <button class="fchip on" data-type="all">ALL<b>22</b></button>
   <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>6</b></button>
-  <button class="fchip" data-type="host">HOST<b>19</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>2</b></button>
+  <button class="fchip" data-type="host">HOST<b>20</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -432,111 +432,47 @@
 </div>
 
 <div class="grid">
-  <section class="incident crit wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev crit">CRITICAL</span>
-          <h2>CVE-2026-9586 — unauthenticated SQLi in Sangoma Switchvox VoIP platform exploited to drop reverse shells</h2>
-        </div>
-        <p class="inc-sum">Sangoma Switchvox's /pa endpoint, which parses XML requests from supported IP phones, passes user-supplied input straight into PostgreSQL queries without sanitization — CVE-2026-9586, CVSS 9.3. Horizon3.ai researcher Zach Hanley observed valid exploitation attempts against internet-exposed Switchvox devices starting Aug 30, with attackers using the SQLi to modify user records, escalate privilege inside the application, run OS commands on the underlying server, and drop reverse shells for remote access; CISA added it to KEV Sep 2 alongside evidence the same actors chained it with a JFrog Artifactory flaw to mint admin tokens for follow-on credential harvesting. <b>Durable catch: a Switchvox box showing outbound connections to 176[.]65[.]148[.]184 on port 39323, or suspicious entries in /var/log/switchvox/db-quirks.log, has already been hit — those are Horizon3's specific observed indicators, not a hypothetical.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-08-30</span>
-        <span>CVE-2026-9586 CVSS 9.3 · UNAUTH SQLI IN /pa ENDPOINT</span>
-        <span>HORIZON3: EXPLOITATION OBSERVED FROM AUG 30</span>
-        <span>REAL ATTACKER IP AND LOG PATH PUBLISHED</span>
-          <span class="attck">T1190 · T1059 · T1071.001</span>
-          <span><a href="https://www.helpnetsecurity.com/2026/09/02/exploitation-of-sangoma-switchvox-flaw-underway-cve-2026-9586/" rel="noopener">Help Net Security (Sep 2)</a> · <a href="https://horizon3.ai/attack-research/disclosures/cve-2026-9586-sangoma-switchvox-rce/" rel="noopener">Horizon3.ai</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">CVE · EXPLOITED · KEV · REVERSE SHELL</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Upgrade Switchvox to 8.4.0.2 or later immediately; check /var/log/switchvox/db-quirks.log for suspicious statements and review network logs for connections to 176[.]65[.]148[.]184, particularly on port 39323; audit user records and privilege levels within Switchvox for unauthorized modification since Aug 30.</span>
-      <button class="tbtn copy-inc" data-inc="sangoma-switchvox-kev">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="sangoma-switchvox-kev">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-9586">CVE-2026-9586</button></td>
-            <td class="ctx">Sangoma Switchvox unauth SQL injection via /pa endpoint, CVSS 9.3</td>
-            <td class="seen">SEP 2</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">ip</span></td>
-            <td><button class="val" data-defanged="176[.]65[.]148[.]184">176[.]65[.]148[.]184</button></td>
-            <td class="ctx">Observed attacker IP exploiting Switchvox, connecting on port 39323</td>
-            <td class="seen">AUG 30</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">filename</span></td>
-            <td><button class="val" data-defanged="/var/log/switchvox/db-quirks.log">/var/log/switchvox/db-quirks.log</button></td>
-            <td class="ctx">Log file containing suspicious statements left by exploitation attempts</td>
-            <td class="seen">AUG 30</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="Switchvox 8.4.0.2">Switchvox 8.4.0.2</button></td>
-            <td class="ctx">Fixed release</td>
-            <td class="seen">SEP 2</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
   <section class="incident crit">
     <div class="inc-head">
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev crit">CRITICAL</span>
-          <h2>CVE-2026-49869 — Kestra OSS auth-bypass RCE exploited within days of disclosure to deploy crypto miners</h2>
+          <h2>CVE-2026-85706 — max-severity GitLab path traversal in the commits API added to KEV under emergency directive</h2>
         </div>
-        <p class="inc-sum">Kestra OSS's AuthenticationFilter skips authentication for any request path ending in /configs, a suffix-match bug that lets an unauthenticated attacker create and execute arbitrary workflows as root — CVE-2026-49869, CVSS 10.0. WatchTowr observed in-the-wild exploitation starting Sep 1, four days after disclosure, with attackers minting admin tokens and enumerating users, groups, and credential sets; Microsoft separately reported the same flaw was likely exploited as far back as late June to establish reverse shells, run Docker container discovery, and deploy XMRig cryptocurrency miners. CISA added it to KEV Sep 2. <b>Durable catch: any Kestra instance reachable at a URL path ending in /configs bypasses auth entirely — the bug is the routing suffix itself, not a credential or session flaw, so network-layer path restriction is the only mitigation short of patching.</b></p>
+        <p class="inc-sum">GitLab's repository commits API has an improper path-confinement and missing-authentication flaw, CVE-2026-85706 (CVSS 10.0), that lets an unauthenticated attacker read arbitrary files from an affected self-managed GitLab server under certain conditions. CISA added it to KEV Sep 11 with confirmed active-exploitation evidence, invoking emergency federal directive BOD 26-04 requiring immediate patching outside the normal cycle rather than the standard deadline window. GitLab.com and GitLab Dedicated were already patched before disclosure; affected self-managed versions span 18.7 through 19.3.1. No public IOCs (attacker IPs, request signatures) accompanied the advisory. <b>Durable catch: an unauthenticated arbitrary-file-read against a self-managed GitLab instance can pull CI/CD secrets, SSH keys, or config files straight off the server — treat this as a credential-exposure incident requiring rotation, not just a patch-and-move-on vulnerability.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-06</span>
-        <span>CVE-2026-49869 CVSS 10.0 · AUTH BYPASS VIA /configs PATH SUFFIX</span>
-        <span>WATCHTOWR: EXPLOITATION FROM SEP 1, 4 DAYS POST-DISCLOSURE</span>
-        <span>MICROSOFT: LIKELY EXPLOITED SINCE LATE JUNE FOR XMRIG DEPLOYMENT</span>
-          <span class="attck">T1190 · T1611 · T1496</span>
-          <span><a href="https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html" rel="noopener">The Hacker News (Sep 3)</a> · <a href="https://aicybr.com/blog/kestra-cve-2026-49869-kev-rce-remediation" rel="noopener">AiCybr</a></span>
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-09-11</span>
+        <span>CVE-2026-85706 CVSS 10.0 · UNAUTH ARBITRARY FILE READ VIA COMMITS API</span>
+        <span>CISA INVOKED EMERGENCY DIRECTIVE BOD 26-04 (IMMEDIATE PATCH, NOT STANDARD DEADLINE)</span>
+        <span>AFFECTS SELF-MANAGED 18.7-19.3.1 · GITLAB.COM/DEDICATED ALREADY PATCHED</span>
+          <span class="attck">T1190 · T1005</span>
+          <span><a href="https://www.rapid7.com/blog/post/etr-cve-2026-85706-critical-gitlab-path-traversal-exploited-in-the-wild/" rel="noopener">Rapid7 (Sep 14)</a></span>
         </div>
       </div>
-      <span class="inc-kind">CVE · EXPLOITED · KEV · CRYPTOMINING</span>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · SELF-MANAGED</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch Kestra OSS to the fixed release immediately; block or restrict any request path ending in /configs at the reverse proxy/WAF layer as a compensating control; hunt for unexpected workflow creation, Docker socket access, or XMRig-pattern CPU spikes on any internet-reachable Kestra host, especially since possible exploitation predates public disclosure by months.</span>
-      <button class="tbtn copy-inc" data-inc="kestra-oss-kev">COPY IOCs</button>
+      <span>Patch self-managed GitLab to 19.1.8, 19.2.6, or 19.3.2 immediately per CISA&#x27;s emergency directive; rotate any secrets, SSH keys, or credentials that were readable via the filesystem on an affected instance prior to patching; audit commits-API access logs for anomalous file-path requests.</span>
+      <button class="tbtn copy-inc" data-inc="gitlab-path-traversal-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="kestra-oss-kev">
+      <table data-inc="gitlab-path-traversal-kev">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-49869">CVE-2026-49869</button></td>
-            <td class="ctx">Kestra OSS unauthenticated command injection RCE via AuthenticationFilter suffix-match bypass, CVSS 10.0</td>
-            <td class="seen">SEP 2</td>
+            <td><button class="val" data-defanged="CVE-2026-85706">CVE-2026-85706</button></td>
+            <td class="ctx">GitLab repository commits API path traversal enabling unauthenticated arbitrary file read, CVSS 10.0</td>
+            <td class="seen">SEP 11</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="XMRig cryptocurrency miner">XMRig cryptocurrency miner</button></td>
-            <td class="ctx">Payload deployed post-exploitation per Microsoft reporting</td>
-            <td class="seen">JUN 2026</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthenticated requests to any URL path ending in /configs against a Kestra instance">Unauthenticated requests to any URL path ending in /configs against a Kestra instance</button></td>
-            <td class="ctx">Exact exploitation pattern for the AuthenticationFilter bypass</td>
-            <td class="seen">SEP 1</td>
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="GitLab 19.1.8 / 19.2.6 / 19.3.2">GitLab 19.1.8 / 19.2.6 / 19.3.2</button></td>
+            <td class="ctx">Fixed releases for self-managed instances</td>
+            <td class="seen">SEP 11</td>
           </tr>
         </tbody>
       </table>
@@ -547,100 +483,232 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev crit">CRITICAL</span>
-          <h2>CVE-2026-83548/83549 — chained SonicWall SMA1000 flaws give unauthenticated attackers root, actively exploited</h2>
+          <h2>CVE-2026-20079 — max-severity Cisco Secure FMC auth bypass exploited by Sandworm and Qilin to drop web shells</h2>
         </div>
-        <p class="inc-sum">SonicWall disclosed two SMA1000 vulnerabilities Sep 1: CVE-2026-83548, a CVSS 10.0 pre-auth SSRF in the Workplace interface that lets an unauthenticated attacker reach sensitive functionality through an unintended access path, and CVE-2026-83549, an OS command injection in the Appliance Management Console that normally needs admin authentication — but chained behind the SSRF, becomes unauthenticated arbitrary command execution. SonicWall confirmed active exploitation and CISA added both to KEV the same week with no public proof-of-concept, attribution, or technical indicators released alongside the advisory. <b>Durable catch: SonicWall and CISA explicitly withheld IOCs for active exploitation of a CVSS 10.0 flaw — the absence of a hash or IP to hunt for is itself the signal that this is being exploited quietly, and patching is the only reliable defense right now.</b></p>
+        <p class="inc-sum">Cisco confirmed active exploitation of CVE-2026-20079, a CVSS 10.0 authentication bypass in Secure Firewall Management Center's web interface that lets an unauthenticated remote attacker execute scripts and commands as root. Cisco Talos tracked three distinct post-compromise clusters — UAT-12197, UAT-11823, and UAT-11988 — with UAT-12197 dropping a JSP web shell into the FMC's Tomcat webroot that decodes a parameter and loads a Java class into the running process, alongside a JAR-based command executor and credential exfiltration; reporting attributes exploitation to both Sandworm and Qilin-linked activity. CISA added it to KEV as part of a Sep 10 batch with Cisco NetScaler and Fortinet, setting a Sep 12 federal patch deadline. <b>Durable catch: any unexpected .jsp file appearing in an FMC's Tomcat webroot, or an unfamiliar JAR file sitting alongside it, is a near-certain sign of this specific exploitation chain — check that path first, before broader log review.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-01</span><span>ACTIVE SINCE 2026-09-01</span>
-        <span>CVE-2026-83548 CVSS 10.0 · SSRF CHAINED TO CVE-2026-83549 OS COMMAND INJECTION</span>
-        <span>CONFIRMED ACTIVELY EXPLOITED · ADDED TO CISA KEV</span>
-        <span>NO PUBLIC IOCs, POC, OR ATTRIBUTION RELEASED</span>
-          <span class="attck">T1190 · T1078 · T1059</span>
-          <span><a href="https://www.rapid7.com/blog/post/etr-critical-sonicwall-sma1000-vulnerabilities-cve-2026-83548-cve-2026-83549-exploited-in-the-wild/" rel="noopener">Rapid7 (Sep 1)</a> · <a href="https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog" rel="noopener">CISA KEV Catalog (Sep 2)</a></span>
+          <span class="reported">REPORTED 2026-09-10</span><span>ACTIVE SINCE 2026-08</span>
+        <span>CVE-2026-20079 CVSS 10.0 · UNAUTH ROOT VIA WEB INTERFACE</span>
+        <span>3 TALOS-TRACKED CLUSTERS: UAT-12197, UAT-11823, UAT-11988</span>
+        <span>ATTRIBUTED TO SANDWORM AND QILIN-LINKED ACTIVITY</span>
+          <span class="attck">T1190 · T1505.003 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" rel="noopener">The Hacker News (Sep 10)</a> · <a href="https://blog.talosintelligence.com/fmc-ongoing-exploitation/" rel="noopener">Cisco Talos</a></span>
         </div>
       </div>
-      <span class="inc-kind">CVE · EXPLOITED · KEV · UNAUTH RCE</span>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · WEB SHELL</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch SMA1000 appliances (models 6210, 7210, 8200v) to 12.4.3-03526 platform-hotfix or 12.5.0-02952 platform-hotfix immediately; treat any internet-facing Workplace interface or Appliance Management Console as a probable target regardless of whether an IOC has surfaced yet; review appliance logs for anomalous Workplace-interface requests or unexpected command execution since Sep 1.</span>
-      <button class="tbtn copy-inc" data-inc="sonicwall-sma1000-kev">COPY IOCs</button>
+      <span>Patch Secure Firewall Management Center to the fixed release immediately; inspect the Tomcat webroot for unexpected .jsp files and adjacent JAR files; review audit logs for authentication events tied to the related static-credential issue (CVE-2026-20316); rotate any credentials that may have transited a compromised FMC instance.</span>
+      <button class="tbtn copy-inc" data-inc="cisco-fmc-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="sonicwall-sma1000-kev">
+      <table data-inc="cisco-fmc-kev">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-83548 / CVE-2026-83549">CVE-2026-83548 / CVE-2026-83549</button></td>
-            <td class="ctx">SonicWall SMA1000 pre-auth SSRF chained to OS command injection, CVSS 10.0</td>
-            <td class="seen">SEP 1</td>
+            <td><button class="val" data-defanged="CVE-2026-20079">CVE-2026-20079</button></td>
+            <td class="ctx">Cisco Secure FMC web-interface authentication bypass enabling unauthenticated root command execution, CVSS 10.0</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor">Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor</button></td>
+            <td class="ctx">UAT-12197 post-exploitation artifact per Cisco Talos</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-19490 — second Citrix NetScaler auth-bypass flaw in weeks, 56 honeypot exploit attempts recorded</h2>
+        </div>
+        <p class="inc-sum">A second Citrix NetScaler ADC/Gateway authentication bypass, CVE-2026-19490 (CVSS 9.3), affects appliances configured as AAA virtual servers or Gateways running SSL VPN, ICA Proxy, CVPN, or RDP Proxy — the same appliance roles hit by CVE-2026-8452 weeks earlier. CISA added it to KEV Sep 10 in the same batch as the Cisco FMC and Fortinet flaws; honeypot telemetry recorded 56 exploitation attempts since Sep 3, with 36 of those on Sep 8 alone, showing exploitation intensified sharply once the flaw became public rather than trickling in gradually. <b>Durable catch: NetScaler AAA/Gateway appliances have now had two independent KEV-listed auth-bypass flaws in the same short window — treat any unpatched NetScaler appliance from either disclosure as compromised rather than merely exposed, given how fast exploitation ramped after each one went public.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-10</span><span>ACTIVE SINCE 2026-09-03</span>
+        <span>CVE-2026-19490 CVSS 9.3 · AAA/GATEWAY AUTH BYPASS</span>
+        <span>56 HONEYPOT EXPLOIT ATTEMPTS SINCE SEP 3 · 36 IN A SINGLE DAY (SEP 8)</span>
+        <span>SECOND KEV-LISTED NETSCALER AUTH-BYPASS FLAW IN WEEKS (AFTER CVE-2026-8452)</span>
+          <span class="attck">T1190 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" rel="noopener">The Hacker News (Sep 10)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · HONEYPOT DATA</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch NetScaler ADC/Gateway to the fixed release addressing CVE-2026-19490 immediately; treat any appliance that was unpatched between disclosure and patch application as a probable target given the honeypot attempt volume; review AAA/Gateway authentication logs for anomalies since Sep 3.</span>
+      <button class="tbtn copy-inc" data-inc="citrix-netscaler-19490-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="citrix-netscaler-19490-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-19490">CVE-2026-19490</button></td>
+            <td class="ctx">Citrix NetScaler ADC/Gateway AAA/Gateway authentication bypass, CVSS 9.3</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)">Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)</button></td>
+            <td class="ctx">Observed exploitation intensity pattern</td>
+            <td class="seen">SEP 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices</h2>
+        </div>
+        <p class="inc-sum">A Russian-speaking-attributed campaign has been exploiting CVE-2025-25249, a heap-based buffer overflow in FortiOS, FortiSwitchManager, and FortiSASE (CVSS 7.3), to deliver the PivotC2 remote-access trojan via crafted requests, with exploitation evidence dating back to July 2026. CISA added it to KEV Sep 10 alongside the Cisco and Citrix flaws; the campaign has targeted over 3,000 IP addresses and successfully infected 178 devices, concentrated mostly in the United States, using shell scripts that drop exploit binaries and establish reverse shells via single-line Node.js commands. <b>Durable catch: a compromised Fortinet device running an unfamiliar single-line Node.js process is PivotC2's specific reverse-shell mechanism — that process signature is more reliable to hunt for than the exploit request itself, since exploitation has been running undetected since July.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-10</span><span>ACTIVE SINCE 2026-07</span>
+        <span>CVE-2025-25249 CVSS 7.3 · HEAP OVERFLOW → PivotC2 RAT</span>
+        <span>3,000+ IPs TARGETED · 178 DEVICES INFECTED</span>
+        <span>EXPLOITATION DATES TO JULY 2026 · RUSSIAN-SPEAKING ACTOR ASSESSED</span>
+          <span class="attck">T1190 · T1071.001 · T1105</span>
+          <span><a href="https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" rel="noopener">The Hacker News (Sep 10)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · RAT</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch FortiOS/FortiSwitchManager/FortiSASE to the fixed release for CVE-2025-25249 immediately; hunt for unfamiliar single-line Node.js processes on Fortinet appliances as PivotC2&#x27;s reverse-shell mechanism; treat any device that was internet-facing and unpatched since July 2026 as potentially already infected regardless of current patch status.</span>
+      <button class="tbtn copy-inc" data-inc="fortinet-pivotc2">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="fortinet-pivotc2">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2025-25249">CVE-2025-25249</button></td>
+            <td class="ctx">FortiOS/FortiSwitchManager/FortiSASE heap-based buffer overflow enabling RCE, CVSS 7.3</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="PivotC2 RAT">PivotC2 RAT</button></td>
+            <td class="ctx">Remote-access trojan delivered via exploitation of CVE-2025-25249</td>
+            <td class="seen">JUL 2026</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Reverse shell established via a single-line Node.js command on a Fortinet appliance">Reverse shell established via a single-line Node.js command on a Fortinet appliance</button></td>
+            <td class="ctx">PivotC2 post-exploitation mechanism</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>'StyleSmuggler' — CVE-2026-75650 lets attackers turn Adobe Commerce's own template engine into unauthenticated RCE</h2>
+        </div>
+        <p class="inc-sum">Sansec disclosed CVE-2026-75650 ('StyleSmuggler'), a CVSS 10.0 unauthenticated RCE affecting Adobe Commerce 2.4.4-2.4.9 and Magento Open Source 2.4.6-2.4.9, where an attacker injects PHP through Magento's email-template system by exploiting the fact that style properties are treated as harmless layout data and pass through template safeguards unchecked — the payload then rides Magento's own dependency-injection machinery into execution. Sansec observed active exploitation beginning Sep 4, three days before Adobe's out-of-band patch shipped Sep 7; CrowdSec has tracked 500 unique IPs sending matching requests since Sep 9, and 23 of the 410 addresses probing StyleSmuggler also tried last year's SessionReaper flaw (CVE-2025-54236) — the same actor set revisiting Magento. <b>Durable catch: exploitation began three days before a patch existed — any Magento/Adobe Commerce store that applied hotfix VULN-39341 without also checking for a planted backdoor from that pre-patch window should assume compromise, not just apply the fix and move on.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-09</span><span>ACTIVE SINCE 2026-09-04</span>
+        <span>CVE-2026-75650 CVSS 10.0 · UNAUTH RCE VIA EMAIL TEMPLATE ENGINE</span>
+        <span>EXPLOITED FROM SEP 4, 3 DAYS BEFORE PATCH (SEP 7)</span>
+        <span>CROWDSEC: 500 UNIQUE IPs SINCE SEP 9 · 23/410 OVERLAP WITH SESSIONREAPER PROBING</span>
+          <span class="attck">T1190 · T1505.003</span>
+          <span><a href="https://sansec.io/research/stylesmuggler-0day" rel="noopener">Sansec</a> · <a href="https://www.crowdsec.net/vulntracking-report/cve-2026-75650-stylesmuggler-rce-adobe-commerce-magento" rel="noopener">CrowdSec</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · EXPLOITED · WEB APPLICATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Apply hotfix VULN-39341 immediately, then scan the store for backdoors planted during the Sep 4-7 pre-patch exploitation window rather than assuming the hotfix alone resolves prior compromise; review email-template configuration for unauthorized modifications; block or heighten monitoring on IPs previously seen probing SessionReaper (CVE-2025-54236) given the documented actor overlap.</span>
+      <button class="tbtn copy-inc" data-inc="adobe-commerce-stylesmuggler">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="adobe-commerce-stylesmuggler">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-75650">CVE-2026-75650</button></td>
+            <td class="ctx">Adobe Commerce/Magento email-template engine injection, unauthenticated RCE, CVSS 10.0</td>
+            <td class="seen">SEP 9</td>
           </tr>
           <tr data-type="host">
             <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix">SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix</button></td>
-            <td class="ctx">Fixed releases</td>
-            <td class="seen">SEP 1</td>
+            <td><button class="val" data-defanged="Hotfix VULN-39341">Hotfix VULN-39341</button></td>
+            <td class="ctx">Out-of-band fix released Sep 7, 2026</td>
+            <td class="seen">SEP 9</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)">Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)</button></td>
+            <td class="ctx">CrowdSec-tracked exploitation telemetry</td>
+            <td class="seen">SEP 9</td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
-  <section class="incident high wide">
+  <section class="incident high">
     <div class="inc-head">
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev high">HIGH</span>
-          <h2>Invisible Unicode tag characters split keywords to evade filters across a 3-month, multi-million-email phishing wave</h2>
+          <h2>The Gentlemen ransomware claims Air Canada, alleges 51,409 critical files taken</h2>
         </div>
-        <p class="inc-sum">Microsoft and Fortra's FIRE team detailed a phishing campaign that inserted invisible Unicode Tags-block characters (U+E0000-U+E007F) inside financial lure words — turning 'funding' into 'fun[invisible-char]ding' — so filters and regex-based keyword matching miss the term while the word renders normally to the recipient. Microsoft's detection signature recorded a spike from roughly 21,000 hits on Feb 8 to over 1.3 million the next day, peaking above 2.3 million messages on Feb 26 and staying elevated for about three months on a weekday-only cadence; the campaign used hundreds of disposable finance-themed sender domains and relayed messages through legitimate ActiveCampaign marketing-platform infrastructure to inherit its sending reputation. <b>Durable catch: any inbound message containing Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in the visible text is definitionally this evasion technique — no legitimate email uses that block, so its mere presence is a higher-confidence filter signal than any keyword match it's being used to evade.</b></p>
+        <p class="inc-sum">TheGentlemen ransomware group claimed a cyberattack against Air Canada Sep 9, alleging exfiltration of over 51,409 critical files and disrupting parts of the airline's operations — the second major claim from the same group within a week, following its Sep 5 listing of healthcare vendor Veradigm. Coverage of the claim notes the standard caveat for leak-site postings: the file count could be genuine, recycled from an earlier incident, exaggerated, or fabricated, and Air Canada has not independently confirmed the scope. <b>Durable catch: two Gentlemen claims against unrelated sectors (healthcare vendor, airline) four days apart shows the group is running high-volume opportunistic claims rather than sector-targeted campaigns — the specific number of files claimed matters less than confirming initial access and containment independently of the leak-site post.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-04</span><span>ACTIVE SINCE 2026-02-08</span>
-        <span>PEAKED AT 2.37M MESSAGES/DAY · 3-MONTH WEEKDAY-ONLY CAMPAIGN</span>
-        <span>UNICODE TAGS BLOCK (U+E0000-U+E007F) SPLITS KEYWORDS INVISIBLY</span>
-        <span>RELAYED THROUGH ACTIVECAMPAIGN INFRASTRUCTURE FOR SENDER REPUTATION</span>
-          <span class="attck">T1566.002 · T1027</span>
-          <span><a href="https://thehackernews.com/2026/09/phishing-campaign-sends-millions-of.html" rel="noopener">The Hacker News (Sep 4)</a> · <a href="https://www.microsoft.com/en-us/security/blog/2026/08/26/when-ai-infrastructure-becomes-target-securing-gateways-control-points/" rel="noopener">Microsoft Security Blog</a></span>
+          <span class="reported">REPORTED 2026-09-09</span><span>ACTIVE SINCE 2026-09-09</span>
+        <span>51,409 CRITICAL FILES CLAIMED · CANADA&#x27;S LARGEST AIRLINE</span>
+        <span>SECOND THEGENTLEMEN CLAIM IN A WEEK (AFTER VERADIGM, SEP 5)</span>
+        <span>CLAIM UNVERIFIED · AIR CANADA HAS NOT CONFIRMED SCOPE</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://socradar.io/free-tools/ransomware-intelligence/victims/air-canada-thegentlemen-6edb45b0" rel="noopener">SOCRadar</a> · <a href="https://thecyberexpress.com/cyberattack-on-air-canada-bianlian-data-risk/" rel="noopener">The Cyber Express</a></span>
         </div>
       </div>
-      <span class="inc-kind">PHISHING · EVASION · EMAIL SECURITY</span>
+      <span class="inc-kind">RANSOMWARE · AVIATION</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Add a mail-gateway rule flagging any message containing Unicode codepoints in the U+E0000-U+E007F Tags block, regardless of surrounding content — that block has no legitimate use in email; block or scrutinize the listed sender domains and the acemlnd[.]com/activehosted[.]com relay domains at the gateway; strip or normalize invisible Unicode characters before keyword-based filtering runs, not after.</span>
-      <button class="tbtn copy-inc" data-inc="invisible-unicode-phishing">COPY IOCs</button>
+      <span>Air Canada customers/partners should watch for official confirmation before treating the 51,409-file claim as verified; airlines and other high-profile targets should assume opportunistic ransomware groups will claim attacks regardless of actual access depth, and should have a rapid-verification process to confirm or refute leak-site claims quickly; monitor TheGentlemen&#x27;s leak site for any proof files substantiating this listing.</span>
+      <button class="tbtn copy-inc" data-inc="air-canada-gentlemen">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="invisible-unicode-phishing">
+      <table data-inc="air-canada-gentlemen">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="net">
-            <td><span class="t-badge">host-name</span></td>
-            <td><button class="val" data-defanged="guardiangrowthfunding[.]com ; digitalcapitalboost[.]com ; thebusinessloanexpress[.]com ; yourlocfunding[.]com ; advancefundingboost[.]com">guardiangrowthfunding[.]com ; digitalcapitalboost[.]com ; thebusinessloanexpress[.]com ; yourlocfunding[.]com ; advancefundingboost[.]com</button></td>
-            <td class="ctx">Top disposable finance-themed sender domains used in the campaign</td>
-            <td class="seen">FEB-MAY 2026</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">host-name</span></td>
-            <td><button class="val" data-defanged="guardiancapitalway[.]com ; harboradvancefunding[.]com ; unitedfundingwave[.]com ; directcapitalboost[.]com ; onlinedirectfinance[.]com">guardiancapitalway[.]com ; harboradvancefunding[.]com ; unitedfundingwave[.]com ; directcapitalboost[.]com ; onlinedirectfinance[.]com</button></td>
-            <td class="ctx">Additional disposable finance-themed sender domains used in the campaign</td>
-            <td class="seen">FEB-MAY 2026</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">host-name</span></td>
-            <td><button class="val" data-defanged="acemlnd[.]com ; activehosted[.]com">acemlnd[.]com ; activehosted[.]com</button></td>
-            <td class="ctx">Legitimate ActiveCampaign relay domains abused to inherit sending reputation</td>
-            <td class="seen">FEB-MAY 2026</td>
-          </tr>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Presence of Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in message text">Presence of Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in message text</button></td>
-            <td class="ctx">Direct technical indicator of the keyword-splitting evasion technique</td>
-            <td class="seen">SEP 4</td>
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="TheGentlemen ransomware (double extortion, ransomware-as-a-service)">TheGentlemen ransomware (double extortion, ransomware-as-a-service)</button></td>
+            <td class="ctx">Group claiming both the Air Canada and Veradigm incidents within the same week</td>
+            <td class="seen">SEP 9</td>
           </tr>
         </tbody>
       </table>
@@ -651,42 +719,42 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev high">HIGH</span>
-          <h2>CVE-2026-82329 — JFrog Artifactory authentication bypass added to KEV, chained for admin token minting</h2>
+          <h2>CVE-2026-86218 — pre-auth RCE in N-able N-central RMM exploited, fourth patch in five weeks</h2>
         </div>
-        <p class="inc-sum">CISA added CVE-2026-82329, a CVSS 9.8 improper-authentication flaw in JFrog Artifactory, to its Known Exploited Vulnerabilities catalog Sep 2 as part of a seven-CVE batch. CISA's advisory states unknown threat actors have weaponized this flaw alongside the Sangoma Switchvox SQLi (CVE-2026-9586) to deploy reverse shells and mint admin tokens for follow-on enumeration of users, groups, credential sets, and federated access topologies — meaning a compromised Artifactory instance becomes a pivot point into whatever CI/CD credentials and federated identities it holds. Neither CISA nor the researchers who reported it have published specific IOCs (IPs, hashes) tied to Artifactory exploitation specifically. <b>Durable catch: Artifactory sits at the center of a CI/CD trust chain by design — an attacker who mints an admin token here doesn't need to compromise anything downstream, since Artifactory's own federated-access model does the enumeration for them.</b></p>
+        <p class="inc-sum">N-able confirmed active exploitation of CVE-2026-86218 (CVSS 10.0), a static code injection flaw (CWE-96) in N-central that lets an unauthenticated attacker send crafted requests the server evaluates without validation, executing arbitrary OS commands as root with no authentication or user interaction required. Because N-central is an RMM platform used by managed service providers, a compromised instance is a foothold into every downstream endpoint that MSP manages, not just the N-central server itself; researchers note it can potentially be chained with two authentication-bypass flaws (CVE-2026-86206, CVE-2026-86207) to bypass console auth and create attacker-controlled admin accounts. CISA added it to KEV Sep 8; it was patched in N-central 2026.3 Hotfix 4 on Sep 5, marking N-able's fourth patch to the product in five weeks. <b>Durable catch: N-central's role as an RMM makes this a supply-chain-shaped vulnerability — any MSP running an unpatched instance should assume every client endpoint it manages is in the blast radius, not just the RMM server.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-09-02</span>
-        <span>CVE-2026-82329 CVSS 9.8 · IMPROPER AUTHENTICATION</span>
-        <span>PART OF THE SAME 7-CVE CISA KEV BATCH AS SONICWALL/SWITCHVOX/KESTRA</span>
-        <span>USED TO MINT ADMIN TOKENS FOR CREDENTIAL/FEDERATED-ACCESS ENUMERATION</span>
-          <span class="attck">T1190 · T1078 · T1552.001</span>
-          <span><a href="https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog" rel="noopener">CISA KEV Catalog (Sep 2)</a> · <a href="https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html" rel="noopener">The Hacker News</a></span>
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-09-05</span>
+        <span>CVE-2026-86218 CVSS 10.0 · UNAUTH PRE-AUTH RCE AS ROOT</span>
+        <span>4TH N-CENTRAL PATCH IN 5 WEEKS</span>
+        <span>CHAINABLE WITH CVE-2026-86206/86207 FOR ADMIN ACCOUNT CREATION</span>
+          <span class="attck">T1190 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/n-able-n-central-pre-auth-rce-flaw.html" rel="noopener">The Hacker News (Sep 8)</a> · <a href="https://arcticwolf.com/resources/blog/cve-2026-86218/" rel="noopener">Arctic Wolf</a></span>
         </div>
       </div>
-      <span class="inc-kind">CVE · EXPLOITED · KEV · CI/CD</span>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · MSP RMM</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch JFrog Artifactory to the fixed release immediately; audit admin token creation events and federated-identity provider logs for unexpected enumeration activity since disclosure; treat Artifactory as a CI/CD credential store during incident response, not just an artifact cache, and rotate any secrets it held if compromise is suspected.</span>
-      <button class="tbtn copy-inc" data-inc="jfrog-artifactory-kev">COPY IOCs</button>
+      <span>Patch N-central to 2026.3 Hotfix 4 or later immediately; MSPs should audit for unauthorized admin accounts created via the CVE-2026-86206/86207 chain and treat any client endpoint managed through an unpatched instance as potentially exposed; review N-central access logs for crafted requests predating the patch.</span>
+      <button class="tbtn copy-inc" data-inc="nable-ncentral-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="jfrog-artifactory-kev">
+      <table data-inc="nable-ncentral-kev">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-82329">CVE-2026-82329</button></td>
-            <td class="ctx">JFrog Artifactory improper authentication bypassing default access controls, CVSS 9.8</td>
-            <td class="seen">SEP 2</td>
+            <td><button class="val" data-defanged="CVE-2026-86218">CVE-2026-86218</button></td>
+            <td class="ctx">N-able N-central static code injection, unauthenticated pre-auth RCE as root, CVSS 10.0</td>
+            <td class="seen">SEP 8</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies">Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies</button></td>
-            <td class="ctx">Attacker activity pattern per CISA advisory</td>
-            <td class="seen">SEP 2</td>
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="N-central 2026.3 Hotfix 4 (released Sep 5, 2026)">N-central 2026.3 Hotfix 4 (released Sep 5, 2026)</button></td>
+            <td class="ctx">Fixed release</td>
+            <td class="seen">SEP 5</td>
           </tr>
         </tbody>
       </table>
@@ -697,35 +765,36 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev high">HIGH</span>
-          <h2>Cyberattack on Luminis Health knocks two Maryland hospitals' systems offline, ambulances reroute</h2>
+          <h2>Microsoft's record 964-CVE Patch Tuesday includes two actively exploited Windows zero-days</h2>
         </div>
-        <p class="inc-sum">Luminis Health disclosed a cybersecurity incident Sep 2 that took certain computer systems offline across its Anne Arundel Medical Center (Annapolis) and Doctors Community Medical Center (Lanham) facilities, forcing some ambulances carrying non-critical patients to reroute to other hospitals and pushing patients toward a dedicated helpline while the online patient portal remained down. The disclosure came days after the health system had also been the target of a bomb threat, though no link between the two events has been established. No attacker or ransomware group has publicly claimed responsibility, and Luminis has not disclosed the initial access vector or whether patient data was exfiltrated. <b>Durable catch: ambulance diversion is a direct patient-safety consequence of a cyberattack, not just an IT outage — any healthcare system's incident-response plan needs a pre-agreed diversion protocol with regional EMS, because this is now a recurring failure mode, not a one-off.</b></p>
+        <p class="inc-sum">Microsoft's September Patch Tuesday addressed 964 CVEs — a record volume — including two zero-days confirmed exploited in the wild: CVE-2026-81963, an improper link-resolution ('link following') flaw in the Windows Update Stack that is the first such component to be exploited as a zero-day since 2022, and CVE-2026-85880, a heap-based buffer overflow in Windows ALPC. Both are elevation-of-privilege bugs rated CVSS 7.8 that let an attacker with initial local access escalate to SYSTEM, turning an initial foothold into full device control; CISA added both to KEV Sep 8 with a Sep 22 federal remediation deadline. No public IOCs (samples, attacker groups) were disclosed alongside either advisory. <b>Durable catch: both zero-days require local access to start — they're the second stage of an intrusion that began another way, so patching them closes the escalation path but doesn't address however the attacker got a foothold in the first place.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026-09-02</span>
-        <span>2 MARYLAND HOSPITALS AFFECTED · AMBULANCE REROUTING FOR NON-CRITICAL PATIENTS</span>
-        <span>PATIENT PORTAL DOWN · NO ATTACKER HAS CLAIMED RESPONSIBILITY</span>
-          <span class="attck">T1489 · T1078</span>
-          <span><a href="https://www.wypr.org/wypr-news/2026-09-02/two-maryland-hospitals-hit-by-cyberattack-compromising-systems" rel="noopener">WYPR (Sep 2)</a> · <a href="https://hoodline.com/2026/09/luminis-health-hospitals-hit-by-cyberattack-portals-down-days-after-bomb-threat/" rel="noopener">Hoodline</a></span>
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-09-08</span>
+        <span>CVE-2026-81963 (WINDOWS UPDATE STACK) · CVE-2026-85880 (WINDOWS ALPC) · BOTH CVSS 7.8</span>
+        <span>FIRST WINDOWS UPDATE STACK ZERO-DAY EXPLOITED SINCE 2022</span>
+        <span>964 TOTAL CVEs PATCHED · RECORD VOLUME FOR A SINGLE PATCH TUESDAY</span>
+          <span class="attck">T1068</span>
+          <span><a href="https://www.bleepingcomputer.com/news/microsoft/microsoft-september-2026-patch-tuesday-fixes-966-flaws-2-zero-days/" rel="noopener">BleepingComputer (Sep 8)</a> · <a href="https://www.securityweek.com/microsoft-patches-record-974-vulnerabilities-including-two-exploited-zero-days/" rel="noopener">SecurityWeek</a></span>
         </div>
       </div>
-      <span class="inc-kind">CYBERATTACK · HEALTHCARE · AMBULANCE DIVERSION</span>
+      <span class="inc-kind">CVE · ZERO-DAY · KEV · PRIVILEGE ESCALATION</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Healthcare systems should maintain a pre-agreed ambulance-diversion protocol with regional EMS for cyber-driven outages, not just natural-disaster scenarios; verify offline/downtime procedures for patient registration and records access are rehearsed, not theoretical; monitor for a ransomware leak-site claim or data-breach notification as the incident develops.</span>
-      <button class="tbtn copy-inc" data-inc="luminis-health-maryland">COPY IOCs</button>
+      <span>Apply September 2026 Windows cumulative updates immediately to close both elevation-of-privilege zero-days; since both require existing local access, prioritize investigating how attackers are gaining initial footholds (phishing, exposed RDP, etc.) rather than treating the patch alone as sufficient; meet the Sep 22 federal KEV remediation deadline where applicable.</span>
+      <button class="tbtn copy-inc" data-inc="windows-patch-tuesday-zerodays">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="luminis-health-maryland">
+      <table data-inc="windows-patch-tuesday-zerodays">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion">Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion</button></td>
-            <td class="ctx">Reported operational impact pattern</td>
-            <td class="seen">SEP 2</td>
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-81963 / CVE-2026-85880">CVE-2026-81963 / CVE-2026-85880</button></td>
+            <td class="ctx">Windows Update Stack link-following and Windows ALPC heap overflow, both local privilege escalation to SYSTEM, CVSS 7.8</td>
+            <td class="seen">SEP 8</td>
           </tr>
         </tbody>
       </table>
@@ -736,250 +805,202 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev high">HIGH</span>
-          <h2>Unit 42 documents ransomware attacker using AI agents to run an entire enterprise intrusion in under 10 hours</h2>
+          <h2>CenterPoint Energy investigates alleged 7.49 million-record breach tied to its guest bill-pay feature</h2>
         </div>
-        <p class="inc-sum">Palo Alto Networks' Unit 42 disclosed a ransomware intrusion in which a human attacker directed frontier AI models and agentic attack frameworks to carry out nearly every step of the attack chain — initial access through a public API endpoint, credential harvesting, privilege escalation to root, hijacking CI/CD pipelines to steal cloud access keys, and pivoting through the victim's own cloud AI services as post-compromise infrastructure — compressing an intrusion Unit 42 says would normally take human operators about two weeks into under 10 hours across more than 50 distinct ATT&CK techniques. The attacker had a documentation agent produce an 80-page technical security audit of the victim's environment as a parting artifact. Unit 42 has not named the victim organization, the AI framework or model used, or published technical indicators (IPs, hashes, tool names) tied to this specific intrusion. <b>Durable catch: the compression from two weeks to under 10 hours, not any single novel technique, is the actual finding here — detection and response timelines built around human-speed attacker dwell time no longer hold against an agentic operator.</b></p>
+        <p class="inc-sum">A threat actor using the alias '4d722e4d656f77' posted on an open forum Sep 1 claiming theft of a CenterPoint Energy customer database containing 7.49 million raw records (6.73 million after filtering) — names, phone numbers, service/billing addresses, account and premise IDs, billing amounts, payment status, autopay/paperless settings, and partial Social Security numbers — and provided sample data to back the claim. Subsequent lawsuits allege the intrusion window ran Aug 17-Sep 1 and point specifically at CenterPoint's online guest bill-pay feature as the likely weak point, though the company has not publicly confirmed the breach or its scope as of this writing. <b>Durable catch: a 'guest' payment flow that doesn't require an account is, by definition, a path with weaker identity verification than the authenticated account system sitting next to it — any utility or biller offering guest bill-pay should audit that specific flow's access controls independently of its main login system.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-02</span><span>ACTIVE SINCE 2026</span>
-        <span>INTRUSION COMPRESSED FROM ~2 WEEKS TO UNDER 10 HOURS</span>
-        <span>50+ ATT&amp;CK TECHNIQUES · CI/CD AND CLOUD AI INFRASTRUCTURE HIJACKED</span>
-        <span>VICTIM, FRAMEWORK, AND TECHNICAL IOCs NOT DISCLOSED BY UNIT 42</span>
-          <span class="attck">T1190 · T1552.001 · T1078.004</span>
-          <span><a href="https://www.theregister.com/security/2026/09/02/ai-agents-carried-out-every-step-of-this-ransomware-attack-then-left-the-victim-an-80-page-security-audit/5294009" rel="noopener">The Register (Sep 2)</a> · <a href="https://unit42.paloaltonetworks.com/ai-assisted-cyber-attack-inside-a-unit-42-investigation/" rel="noopener">Unit 42</a></span>
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-08-17</span>
+        <span>7.49M RAW RECORDS CLAIMED (6.73M FILTERED) · SAMPLE DATA PROVIDED</span>
+        <span>GUEST BILL-PAY FEATURE IDENTIFIED AS LIKELY ENTRY POINT</span>
+        <span>COMPANY HAS NOT PUBLICLY CONFIRMED BREACH SCOPE AS OF THIS WRITING</span>
+          <span class="attck">T1190 · T1005</span>
+          <span><a href="https://therecord.media/texas-utility-firm-investigating-potential-data-leak-moveit-breach" rel="noopener">The Record</a> · <a href="https://www.yahoo.com/news/us/articles/centerpoint-energy-hit-multiple-proposed-235213317.html" rel="noopener">Yahoo News</a></span>
         </div>
       </div>
-      <span class="inc-kind">RESEARCH · AGENTIC AI · RANSOMWARE</span>
+      <span class="inc-kind">DATA BREACH · UTILITY · GUEST BILL PAY</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Assume attacker dwell time can now compress to hours rather than weeks when planning detection and response SLAs; harden public API endpoints as a primary initial-access path, since that&#x27;s how this intrusion began; restrict CI/CD pipeline access to cloud credentials and monitor for anomalous, rapid-fire actions across identity, CI/CD, container, and SaaS environments in sequence, which is the behavioral signature of an agent-driven attack chain rather than a human operator.</span>
-      <button class="tbtn copy-inc" data-inc="ai-agent-ransomware-unit42">COPY IOCs</button>
+      <span>CenterPoint Energy customers should monitor for phishing using the leaked billing/account details and consider a credit freeze given the partial-SSN exposure; utilities and billers offering an unauthenticated guest bill-pay flow should audit that path&#x27;s access controls and rate limiting specifically, since it&#x27;s the suspected entry point here; watch for the company&#x27;s own confirmation to establish verified scope.</span>
+      <button class="tbtn copy-inc" data-inc="centerpoint-energy-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="ai-agent-ransomware-unit42">
+      <table data-inc="centerpoint-energy-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Threat actor alias &#x27;4d722e4d656f77&#x27;">Threat actor alias &#x27;4d722e4d656f77&#x27;</button></td>
+            <td class="ctx">Individual who posted the claimed CenterPoint Energy database for sale on an open forum</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)">Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)</button></td>
+            <td class="ctx">Suspected entry point for the claimed breach</td>
+            <td class="seen">SEP 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Veradigm discloses patient data breach after The Gentlemen ransomware gang claims 3.5 million records via vendor API</h2>
+        </div>
+        <p class="inc-sum">Healthcare technology firm Veradigm disclosed that stolen login credentials within a third-party vendor's environment granted unauthorized access to a Veradigm API used for service delivery, which the attacker used to download patient records; Veradigm says the breach was contained to that vendor-facing interface with no disruption to internal systems and no clinical/medical data exposed. The Gentlemen ransomware-as-a-service gang added Veradigm to its leak site Sep 5, claiming 3.5 million patient records including names, addresses, phone numbers, email addresses, and other PII, including Social Security numbers for a subset of customers. <b>Durable catch: the attacker never touched Veradigm's own network — stolen vendor credentials against a narrow, purpose-built API endpoint were sufficient to reach 3.5 million patient records, which is the actual lesson for any organization exposing a vendor-facing API scoped to 'just' service delivery.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-08</span><span>ACTIVE SINCE 2026-09-05</span>
+        <span>3.5M PATIENT RECORDS CLAIMED BY THE GENTLEMEN (LEAK SITE POST SEP 5)</span>
+        <span>INITIAL ACCESS: STOLEN VENDOR CREDENTIALS AGAINST A VERADIGM SERVICE API</span>
+        <span>SSNs INCLUDED FOR A SUBSET OF CUSTOMERS · NO CLINICAL DATA EXPOSED PER VENDOR</span>
+          <span class="attck">T1078 · T1567.002</span>
+          <span><a href="https://www.bleepingcomputer.com/news/security/veradigm-discloses-patient-data-breach-after-gentlemen-gang-claims-attack/" rel="noopener">BleepingComputer</a> · <a href="https://www.hipaajournal.com/veradigm-data-breach-2026/" rel="noopener">HIPAA Journal</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · THIRD-PARTY VENDOR · HEALTHCARE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Veradigm-affiliated customers and patients should watch for identity-theft/phishing risk given the SSN exposure for a subset of records; organizations exposing vendor-facing APIs should scope and monitor those endpoints as tightly as customer-facing ones, since narrow API access was sufficient here to reach millions of records; require MFA on all vendor-facing service accounts, not just customer-facing logins.</span>
+      <button class="tbtn copy-inc" data-inc="veradigm-gentlemen">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="veradigm-gentlemen">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="The Gentlemen (ransomware-as-a-service, double extortion)">The Gentlemen (ransomware-as-a-service, double extortion)</button></td>
+            <td class="ctx">Group claiming the Veradigm patient-data theft via a compromised third-party vendor</td>
+            <td class="seen">SEP 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>AUDIT TEAM extortion group claims four victims across South Korea, Germany, and Argentina</h2>
+        </div>
+        <p class="inc-sum">A data-extortion group operating under the name AUDIT TEAM claimed four victim organizations spanning South Korea, Germany, and Argentina in the second week of September, per AhnLab's weekly dark-web tracking. As with most fresh extortion-group listings, no victim has publicly confirmed the claims and no technical indicators (initial access vector, malware family, sample data) have been disclosed for any of the four. <b>Durable catch: a newly visible extortion brand claiming victims across three countries and continents in a single week is either an established access broker relabeling old intrusions under a new name, or a genuinely fast-moving new operation — either way, the geographic and sector spread argues against assuming any one victim profile is exempt.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-09-08</span>
+        <span>4 VICTIMS CLAIMED · SOUTH KOREA, GERMANY, ARGENTINA</span>
+        <span>NO TECHNICAL IOCs DISCLOSED FOR ANY LISTING</span>
+        <span>NAME/BRAND APPEARS NEWLY ACTIVE THIS WEEK PER ASEC TRACKING</span>
+          <span class="attck">T1567.002 · T1486</span>
+          <span><a href="https://asec.ahnlab.com/en/95338/" rel="noopener">ASEC — Ransom &amp; Dark Web Issues, Week 2 September 2026</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA EXTORTION · MULTI-COUNTRY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations in South Korea, Germany, and Argentina across any sector should treat AUDIT TEAM as an active, geographically opportunistic extortion group and review common ransomware entry points; monitor AUDIT TEAM&#x27;s leak site for proof files that would substantiate any of the four claims before treating them as confirmed.</span>
+      <button class="tbtn copy-inc" data-inc="audit-team-extortion">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="audit-team-extortion">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="AUDIT TEAM (data-extortion group, newly active Sep 2026)">AUDIT TEAM (data-extortion group, newly active Sep 2026)</button></td>
+            <td class="ctx">Group claiming four victims across South Korea, Germany, and Argentina</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>LAPSUS$ resumes activity, teases a new victim disclosure without naming a target</h2>
+        </div>
+        <p class="inc-sum">AhnLab's weekly dark-web tracking flagged renewed LAPSUS$ activity in the second week of September, with the group teasing an upcoming victim disclosure without naming a target as of this writing. The group, part of the broader Scattered LAPSUS$ Hunters collective that has been rebuilding under a brokered-access operational model after 2022-2023 law-enforcement arrests, has no confirmed new victim, technique, or technical indicator tied to this specific tease yet — it is a signal to watch rather than a confirmed incident. <b>Durable catch: LAPSUS$'s historical playbook runs through social engineering against help desks and MFA fatigue rather than software exploits — any organization seeing this resurgence news should re-verify help-desk identity-verification procedures now, before a named victim (possibly their own environment) surfaces.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-09-08</span>
+        <span>GROUP TEASED A NEW VICTIM DISCLOSURE, NO TARGET NAMED YET</span>
+        <span>PART OF THE BROADER SCATTERED LAPSUS$ HUNTERS RESURGENCE</span>
+        <span>NO CONFIRMED VICTIM OR TECHNIQUE FOR THIS SPECIFIC TEASE</span>
+          <span class="attck">T1078 · T1566.004</span>
+          <span><a href="https://asec.ahnlab.com/en/95338/" rel="noopener">ASEC — Ransom &amp; Dark Web Issues, Week 2 September 2026</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SOCIAL ENGINEERING · RESURGENT ACTOR</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Re-verify help-desk and IT-support identity-verification procedures against social-engineering/vishing pretexts, LAPSUS$&#x27;s historical primary technique; move privileged accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; monitor for the group&#x27;s promised victim disclosure to confirm scope and technique once named.</span>
+      <button class="tbtn copy-inc" data-inc="lapsus-resumed">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="lapsus-resumed">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)">LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)</button></td>
+            <td class="ctx">Group teasing a new, unnamed victim disclosure</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Elixir Medical discloses HR data breach affecting current and former employees, two-month gap before detection</h2>
+        </div>
+        <p class="inc-sum">Elixir Medical Corporation determined that an unauthorized party accessed its network Jul 20-21, 2026, but did not identify until Aug 11 that the accessed files contained sensitive HR information on current and former employees, consultants, and some of their beneficiaries and dependents — including Social Security numbers, driver's license numbers, payment card data, medical information, and direct deposit bank account details. The company reported the breach to the California Attorney General Sep 4 and notified affected individuals; no technical details of the initial intrusion method have been disclosed. <b>Durable catch: a three-week gap between initial access (Jul 20-21) and detection of what was actually taken (Aug 11) is the real story here — HR/finance data with SSNs, driver's licenses, and bank details sitting in a network segment that took weeks to fully scope after an intrusion was already known.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-09</span><span>ACTIVE SINCE 2026-07-20</span>
+        <span>INTRUSION JUL 20-21 · SCOPE OF HR DATA ACCESS NOT CONFIRMED UNTIL AUG 11</span>
+        <span>SSNs, DRIVER&#x27;S LICENSES, PAYMENT CARD DATA, DIRECT-DEPOSIT BANK DETAILS EXPOSED</span>
+        <span>REPORTED TO CALIFORNIA AG SEP 4 · NO INTRUSION-VECTOR TECHNICAL DETAILS DISCLOSED</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://www.globenewswire.com/news-release/2026/09/09/3359120/0/en/elixir-medical-corporation-data-breach-exposes-personal-information-murphy-law-firm-investigates-legal-claims.html" rel="noopener">GlobeNewswire (Sep 9)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · HR DATA · MEDICAL DEVICE MANUFACTURER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Affected current/former Elixir Medical employees and dependents should place a credit freeze given the SSN, driver&#x27;s license, and bank-account exposure; organizations should audit how long it takes to fully scope data accessed after an intrusion is detected, since the gap between access and understanding impact was the operative failure here, not just the initial access itself.</span>
+      <button class="tbtn copy-inc" data-inc="elixir-medical-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="elixir-medical-breach">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks">Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks</button></td>
-            <td class="ctx">Behavioral signature of the agentic attack chain per Unit 42</td>
-            <td class="seen">SEP 2</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>SPACEBEARS ransomware posts three new victims across US retail, US legal, and Italian healthcare</h2>
-        </div>
-        <p class="inc-sum">The SPACEBEARS ransomware gang published three new victims to its leak site between Sep 3-4: Sports Endeavors (US retail/e-commerce), Schwartz, Giannini, Lantsberger & Adamson (SGLA, US professional/legal services), and Studio Oculistico Ciraci (Italian ophthalmology practice). No victim has confirmed the claims publicly, and SPACEBEARS has not published technical IOCs (initial access, malware, C2) alongside any of the three listings. <b>Durable catch: three unrelated victims across three countries and three sectors in two days shows SPACEBEARS is running an opportunistic, high-volume operation rather than targeted sector campaigns — any organization matching common ransomware entry points (exposed RDP, unpatched VPN, phished credentials) is in scope, not just firms resembling these three.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-04</span><span>ACTIVE SINCE 2026-09-03</span>
-        <span>3 VICTIMS ACROSS US RETAIL, US LEGAL, IT HEALTHCARE IN 2 DAYS</span>
-        <span>NO TECHNICAL IOCs DISCLOSED FOR ANY OF THE THREE LISTINGS</span>
-          <span class="attck">T1567.002 · T1486</span>
-          <span><a href="https://securityarsenal.com/blog/spacebears-ransomware-gang-3-fresh-leak-site-victims-usit-sector-pressure-kev-edge-exposure-and-pre-encryption-hunt-rules" rel="noopener">Security Arsenal (Sep 4)</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">RANSOMWARE · LEAK SITE</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Organizations resembling any of the three victim profiles should verify common ransomware entry points are closed (exposed RDP, unpatched edge/VPN devices, phishing-resistant MFA on remote access); monitor SPACEBEARS&#x27; leak site for proof files that would substantiate scope for any of the three listed victims; treat the group&#x27;s opportunistic, cross-sector pattern as a reason not to assume industry-specific exemption.</span>
-      <button class="tbtn copy-inc" data-inc="spacebears-leak-site">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="spacebears-leak-site">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="SPACEBEARS ransomware">SPACEBEARS ransomware</button></td>
-            <td class="ctx">Group behind all three listings (Sports Endeavors, SGLA, Studio Oculistico Ciraci)</td>
-            <td class="seen">SEP 3-4</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>Settra ransomware claims Italian biotech DiaSorin, uses vulnerable driver to blind EDR before encryption</h2>
-        </div>
-        <p class="inc-sum">Settra, a double-extortion ransomware and data-theft group first identified in June 2026, listed Italian biotech firm DiaSorin S.p.A. on its Tor leak site Sep 3, claiming data theft from an estimated Aug 25 intrusion and threatening publication absent negotiation over Tox messaging. Across its confirmed victims, Settra has used a known-vulnerable Safetica process-monitoring driver, STProcessMonitor_v114.sys (CVE-2025-70795), in a bring-your-own-vulnerable-driver technique to kill EDR/AV processes from kernel context, paired with a tool called edr_blind, and manually clears Windows event logs afterward to cover its tracks. DiaSorin has not confirmed the claim publicly as of this writing. <b>Durable catch: STProcessMonitor_v114.sys has no legitimate reason to be installed outside an environment already running Safetica DLP — its presence anywhere else is a kernel-level EDR-killing precursor, not a false positive to dismiss.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-03</span><span>ACTIVE SINCE 2026-08-25</span>
-        <span>CLAIMED VIA TOR LEAK SITE SEP 3 · ESTIMATED INTRUSION AUG 25</span>
-        <span>BYOVD VIA STProcessMonitor_v114.sys (CVE-2025-70795) · edr_blind TOOL · MANUAL EVENT-LOG CLEARING</span>
-          <span class="attck">T1068 · T1562.001 · T1070.001</span>
-          <span><a href="https://malware.news/t/settra-ransomware-attack-on-diasorin-s-p-a/125325" rel="noopener">Malware News (Sep 4)</a> · <a href="https://www.moxfive.com/blog/settra-ransomware-ttps-victims-and-defense-guide" rel="noopener">MoxFive</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">RANSOMWARE · BYOVD · BIOTECH</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Blocklist the STProcessMonitor_v114.sys driver hash/name via Microsoft&#x27;s vulnerable-driver blocklist or WDAC; alert on any new kernel driver installation outside change-managed maintenance windows; monitor for mass Windows event-log clearing as a late-stage precursor to encryption; DiaSorin partners/customers should watch the group&#x27;s leak site for confirmation before treating any data claim as verified.</span>
-      <button class="tbtn copy-inc" data-inc="settra-diasorin">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="settra-diasorin">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Settra ransomware (double-extortion, active since Jun 2026)">Settra ransomware (double-extortion, active since Jun 2026)</button></td>
-            <td class="ctx">Group claiming the DiaSorin S.p.A. compromise</td>
-            <td class="seen">SEP 3</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">filename</span></td>
-            <td><button class="val" data-defanged="STProcessMonitor_v114.sys">STProcessMonitor_v114.sys</button></td>
-            <td class="ctx">Vulnerable Safetica driver (CVE-2025-70795) abused via BYOVD to kill EDR/AV from kernel context</td>
-            <td class="seen">SEP 3</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="edr_blind">edr_blind</button></td>
-            <td class="ctx">Companion tool used alongside the vulnerable driver to disable endpoint detection</td>
-            <td class="seen">SEP 3</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads</h2>
-        </div>
-        <p class="inc-sum">Malwarebytes disclosed StreamRat, an Android banking trojan and infostealer distributed through Meta ads for a fake free streaming service running Jun 11-Jul 3, 2026, with the same promotional banners simultaneously pushed on TikTok; the campaign exposed an estimated 570,000 people, overwhelmingly Spanish-speaking users located in Spain. Victims received social-engineering instructions tailored to their entry point (Instagram, TikTok, Facebook, or a plain browser) that coached them past Android's unknown-sources installation warnings; once installed, StreamRat can monitor the screen, capture keystrokes, overlay fake login screens to steal credentials, and grant attackers remote device control. Malwarebytes detects the payload under three signatures but did not publish package names, APK hashes, or C2 infrastructure. <b>Durable catch: any Android install flow that walks a user step-by-step through disabling the unknown-sources warning, tailored to the specific app/ad the victim just clicked, is StreamRat's exact delivery mechanism — the coaching itself is the tell, regardless of which streaming brand is being impersonated this month.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-03</span><span>ACTIVE SINCE 2026-06-11</span>
-        <span>~570,000 USERS EXPOSED VIA META + TIKTOK ADS, JUN 11-JUL 3 2026</span>
-        <span>TARGETS SPANISH-SPEAKING USERS, PREDOMINANTLY IN SPAIN</span>
-        <span>PACKAGE NAMES/APK HASHES/C2 NOT DISCLOSED BY MALWAREBYTES</span>
-          <span class="attck">T1204.002 · T1417</span>
-          <span><a href="https://www.malwarebytes.com/blog/news/2026/09/streamrat-android-malware-spreads-through-meta-and-tiktok-ads" rel="noopener">Malwarebytes (Sep 3)</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">MOBILE MALWARE · MALVERTISING · BANKING TROJAN</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Block installation from unknown sources by policy on managed Android fleets; warn Spanish-speaking user populations specifically about free-streaming-service ads on Meta/TikTok that walk them through enabling sideloading; flag Malwarebytes detections Android/Trojan.Agent.ACRAEEF8A36H36, Android/Trojan.Agent.ACR02DB0614H7, and Android/Trojan.Dropper.ACR9B7ECE83D1 in mobile threat-defense tooling.</span>
-      <button class="tbtn copy-inc" data-inc="streamrat-android">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="streamrat-android">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1">Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1</button></td>
-            <td class="ctx">Malwarebytes detection signatures for the StreamRat payload</td>
-            <td class="seen">SEP 3</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>Black X ransomware claims two South Korean auto-parts manufacturers within days of each other</h2>
-        </div>
-        <p class="inc-sum">Black X, an emerging ransomware group, listed South Korean automotive-parts manufacturer i-one on its leak site Aug 28 claiming roughly 1TB of technical, sales, drawings, quality, logistics, and supply-chain data taken from its corporate environment, then listed a second South Korean car-parts maker, iwin (www.iwin[.]kr), Sep 1 with a similar 1TB data-theft claim and a threat to leak absent negotiation. Neither victim has publicly confirmed the intrusions, and no technical IOCs (initial access vector, malware family, C2 infrastructure) have been disclosed for either claim. <b>Durable catch: two South Korean automotive-parts suppliers hit by the same group within four days is a sector-targeting pattern, not a coincidence — other Korean auto-parts manufacturers should treat this as an active-targeting warning regardless of whether either claim is independently verified.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-01</span><span>ACTIVE SINCE 2026-08-28</span>
-        <span>2 SOUTH KOREAN AUTO-PARTS MAKERS CLAIMED IN 4 DAYS (i-one AUG 28, iwin SEP 1)</span>
-        <span>~1TB CLAIMED PER VICTIM · NO TECHNICAL IOCs DISCLOSED</span>
-          <span class="attck">T1567.002 · T1486</span>
-          <span><a href="https://asec.ahnlab.com/en/95223/" rel="noopener">ASEC (Sep 1)</a> · <a href="https://www.ransomware.live/id/aXdpbkBCbGFjayBY" rel="noopener">Ransomware.live</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">RANSOMWARE · SUPPLY CHAIN · AUTOMOTIVE</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>South Korean automotive supply-chain manufacturers should treat Black X as an actively targeting group and review perimeter/remote-access exposure now rather than after a listing; monitor Black X&#x27;s leak site for proof files that would substantiate the claims against i-one and iwin; downstream OEMs sourcing from either supplier should ask about incident status before assuming supply continuity.</span>
-      <button class="tbtn copy-inc" data-inc="black-x-korea-auto">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="black-x-korea-auto">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Black X ransomware (emerging group, active Aug 2026)">Black X ransomware (emerging group, active Aug 2026)</button></td>
-            <td class="ctx">Group claiming both i-one and iwin compromises</td>
-            <td class="seen">SEP 1</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">host-name</span></td>
-            <td><button class="val" data-defanged="iwin[.]kr">iwin[.]kr</button></td>
-            <td class="ctx">Second claimed South Korean auto-parts victim&#x27;s domain</td>
-            <td class="seen">SEP 1</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>ZaWoo data-extortion group adds a German sports-research institute and a New Zealand CRO to its victim list</h2>
-        </div>
-        <p class="inc-sum">ZaWoo, a steal-first double-extortion group active since mid-2026, listed Institut für Forschung und Entwicklung von Sportgeräten (FES) — a German institute specializing in high-performance sports equipment technology — and Zenith Technology Corporation Limited, a New Zealand-based contract research organization, among its recent claimed victims. ZaWoo's stated pressure tactic if a victim refuses to pay is to directly email stolen files, chat history, and mailbox contents to the victim's own customers rather than only posting to a leak site, escalating reputational damage beyond the initial listing. Neither organization has publicly confirmed the extent of data taken, and no malware family or technical IOC has been published for either intrusion. <b>Durable catch: ZaWoo's customer-email tactic means the blast radius of one intrusion extends to every client/partner in the stolen mailbox — incident response needs to plan customer notification proactively rather than waiting for a leak-site posting to force the timeline.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-09-01</span><span>ACTIVE SINCE 2026-08</span>
-        <span>VICTIMS: FES (GERMANY, SPORTS-TECH RESEARCH), ZENITH TECHNOLOGY (NEW ZEALAND, CRO)</span>
-        <span>TACTIC: DIRECT CUSTOMER EMAIL OF STOLEN DATA IF RANSOM UNPAID</span>
-          <span class="attck">T1567.002 · T1486</span>
-          <span><a href="https://asec.ahnlab.com/en/95223/" rel="noopener">ASEC (Sep 1)</a> · <a href="https://www.dexpose.io/zawoo-ransomware-attack-on-german-sports-institute-fes/" rel="noopener">DeXpose</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">DATA EXTORTION · DOUBLE EXTORTION</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Organizations in technology, manufacturing, and research sectors should treat ZaWoo as an active threat and review mailbox/data-loss-prevention controls given its customer-notification-as-pressure tactic; if compromised, prepare proactive customer communication rather than waiting for the group to contact them directly; monitor ZaWoo&#x27;s leak site for confirmation of scope for both named victims.</span>
-      <button class="tbtn copy-inc" data-inc="zawoo-extortion">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="zawoo-extortion">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ZaWoo (double-extortion data-theft group, active since mid-2026)">ZaWoo (double-extortion data-theft group, active since mid-2026)</button></td>
-            <td class="ctx">Group claiming FES (Germany) and Zenith Technology (New Zealand) as victims</td>
-            <td class="seen">SEP 1</td>
+            <td><button class="val" data-defanged="Unauthorized network access to HR/finance file stores containing SSNs, driver&#x27;s license numbers, payment card, and direct-deposit bank data">Unauthorized network access to HR/finance file stores containing SSNs, driver&#x27;s license numbers, payment card, and direct-deposit bank data</button></td>
+            <td class="ctx">Scope of the confirmed breach</td>
+            <td class="seen">SEP 9</td>
           </tr>
         </tbody>
       </table>
@@ -991,10 +1012,10 @@
 
 <footer>
   <span>MACHINE-READABLE:</span>
-  <a class="file" href="feeds/issue-007-iocs.txt">issue-007-iocs.txt</a>
-  <a class="file" href="feeds/issue-007-iocs.clean.txt">issue-007-iocs.clean.txt</a>
-  <a class="file" href="feeds/issue-007-iocs.csv">issue-007-iocs.csv</a>
-  <a class="file" href="feeds/issue-007.stix2.json">issue-007.stix2.json</a>
+  <a class="file" href="feeds/issue-008-iocs.txt">issue-008-iocs.txt</a>
+  <a class="file" href="feeds/issue-008-iocs.clean.txt">issue-008-iocs.clean.txt</a>
+  <a class="file" href="feeds/issue-008-iocs.csv">issue-008-iocs.csv</a>
+  <a class="file" href="feeds/issue-008.stix2.json">issue-008.stix2.json</a>
   <span class="spacer"></span>
   <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
 </footer>
