@@ -1,0 +1,977 @@
+<title>IOC Digest — Issue 009 · Week of 2026-09-18</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+  .inc-meta .reported { color: var(--accent); font-weight: 600; }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 009 · WK 2026-09-18 · 11 INCIDENTS · 14 IOCs</span>
+  <a class="navlink" href="index.html">← ALL ISSUES</a>
+  <button class="fchip on" data-type="all">ALL<b>14</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>0</b></button>
+  <button class="fchip" data-type="host">HOST<b>14</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-5430 — WSO2 API Manager JWT algorithm-mismatch bypass exploited with forged admin tokens</h2>
+        </div>
+        <p class="inc-sum">WSO2 API Manager's JWT authentication accepts tokens signed with algorithms other than those explicitly configured, letting an attacker craft a token using an unsupported algorithm that gets incorrectly validated — CVE-2026-5430, CVSS 9.8, discovered by the Hacktron Team. Honeypot networks captured active exploitation attempts starting Sep 16 showing forged admin tokens being used for lateral movement, with successful exploitation leading to full administrative account takeover. Affects API Manager 4.1.0-4.6.0, API Control Plane, Traffic Manager, and Universal Gateway. <b>Durable catch: any WSO2 JWT-authenticated request accepting a token signed with an algorithm your deployment doesn't explicitly configure is this exact bypass — algorithm allowlisting, not just patching, is the actual control that closes it.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-16</span><span>ACTIVE SINCE 2026-09-16</span>
+        <span>CVE-2026-5430 CVSS 9.8 · JWT ALGORITHM-MISMATCH AUTH BYPASS</span>
+        <span>HONEYPOT-OBSERVED: FORGED ADMIN TOKENS USED FOR LATERAL MOVEMENT</span>
+        <span>AFFECTS API MANAGER 4.1.0-4.6.0, CONTROL PLANE, TRAFFIC MANAGER, UNIVERSAL GATEWAY</span>
+          <span class="attck">T1190 · T1552.001 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/09/active-exploitation-attempts-target.html" rel="noopener">The Hacker News (Sep 16)</a> · <a href="https://aviatrix.ai/threat-research-center/wso2-api-manager-jwt-bypass-cve-2026-5430-active-exploitation/" rel="noopener">Aviatrix Threat Research</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · JWT BYPASS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch to WSO2 API Manager 4.1.0.257, 4.2.0.197, 4.3.0.108, 4.4.0.72, 4.5.0.57, or 4.6.0.21 (or the corresponding Control Plane/Traffic Manager/Universal Gateway fixed builds) immediately; explicitly allowlist accepted JWT signing algorithms rather than relying on implicit validation; audit for unexpected admin accounts or configuration changes made via forged tokens since Sep 16.</span>
+      <button class="tbtn copy-inc" data-inc="wso2-api-manager-jwt-bypass">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="wso2-api-manager-jwt-bypass">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-5430">CVE-2026-5430</button></td>
+            <td class="ctx">WSO2 API Manager JWT algorithm-mismatch authentication bypass leading to account takeover, CVSS 9.8</td>
+            <td class="seen">SEP 16</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="JWT tokens signed with an algorithm outside the deployment&#x27;s explicitly configured set, followed by administrative actions">JWT tokens signed with an algorithm outside the deployment&#x27;s explicitly configured set, followed by administrative actions</button></td>
+            <td class="ctx">Exploitation pattern observed in honeypot telemetry</td>
+            <td class="seen">SEP 16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-84869 — ConnectWise ScreenConnect flaw lets attackers execute files through active remote sessions without authorization</h2>
+        </div>
+        <p class="inc-sum">CVE-2026-84869 (CVSS 9.9) is an improper-privilege-management and missing-authorization flaw in ScreenConnect that lets an attacker transfer files to a device and execute them during an active remote session without the host user's confirmation. CISA added it to KEV Sep 11 with a Sep 14 federal remediation deadline; researchers and ConnectWise report exploitation has been observed since Aug 20, using rogue ScreenConnect clients and VBScript payloads to spread laterally between connected endpoints — meaning the flaw was actively weaponized for over three weeks before the KEV listing forced broader attention. ConnectWise shipped the fix (26.6.5) Sep 8. <b>Durable catch: because ScreenConnect is remote-access software by design, an attacker abusing this flaw doesn't need to establish their own C2 channel — the legitimate remote session is the C2 channel, which is exactly why the rogue-client-plus-VBScript spread pattern works so well against MSP-managed environments.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-11</span><span>ACTIVE SINCE 2026-08-20</span>
+        <span>CVE-2026-84869 CVSS 9.9 · UNAUTHORIZED FILE TRANSFER/EXECUTION VIA ACTIVE REMOTE SESSION</span>
+        <span>EXPLOITED SINCE AUG 20, OVER 3 WEEKS BEFORE KEV LISTING</span>
+        <span>ROGUE SCREENCONNECT CLIENTS + VBSCRIPT PAYLOADS SPREAD BETWEEN ENDPOINTS</span>
+          <span class="attck">T1219 · T1105 · T1204.002</span>
+          <span><a href="https://arcticwolf.com/resources/blog/cve-2026-84869/" rel="noopener">Arctic Wolf</a> · <a href="https://www.scworld.com/news/connectwise-screenconnect-bug-exploited-in-the-wild-cisa-says" rel="noopener">SC Media</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · RMM ABUSE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Update ScreenConnect to 26.6.5 or later immediately; audit remote-session logs for unauthorized file transfers or VBScript execution since Aug 20; treat any endpoint reachable through a compromised ScreenConnect instance as potentially exposed to lateral spread via rogue clients, not just the ScreenConnect server itself.</span>
+      <button class="tbtn copy-inc" data-inc="connectwise-screenconnect-kev">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="connectwise-screenconnect-kev">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-84869">CVE-2026-84869</button></td>
+            <td class="ctx">ConnectWise ScreenConnect improper privilege management/missing authorization, unauthorized file transfer and execution via active remote session, CVSS 9.9</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="ScreenConnect 26.6.5">ScreenConnect 26.6.5</button></td>
+            <td class="ctx">Fixed release, shipped Sep 8, 2026</td>
+            <td class="seen">SEP 11</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Rogue ScreenConnect client installation paired with VBScript payload execution spreading between connected endpoints">Rogue ScreenConnect client installation paired with VBScript payload execution spreading between connected endpoints</button></td>
+            <td class="ctx">Observed post-exploitation lateral-movement pattern</td>
+            <td class="seen">AUG 20</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>RatHat — AI-driven Android trojan uses a live model to navigate infected devices and reconstruct PINs</h2>
+        </div>
+        <p class="inc-sum">Zimperium's zLabs disclosed RatHat, an Android banking trojan that gives a live AI assistant access to the device's accessibility tree and uses it to decide where to tap or scroll in real time rather than following a hardcoded script — a variable attack path that makes signature- and rule-based mobile security tools substantially less effective. RatHat captures banking logins, intercepts verification codes, and monitors raw touch input to reconstruct a victim's PIN, password, or unlock pattern; it reinstalls itself via a hidden background service if the main app is removed, and escalates by abusing Android Debug Bridge through Wireless Debugging to escape the normal app sandbox. Victims are lured via SMS phishing or malicious ads leading to fake download pages posing as familiar apps, sideloaded outside official app stores. <b>Durable catch: RatHat's AI-driven navigation means its on-screen behavior won't match any known static signature — the ADB Wireless Debugging abuse and the self-reinstalling hidden background service are the more reliable detection points, since those artifacts persist regardless of how the AI varies its tap/scroll sequence.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-18</span><span>ACTIVE SINCE 2026-09-18</span>
+        <span>AI-DRIVEN: LIVE MODEL NAVIGATES ACCESSIBILITY TREE, NO HARDCODED SCRIPT</span>
+        <span>RECONSTRUCTS PINs/PATTERNS FROM RAW TOUCH INPUT · SELF-REINSTALLS VIA HIDDEN SERVICE</span>
+        <span>ESCALATES VIA ADB WIRELESS DEBUGGING TO ESCAPE APP SANDBOX</span>
+          <span class="attck">T1204.002 · T1417</span>
+          <span><a href="https://www.malwarebytes.com/blog/news/2026/09/new-android-malware-uses-ai-to-steal-bank-logins-and-pins" rel="noopener">Malwarebytes (Sep 18)</a> · <a href="https://gbhackers.com/ai-powered-rathat-android-trojan-steals-bank-credentials/" rel="noopener">GBHackers</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">MOBILE MALWARE · AI-DRIVEN · BANKING TROJAN</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Block installation from unknown sources by policy on managed Android fleets and disable Wireless Debugging by default; warn users that SMS links or ads promoting app installs outside official stores are the primary lure; monitor for unexpected Wireless Debugging activation or a banking app&#x27;s hidden background service persisting after apparent uninstall.</span>
+      <button class="tbtn copy-inc" data-inc="rathat-android-ai-trojan">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="rathat-android-ai-trojan">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="RatHat (AI-driven Android banking trojan)">RatHat (AI-driven Android banking trojan)</button></td>
+            <td class="ctx">Uses a live AI assistant against the accessibility tree; escalates via ADB Wireless Debugging; self-reinstalls via hidden background service</td>
+            <td class="seen">SEP 18</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>China-aligned FamousSparrow deploys new SparroWocky backdoor against Latin American governments via public-facing Exchange servers</h2>
+        </div>
+        <p class="inc-sum">ESET Research detailed FamousSparrow, a China-aligned state-sponsored actor, deploying a previously unreported modular C++ backdoor named SparroWocky (after the first line of Lewis Carroll's 'Jabberwocky' found in early samples) against government agencies across Argentina, Ecuador, Guatemala, Honduras, Panama, Peru, Puerto Rico, and Venezuela since at least August 2025. The group gains its foothold by exploiting public-facing Microsoft Exchange servers, turning an exposed email system into a long-term entry point inside a government network; SparroWocky manipulates low-level memory structures and patches code at runtime to evade analysis, and the group has begun incorporating open-source project code directly into the malware. ESET's telemetry shows roughly 90% of FamousSparrow's tracked targets are now located in Latin America. <b>Durable catch: any internet-exposed Exchange server in a Latin American government network is this actor's documented entry point of choice — patch cadence and exposure reduction on Exchange specifically, not general perimeter hardening, is the control that matters most here.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-17</span><span>ACTIVE SINCE 2025-08</span>
+        <span>TARGETS: GOVERNMENT AGENCIES IN 8 LATIN AMERICAN COUNTRIES/TERRITORIES</span>
+        <span>ENTRY VECTOR: EXPLOITATION OF PUBLIC-FACING MICROSOFT EXCHANGE SERVERS</span>
+        <span>~90% OF TRACKED FAMOUSSPARROW TARGETS NOW IN LATIN AMERICA</span>
+          <span class="attck">T1190 · T1505 · T1071.001</span>
+          <span><a href="https://thehackernews.com/2026/09/china-aligned-famoussparrow-deploys.html" rel="noopener">The Hacker News (Sep 17)</a> · <a href="https://therecord.media/china-hackers-latin-america-espionage" rel="noopener">The Record</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">APT · CYBER-ESPIONAGE · BACKDOOR</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Latin American government agencies should prioritize patching and reducing exposure of public-facing Microsoft Exchange servers given this actor&#x27;s documented entry vector; hunt for modular C++ backdoor activity with runtime code-patching and anti-analysis behavior on Exchange-adjacent hosts; treat FamousSparrow as an active, region-focused threat rather than a historical APT.</span>
+      <button class="tbtn copy-inc" data-inc="famoussparrow-sparrowocky">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="famoussparrow-sparrowocky">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="SparroWocky backdoor (modular C++, FamousSparrow)">SparroWocky backdoor (modular C++, FamousSparrow)</button></td>
+            <td class="ctx">Previously unreported backdoor deployed against Latin American government targets via compromised Exchange servers</td>
+            <td class="seen">SEP 17</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Encrypted remote-access implant found dormant inside npm math packages with 3.1 million weekly downloads</h2>
+        </div>
+        <p class="inc-sum">SafeDep discovered mathmain, an npm package that copies the popular mathjs library almost exactly except for an AES-256-GCM encrypted, dormant remote-access implant hidden inside its solver — the payload only unlocks if a caller passes specific matrix data as a password, and the loader was disguised as dead code that a hidden external caller actually invokes. SafeDep found the same encrypted-loader pattern in two sibling packages, mathsbase and math-universe; mathmain version 1.0.1 was published Aug 27, 2026, and the trick reached 3.1 million downloads in a single week before SafeDep flagged the unused function call and JFrog recovered the activation trigger on Sep 17. <b>Durable catch: a math utility library has no legitimate reason to ship AES-256-GCM encrypted code paths at all — that alone, independent of whether the trigger has ever fired against you, is grounds to remove any of these three packages from a dependency tree immediately.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-17</span><span>ACTIVE SINCE 2026-08-27</span>
+        <span>3 PACKAGES: mathmain, mathsbase, math-universe · AES-256-GCM ENCRYPTED DORMANT IMPLANT</span>
+        <span>mathmain v1.0.1 PUBLISHED AUG 27 · 3.1M DOWNLOADS IN ONE WEEK BEFORE DETECTION</span>
+        <span>ACTIVATION TRIGGER RECOVERED BY JFROG AFTER SAFEDEP FLAGGED DEAD-CODE CALL</span>
+          <span class="attck">T1195.002 · T1027</span>
+          <span><a href="https://safedep.io/mathmain-encrypted-loader/" rel="noopener">SafeDep (Sep 17)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SUPPLY CHAIN · NPM · ENCRYPTED IMPLANT</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Remove mathmain, mathsbase, and math-universe from any dependency tree immediately and audit for build/CI activity during any period these packages were installed; treat any npm package shipping encrypted or obfuscated code paths as a red flag regardless of stated purpose, since legitimate utility libraries have no reason to encrypt their own logic; review lockfiles for transitive dependencies pulling in these package names.</span>
+      <button class="tbtn copy-inc" data-inc="mathmain-npm-implant">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="mathmain-npm-implant">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="mathmain (v1.0.1, published Aug 27 2026) ; mathsbase ; math-universe">mathmain (v1.0.1, published Aug 27 2026) ; mathsbase ; math-universe</button></td>
+            <td class="ctx">npm packages mimicking mathjs, each shipping an AES-256-GCM encrypted dormant remote-access implant</td>
+            <td class="seen">SEP 17</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-58704 — zero-click Pixel modem flaw exploited in limited, targeted attacks with spyware hallmarks</h2>
+        </div>
+        <p class="inc-sum">Google's September Pixel security update fixed 110 vulnerabilities, including CVE-2026-58704 (CVSS 8.0), a permission-bypass logic error in the cellular modem that enables remote privilege escalation with no additional execution privileges or user interaction required. Google confirmed limited, targeted exploitation without attributing it to a specific actor, but the modem-level, zero-click nature of the flaw and the 'limited, targeted' framing match the pattern of past attacks linked to commercial spyware vendors or state-sponsored actors. CISA added it to KEV Sep 16 with a Sep 19 federal remediation deadline. <b>Durable catch: a zero-click, modem-level flaw bypasses every app-layer or OS-level defense a user might rely on — this class of vulnerability is specifically why device-level patching cadence matters more than any behavioral precaution for high-risk individuals.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-16</span><span>ACTIVE SINCE 2026-09-16</span>
+        <span>CVE-2026-58704 CVSS 8.0 · ZERO-CLICK MODEM PERMISSION BYPASS</span>
+        <span>CONFIRMED LIMITED, TARGETED EXPLOITATION · NO ATTRIBUTION DISCLOSED</span>
+        <span>SPYWARE/STATE-ACTOR TRADECRAFT HALLMARKS PER RESEARCHERS</span>
+          <span class="attck">T1068</span>
+          <span><a href="https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html" rel="noopener">The Hacker News (Sep 16)</a> · <a href="https://9to5google.com/2026/09/16/google-pixel-targeted-zero-day-modem-attack/" rel="noopener">9to5Google</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · KEV · MOBILE · SPYWARE-LINKED</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Install the September 2026 Pixel security update immediately (Settings &gt; Security &amp; privacy &gt; System &amp; updates &gt; Security update); high-risk individuals (journalists, activists, executives, government officials) should treat this as a priority patch given the spyware-consistent targeting pattern; meet the Sep 19 federal KEV remediation deadline where applicable.</span>
+      <button class="tbtn copy-inc" data-inc="pixel-modem-zeroday">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="pixel-modem-zeroday">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-58704">CVE-2026-58704</button></td>
+            <td class="ctx">Pixel cellular modem permission-bypass logic error enabling zero-click remote privilege escalation, CVSS 8.0</td>
+            <td class="seen">SEP 16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Passkey-themed vishing campaign hijacks Microsoft cloud accounts, active since May with automated post-compromise collection</h2>
+        </div>
+        <p class="inc-sum">Microsoft disclosed a campaign in which attackers call or message a user's personal phone claiming to be the organization's IT help desk, urging an immediate passkey, MFA, or SSO configuration update to avoid access disruption — the pretext used to walk victims through adding an attacker-controlled authentication method to their account. Microsoft Security Research is tracking active cloud intrusions across multiple accounts showing this pattern followed by high-volume Microsoft Graph API activity, SharePoint/OneDrive downloads, and automated email collection via REST APIs, using proxy-associated infrastructure consistent since May 2026. Microsoft disclosed this alongside a separate CEO-impersonation ACH-fraud campaign the same day. <b>Durable catch: the tell here isn't the phone call itself, it's what follows — a legitimate passkey/MFA re-enrollment doesn't cascade into high-volume Graph API calls and bulk SharePoint/OneDrive downloads within the same session; that automated collection signature is more reliable to alert on than trying to catch the vishing call itself.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-13</span><span>ACTIVE SINCE 2026-05</span>
+        <span>PRETEXT: HELP-DESK CALL/MESSAGE URGING PASSKEY/MFA/SSO UPDATE</span>
+        <span>ACTIVE SINCE MAY 2026 · PROXY-ASSOCIATED INFRASTRUCTURE</span>
+        <span>POST-COMPROMISE: HIGH-VOLUME GRAPH API CALLS, SHAREPOINT/ONEDRIVE DOWNLOADS, EMAIL COLLECTION VIA REST APIs</span>
+          <span class="attck">T1566.004 · T1621 · T1078</span>
+          <span><a href="https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/" rel="noopener">Microsoft Security Blog (Sep 13)</a> · <a href="https://thehackernews.com/2026/09/attackers-use-passkey-phishing-to.html" rel="noopener">The Hacker News</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SOCIAL ENGINEERING · CLOUD ACCOUNT TAKEOVER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Train staff and personal-device users to verify any inbound &#x27;IT help desk&#x27; call through an out-of-band channel before making authentication-method changes; alert on unusual sign-ins immediately followed by newly added authentication methods; monitor for high-volume Microsoft Graph API activity or bulk SharePoint/OneDrive downloads shortly after any authentication-method change, since that combination is this campaign&#x27;s specific automated-collection signature.</span>
+      <button class="tbtn copy-inc" data-inc="microsoft-passkey-phishing">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="microsoft-passkey-phishing">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unusual sign-in followed by attacker-added authentication method, then high-volume Microsoft Graph API activity, SharePoint/OneDrive downloads, and email collection via REST APIs">Unusual sign-in followed by attacker-added authentication method, then high-volume Microsoft Graph API activity, SharePoint/OneDrive downloads, and email collection via REST APIs</button></td>
+            <td class="ctx">Automated post-compromise collection pattern per Microsoft</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Helpfeel confirms data exposure, reports to Japan's privacy regulator within a day of discovery</h2>
+        </div>
+        <p class="inc-sum">Helpfeel, a Japanese SaaS provider, confirmed a data exposure incident Sep 14 and reported it to Japan's Personal Information Protection Commission the following day, publishing its public notice Sep 16 — a notably fast disclosure-to-regulator timeline compared to most breaches in this issue. Specific details on the number of affected users, data types exposed, or the intrusion method have not been made public in English-language coverage as of this writing. <b>Durable catch: a same-week discovery-to-regulator-notification timeline (Sep 14 to Sep 15) is unusually fast and worth noting as a comparison point — most breaches in any given week take far longer to reach this stage, so Helpfeel's response speed is itself informative for benchmarking incident-response timelines.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-16</span><span>ACTIVE SINCE 2026-09-14</span>
+        <span>CONFIRMED SEP 14 · REPORTED TO JAPAN&#x27;S PPC SEP 15 · PUBLIC NOTICE SEP 16</span>
+        <span>SPECIFIC SCOPE (RECORD COUNT, DATA TYPES, VECTOR) NOT YET PUBLICLY DETAILED</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://www.forthepeople.com/blog/data-breach-brief-week-september-16th-2026/" rel="noopener">ForThePeople Data Breach Brief (Sep 18)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · SAAS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Helpfeel customers should request specifics on data types affected before assuming exposure or non-exposure; use Helpfeel&#x27;s fast disclosure timeline as a benchmark when evaluating your own incident-response plan&#x27;s discovery-to-notification speed; watch for a fuller technical disclosure as details become available.</span>
+      <button class="tbtn copy-inc" data-inc="helpfeel-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="helpfeel-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Confirmed data exposure at a SaaS provider, scope not yet fully detailed publicly">Confirmed data exposure at a SaaS provider, scope not yet fully detailed publicly</button></td>
+            <td class="ctx">Reported incident pending fuller technical disclosure</td>
+            <td class="seen">SEP 16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Edenred Pay (GlobalvCard) discloses breach of accounts-payable and payment-processing data including SSNs</h2>
+        </div>
+        <p class="inc-sum">GlobalvCard LLC, doing business as Edenred Pay, disclosed a data-security incident involving personal information processed through its accounts-payable and payment services, reporting it to the Massachusetts Office of Consumer Affairs and Business Regulation on Sep 15. The exposed data includes names, mailing addresses, and Social Security numbers; the company has not publicly disclosed how many individuals or records were affected, the intrusion vector, or a timeline for the underlying compromise. <b>Durable catch: a payment-processing platform holding SSNs alongside AP/vendor payment data is a higher-value target than its narrow 'payments' branding suggests — any organization routing vendor payments through Edenred Pay should confirm what personal data of its own staff or vendors transited the platform.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-15</span><span>ACTIVE SINCE 2026-09-15</span>
+        <span>DATA EXPOSED: NAMES, MAILING ADDRESSES, SOCIAL SECURITY NUMBERS</span>
+        <span>REPORTED TO MASSACHUSETTS OCABR SEP 15</span>
+        <span>RECORD COUNT, INTRUSION VECTOR, AND TIMELINE NOT PUBLICLY DISCLOSED</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://www.forthepeople.com/blog/data-breach-brief-week-september-16th-2026/" rel="noopener">ForThePeople Data Breach Brief (Sep 18)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · PAYMENT SERVICES</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations using Edenred Pay/GlobalvCard for vendor or employee payments should request confirmation of whether their own data was affected; affected individuals should place a credit freeze given the SSN exposure; watch for the company&#x27;s fuller disclosure to establish verified scope and cause.</span>
+      <button class="tbtn copy-inc" data-inc="edenred-pay-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="edenred-pay-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized access to accounts-payable/payment-processing data including names, addresses, and SSNs">Unauthorized access to accounts-payable/payment-processing data including names, addresses, and SSNs</button></td>
+            <td class="ctx">Scope of the disclosed breach per regulatory filing</td>
+            <td class="seen">SEP 15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Malicious Twitch browser extension leaked OAuth tokens for ~31,000 users to a Russian-language bot service</h2>
+        </div>
+        <p class="inc-sum">Socket's Threat Research Team found that 'Twitch Enhanced Viewer | JeetBot,' a Chrome and Firefox extension marketed as a Twitch quality-of-life tool (ad blocking, forced 1080p, region unlock, auto channel-point collection), forwarded users' live OAuth session tokens to proxy servers operated by JeetBot, a commercial Twitch/Kick/VK-Live bot SaaS. The tokens let anyone holding them act on affected accounts without needing the password or 2FA; roughly 30,000 Chrome users and 552 Firefox users were affected. After Socket's disclosure, JeetBot acknowledged the extension's store listing and privacy policy hadn't adequately disclosed the token forwarding and shipped a fix, live on the Chrome Web Store as of Sep 25. <b>Durable catch: an extension requesting broad host permissions for a platform it 'enhances' is functionally requesting the ability to relay your live session — that permission scope, not the extension's stated feature list, is what determines actual risk.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-13</span><span>ACTIVE SINCE 2026-09-13</span>
+        <span>~30,000 CHROME + 552 FIREFOX USERS AFFECTED</span>
+        <span>OAUTH TOKENS RELAYED TO JEETBOT (RUSSIAN-LANGUAGE TWITCH/KICK/VK-LIVE BOT SaaS)</span>
+        <span>FIX SHIPPED SEP 25 AFTER DISCLOSURE · TOKENS PREVIOUSLY GAVE ACCOUNT ACCESS WITHOUT PASSWORD/2FA</span>
+          <span class="attck">T1176 · T1552.001</span>
+          <span><a href="https://socket.dev/blog/malicious-twitch-browser-extension" rel="noopener">Socket (Sep 13)</a> · <a href="https://thehackernews.com/2026/09/malicious-twitch-browser-extension.html" rel="noopener">The Hacker News</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">BROWSER EXTENSION · OAUTH TOKEN LEAK</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Uninstall &#x27;Twitch Enhanced Viewer | JeetBot&#x27; if installed, and revoke/regenerate Twitch OAuth tokens and sessions for any account that had it installed; review browser extensions requesting broad host permissions for streaming or social platforms before installing regardless of stated feature set; if updated, confirm the extension version no longer forwards tokens before trusting the fix.</span>
+      <button class="tbtn copy-inc" data-inc="twitch-extension-oauth-leak">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="twitch-extension-oauth-leak">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Twitch Enhanced Viewer | JeetBot (malicious browser extension)">Twitch Enhanced Viewer | JeetBot (malicious browser extension)</button></td>
+            <td class="ctx">Forwarded live Twitch OAuth session tokens to JeetBot proxy infrastructure</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Over 1 million CEO-impersonation emails push fake ServiceNow subscription invoices to trigger fraudulent ACH transfers</h2>
+        </div>
+        <p class="inc-sum">Microsoft disclosed a campaign that sent more than a million scam emails between Aug 3-5, 2026, impersonating the CEOs of target companies and directed at accounts-payable departments, aiming to persuade AP staff to initiate ACH wire transfers to pay a supposed ServiceNow annual subscription renewal. The campaign abused third-party email delivery infrastructure to achieve its scale and inbox placement rather than relying on spoofed sending domains alone. Microsoft disclosed this alongside the unrelated passkey-vishing campaign on Sep 13; no specific victim organizations or loss figures have been publicly attributed to this campaign. <b>Durable catch: invoking a real, specific vendor and invoice type (a ServiceNow renewal) rather than a generic urgent-wire-transfer pretext is what gives this campaign its believability at AP-department scale — any AP team should verify subscription renewal invoices through a known vendor contact channel, not the sender's claimed identity, regardless of how specific and plausible the invoice looks.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-09-13</span><span>ACTIVE SINCE 2026-08-03</span>
+        <span>1M+ SCAM EMAILS SENT AUG 3-5, 2026 · CEO IMPERSONATION</span>
+        <span>PRETEXT: FAKE SERVICENOW SUBSCRIPTION RENEWAL INVOICE TARGETING AP DEPARTMENTS</span>
+        <span>ABUSED THIRD-PARTY EMAIL DELIVERY INFRASTRUCTURE FOR SCALE/DELIVERABILITY</span>
+          <span class="attck">T1566.002</span>
+          <span><a href="https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/" rel="noopener">Microsoft Security Blog (Sep 13)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">BEC · INVOICE FRAUD · CEO IMPERSONATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Train accounts-payable staff to verify any subscription-renewal or vendor invoice through a known contact channel independent of the email itself, especially when it names a real vendor and invokes CEO authority; add DMARC/SPF/DKIM enforcement and flag messages that reference third-party delivery infrastructure inconsistent with the organization&#x27;s known vendor communications; require dual approval for ACH transfers above a defined threshold.</span>
+      <button class="tbtn copy-inc" data-inc="ceo-impersonation-servicenow-scam">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="ceo-impersonation-servicenow-scam">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="CEO-impersonation email directing accounts-payable staff to pay a ServiceNow subscription renewal via ACH transfer">CEO-impersonation email directing accounts-payable staff to pay a ServiceNow subscription renewal via ACH transfer</button></td>
+            <td class="ctx">Core pretext used across the 1M+-email campaign, Aug 3-5 2026</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="../feeds/issue-009-iocs.txt">issue-009-iocs.txt</a>
+  <a class="file" href="../feeds/issue-009-iocs.clean.txt">issue-009-iocs.clean.txt</a>
+  <a class="file" href="../feeds/issue-009-iocs.csv">issue-009-iocs.csv</a>
+  <a class="file" href="../feeds/issue-009.stix2.json">issue-009.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>

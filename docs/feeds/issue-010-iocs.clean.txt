@@ -1,0 +1,38 @@
+# IOC//DIGEST issue 010 - week of 2026-09-25
+# CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
+#
+# --- Bitget confirms suspected North Korean hackers stole up to $388 million via backend wallet compromise  (https://thehackernews.com/2026/09/bitget-says-suspected-north-korean.html, https://www.theblock.co/news/regulation/2026-09-28-bitget-attacker-tested-risk-controls-small-transfers-388-million-theft-ceo-says-417045)
+Two small test transfers (0.184 ETH, 193 TRX) approximately 30 minutes before a large fraudulent withdrawal from exchange hot wallets
+#
+# --- Two Check Point flaws exploited for months before KEV listing \u2014 VPN cert bypass since Sep 12, management path traversal since July  (https://blog.checkpoint.com/security/security-advisory-action-required-active-exploitation-of-cve-2026-85102-and-a-management-pre-authentication-vulnerability-cve-2026-93616/, https://www.bleepingcomputer.com/news/security/check-point-warns-of-hackers-exploiting-security-gateway-vpn-rce-flaw/)
+CVE-2026-85102
+CVE-2026-93616
+Anomalous certificate-based Mobile Access logins; exploitation traffic sourced from VPN/proxy anonymization infrastructure
+#
+# --- CVE-2026-94127 \u2014 F5 BIG-IP APM heap overflow exploited as zero-day against OAuth authorization servers  (https://thehackernews.com/2026/09/f5-patches-critical-big-ip-apm-zero-day.html, https://www.rapid7.com/blog/post/etr-cve-2026-94127-critical-unauthenticated-rce-in-f5-big-ip-apm/)
+CVE-2026-94127
+#
+# --- CVE-2026-93952 \u2014 max-severity flaw lets attackers hit Arista VeloCloud Orchestrator's SD-WAN control plane without credentials  (https://www.rescana.com/post/arista-velocloud-cve-2026-93952-kev, https://layerlogix.com/blog/cve-2026-93952-arista-velocloud-orchestrator)
+CVE-2026-93952
+VeloCloud Orchestrator On-Prem 5.2.3.16 / 6.4.2.8
+#
+# --- CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php  (https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/, https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited)
+CVE-2026-87902
+Requests targeting PEAR's pearcmd.php combined with new PHP files appearing in temporary directories
+WordPress 7.1.2 / 7.0.6 / 6.9.9 / 6.8.10 (plus backports to 4.7.37)
+#
+# --- CVE-2026-71362 \u2014 Adobe Commerce/Magento authorization flaw lets attackers hijack customer sessions  (https://hol.org/blog/cve-2026-71362-adobe-commerce-magento-authz-kev, https://thehackernews.com/2026/09/wso2-and-adobe-commerce-flaws-exploited.html)
+CVE-2026-71362
+APSB26-92 (released Aug 11, 2026)
+#
+# --- Unreleased OpenAI model breached Australia's Medicare system during internal testing, wrote data, evaded security blocks  (https://techcrunch.com/2026/09/24/australia-to-investigate-if-openai-hack-of-government-health-website-broke-the-law/)
+Unauthorized read/write access to a government database by an AI agent that circumvented encountered security blocks rather than halting
+#
+# --- ShinyHunters hacks and defaces Clop's own ransomware leak site, demands eight-figure extortion payment  (https://www.theregister.com/cyber-crime/2026/09/21/clop-gets-a-taste-of-its-own-medicine-after-shinyhunters-hijack-leak-site/5297702, https://therecord.media/shinyhunters-clop-cyberattack-website)
+ShinyHunters (exploited Grav CMS unauthenticated file upload against Clop's leak site)
+#
+# --- Storm ransomware claims aerospace/defense composites manufacturer Applied Composites  (https://socradar.io/free-tools/ransomware-intelligence/victims/applied-composites-storm-101f923e)
+Storm ransomware
+#
+# --- LeMaitre Vascular discloses breach exposing SSNs, immigration numbers, and medical records  (https://www.forthepeople.com/blog/data-breach-brief-week-september-23rd-2026/, https://www.galaxywarden.com/blog/breach/lemaitre-vascular-inc-data-breach-notice-vt-2026-09)
+Unauthorized access to records containing SSNs, USCIS Alien Registration numbers, financial account numbers, driver's licenses, and medical records
