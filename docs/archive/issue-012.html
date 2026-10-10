@@ -1,0 +1,920 @@
+<title>IOC Digest — Issue 012 · Week of 2026-10-09</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+  .inc-meta .reported { color: var(--accent); font-weight: 600; }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 012 · WK 2026-10-09 · 10 INCIDENTS · 10 IOCs</span>
+  <a class="navlink" href="index.html">← ALL ISSUES</a>
+  <button class="fchip on" data-type="all">ALL<b>10</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>1</b></button>
+  <button class="fchip" data-type="host">HOST<b>9</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>Ransomware knocks out SoftBank-affiliated IDCF Cloud, attacker claims to have destroyed 41.5PB of backups across 495 clients</h2>
+        </div>
+        <p class="inc-sum">IDC Frontier's IDCF Cloud service suffered a ransomware attack beginning approximately 3:40am Japan time Oct 7, causing a large-scale outage across its East Japan Region 1 data center cluster and affecting 495 companies and local governments under contract. IDC Frontier told customers Oct 8 that data stored across four zones of that cluster may be difficult or impossible to retrieve, and the attacker claims to have destroyed 41.5 petabytes of backups — meaning recovery for affected organizations depends entirely on backups they kept outside IDCF Cloud themselves. IDC Frontier isolated the affected region and halted systems to contain secondary damage and potential data leakage. <b>Durable catch: a 41.5PB backup-destruction claim against a cloud provider means every one of its 495 customers just had their disaster-recovery assumption invalidated at once — if your DR plan assumed your cloud provider's backups were a safety net independent of your own, this incident is the proof that assumption needed its own backup.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-07</span>
+        <span>495 COMPANIES AND LOCAL GOVERNMENTS AFFECTED · 4 DATA-CENTER ZONES UNRECOVERABLE</span>
+        <span>ATTACKER CLAIMS 41.5 PETABYTES OF BACKUPS DESTROYED</span>
+        <span>RECOVERY DEPENDS ENTIRELY ON CUSTOMER-HELD BACKUPS OUTSIDE IDCF CLOUD</span>
+          <span class="attck">T1486 · T1490 · T1489</span>
+          <span><a href="https://bleepingcomputer.com/news/security/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/amp" rel="noopener">BleepingComputer (Oct 7)</a> · <a href="https://tech-insider.org/idcf-cloud-ransomware-zones-unrecoverable-backups-2026/" rel="noopener">tech-insider.org</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · CLOUD PROVIDER · BACKUP DESTRUCTION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Any organization using IDCF Cloud should immediately assess whether it holds an independent, offline backup outside the provider, since provider-side recovery across the four affected zones is not assured; cloud customers generally should treat this as a prompt to verify their own DR plan doesn&#x27;t rely solely on a single provider&#x27;s backup infrastructure; monitor for confirmation of whether customer data was exfiltrated in addition to the backup destruction.</span>
+      <button class="tbtn copy-inc" data-inc="idcf-cloud-ransomware">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="idcf-cloud-ransomware">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Large-scale ransomware encryption and backup destruction across a cloud provider&#x27;s data-center zones, locking customers out of virtual servers">Large-scale ransomware encryption and backup destruction across a cloud provider&#x27;s data-center zones, locking customers out of virtual servers</button></td>
+            <td class="ctx">Scope of the IDCF Cloud incident</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>ARTEX — AI pentesting tool combined with multiple LLMs automates data-theft campaign against South Korean banks</h2>
+        </div>
+        <p class="inc-sum">CrowdStrike Intelligence disclosed a campaign active from late September to early October 2026 that combined ARTEX, an open-source Chinese-developed penetration-testing platform, with multiple large language models (DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6) to automate reconnaissance, exploitation, and data exfiltration against South Korean financial organizations including Shinhan Bank, Kookmin Bank, Hana Bank, BNK Busan Bank, Yegaram Savings Bank, Hyundai Capital, and Welcome Savings Bank. CrowdStrike assesses with moderate confidence the operator is Chinese-speaking and financially motivated; open directories on attacker-controlled servers inadvertently exposed Claude Code session histories, ARTEX configuration files, and Claude memory files, letting researchers reconstruct the operator's prompt-by-prompt workflow. South Korea's Financial Services Commission and Financial Supervisory Service issued a public warning urging consumers to watch for phishing and loan scams stemming from the leaked data. <b>Durable catch: the attacker's own exposed Claude Code session history is the actual intelligence goldmine here — reconstructing an adversary's prompt-by-prompt reasoning is a new category of attribution evidence that didn't exist before AI-agent-driven intrusions, and defenders should know to look for exposed AI tool session logs/config directories on any attacker infrastructure they gain visibility into.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-09-22</span>
+        <span>7+ SOUTH KOREAN BANKS/LENDERS TARGETED · ACTIVE LATE SEP-EARLY OCT 2026</span>
+        <span>COMBINED ARTEX (CHINESE OSS PENTEST TOOL) WITH MULTIPLE LLMs TO AUTOMATE THE ATTACK CHAIN</span>
+        <span>ATTACKER&#x27;S OWN EXPOSED CLAUDE CODE SESSION LOGS/CONFIG FILES ENABLED PROMPT-BY-PROMPT RECONSTRUCTION</span>
+          <span class="attck">T1588.002 · T1190 · T1567.002</span>
+          <span><a href="https://thehackernews.com/2026/10/artex-ai-pentesting-tool-used-in-data.html" rel="noopener">The Hacker News (Oct 8)</a> · <a href="https://securityaffairs.com/200661/hacking/ai-driven-tool-artex-used-in-attacks-against-south-korean-banks.html" rel="noopener">Security Affairs</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">AI-DRIVEN · FINANCIAL SECTOR · DATA THEFT</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>South Korean financial institutions should treat ARTEX-pattern automated reconnaissance-to-exfiltration as an active threat and review exposure to the named banks&#x27; incident reports for shared infrastructure or vendor overlap; consumers of affected institutions should heed the FSC/FSS warning and watch for phishing and loan-scam attempts using leaked data; defenders who gain visibility into attacker-controlled infrastructure should specifically check for exposed AI-tool session logs and config directories, which proved to be a uniquely rich attribution source in this case.</span>
+      <button class="tbtn copy-inc" data-inc="artex-ai-pentest-korea">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="artex-ai-pentest-korea">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6">ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6</button></td>
+            <td class="ctx">AI-driven toolchain used to automate the attack against South Korean financial organizations</td>
+            <td class="seen">OCT 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Malicious npm release of 'tensorlake' extends the ChainDrop/Shai-Hulud worm into AI agent infrastructure</h2>
+        </div>
+        <p class="inc-sum">Socket flagged version 0.5.144 of the npm package 'tensorlake' (a TypeScript SDK for Tensorlake applications) shortly after its Oct 8 publication, finding it carried obfuscated malware consistent with prior ChainDrop/Shai-Hulud supply-chain compromises. The payload harvests and exfiltrates npm tokens, GitHub tokens, AWS credentials, Kubernetes credentials, SSH keys, cryptocurrency wallets, and — notably — configuration files for AI tools including Anthropic Claude, establishes persistence, and can execute remotely supplied code. This marks the campaign's extension from general developer-credential theft into AI-agent-specific infrastructure, since Claude and similar tool configs often hold API keys and session context with their own blast radius. <b>Durable catch: a compromised dependency now specifically hunts for AI-tool configuration files alongside the usual cloud/SSH/crypto targets — any organization auditing a supply-chain compromise's blast radius needs to add 'what AI tool configs and API keys were present on affected machines' to the standard credential-rotation checklist, not just cloud and git credentials.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-08</span>
+        <span>MALICIOUS tensorlake v0.5.144 PUBLISHED AND FLAGGED SAME DAY, OCT 8</span>
+        <span>HARVESTS NPM/GITHUB/AWS/K8S CREDENTIALS, SSH KEYS, CRYPTO WALLETS, AND AI-TOOL (ANTHROPIC CLAUDE) CONFIG FILES</span>
+        <span>CONSISTENT WITH PRIOR CHAINDROP/SHAI-HULUD CAMPAIGN TTPs · EXTENDS TARGETING INTO AI AGENT INFRASTRUCTURE</span>
+          <span class="attck">T1195.002 · T1552.001</span>
+          <span><a href="https://www.scworld.com/brief/tensorlake-npm-package-compromised-in-supply-chain-attack" rel="noopener">SC World</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SUPPLY CHAIN · NPM · AI AGENT INFRASTRUCTURE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Remove tensorlake v0.5.144 from any dependency tree immediately and rotate all credential types the malware targets — npm, GitHub, AWS, Kubernetes, SSH keys, crypto wallets, and any AI-tool (Claude or similar) configuration files/API keys present on affected machines; audit build/CI systems that may have installed this version for persistence mechanisms or remote code execution since Oct 8; treat AI-tool config exposure as a standard item in supply-chain incident response going forward, not an afterthought.</span>
+      <button class="tbtn copy-inc" data-inc="tensorlake-npm-chaindrop">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="tensorlake-npm-chaindrop">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="tensorlake v0.5.144 (published Oct 8, 2026)">tensorlake v0.5.144 (published Oct 8, 2026)</button></td>
+            <td class="ctx">Malicious npm release carrying a ChainDrop/Shai-Hulud-consistent credential-harvesting payload targeting cloud, SSH, crypto, and AI-tool configs</td>
+            <td class="seen">OCT 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>South Africa's air navigation provider finds ransomware-linked malware in OT network supporting aviation weather services</h2>
+        </div>
+        <p class="inc-sum">Air Traffic and Navigation Services (ATNS), which manages roughly 10% of the world's airspace and handles South Africa's air traffic control and aviation weather operations, discovered malware commonly associated with early-stage ransomware attacks inside its operational technology network supporting weather services. Preliminary findings suggested possible data exfiltration to external IP addresses in China; ATNS's technical team believes it contained the intrusion but is engaging external cyber-forensics firms, with the investigation also examining Port Elizabeth, East London, and Maputo International airports for a possible insider-assisted data theft angle. No disruption to actual air traffic or flights was reported, since the affected systems support weather services rather than live traffic control. <b>Durable catch: this was caught at the ransomware-precursor stage, before encryption — the fact that early-stage malware in an OT network supporting weather services for 10% of the world's airspace was found before impact is itself the story worth noting, since most OT ransomware incidents in this digest are caught only after disruption.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-05</span><span>ACTIVE SINCE 2026-10-05</span>
+        <span>ATNS MANAGES ~10% OF WORLD&#x27;S AIRSPACE · MALWARE FOUND IN OT NETWORK SUPPORTING WEATHER SERVICES</span>
+        <span>SUSPECTED DATA EXFILTRATION TO EXTERNAL IPs IN CHINA</span>
+        <span>CAUGHT PRE-ENCRYPTION · NO AIR TRAFFIC OR FLIGHT DISRUPTION REPORTED · POSSIBLE INSIDER ANGLE UNDER INVESTIGATION</span>
+          <span class="attck">T1190 · T1567.002 · T1071.001</span>
+          <span><a href="https://www.scworld.com/brief/south-african-air-traffic-control-firm-investigates-ransomware-linked-malware-in-ot-network" rel="noopener">SC World (Oct 5)</a> · <a href="https://mybroadband.co.za/news/security/670359-china-linked-hackers-attacked-south-africas-air-traffic-control-system.html" rel="noopener">mybroadband.co.za</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">ICS/OT · AVIATION · RANSOMWARE PRECURSOR</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Air navigation and aviation weather providers should treat early-stage ransomware-precursor malware detection in OT networks as a model to replicate — ATNS&#x27;s catch before encryption/disruption is the outcome to study; investigate the insider-theft angle at the named airports (Port Elizabeth, East London, Maputo) independently of the broader ransomware investigation; monitor for confirmation of data exfiltration scope and the China-linked IP attribution.</span>
+      <button class="tbtn copy-inc" data-inc="atns-southafrica-ransomware">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="atns-southafrica-ransomware">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China">Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China</button></td>
+            <td class="ctx">Observed pattern at ATNS prior to any confirmed disruption</td>
+            <td class="seen">OCT 5</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-88779 — fourth NetScaler zero-day in two months knocks SAML-configured appliances offline in targeted attacks</h2>
+        </div>
+        <p class="inc-sum">Citrix published a bulletin Oct 3 for CVE-2026-88779 (CVSS 8.7), a memory-overflow denial-of-service flaw that lets an attacker with only network access — no valid account needed — overflow a NetScaler ADC/Gateway appliance's memory and force it offline, but only when the appliance is configured as a SAML service provider or identity provider for single sign-on. Citrix confirmed targeted-attack exploitation Oct 4; CISA added it to KEV Oct 5 with an Oct 7 federal deadline. This is the fourth distinct NetScaler CVE added to KEV within roughly two months, following CVE-2026-8452, CVE-2026-19490, and the CVE-2026-88771/88772 pair. <b>Durable catch: four NetScaler KEV entries in two months is no longer a pattern of isolated bugs — any organization running NetScaler as a SAML SSO front end should treat the platform itself as a standing high-priority monitoring target rather than waiting for each individual CVE announcement.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-04</span><span>ACTIVE SINCE 2026-10-03</span>
+        <span>CVE-2026-88779 CVSS 8.7 · UNAUTH MEMORY-OVERFLOW DOS, SAML-CONFIGURED APPLIANCES ONLY</span>
+        <span>4TH DISTINCT NETSCALER KEV ENTRY IN ~2 MONTHS</span>
+        <span>CONFIRMED TARGETED-ATTACK EXPLOITATION, NOT JUST THEORETICAL</span>
+          <span class="attck">T1190 · T1499</span>
+          <span><a href="https://thehackernews.com/2026/10/new-netscaler-zero-day-exploited-in.html" rel="noopener">The Hacker News</a> · <a href="https://www.helpnetsecurity.com/2026/10/05/cisa-flags-new-exploited-netscaler-flaw-as-attackers-crash-appliances-cve-2026-88779/" rel="noopener">Help Net Security (Oct 5)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · KEV · SAML DOS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch NetScaler ADC/Gateway 14.1 and 13.1 branches (including FIPS/NDcPP builds) to the fixed build immediately, or apply Citrix&#x27;s interim mitigation if patching is delayed; if the appliance is not configured for SAML, exposure to this specific CVE doesn&#x27;t apply, but given the fourth-in-two-months pattern, review all NetScaler CVEs from this cycle together rather than one at a time; treat SAML-configured NetScaler appliances as a standing monitoring priority.</span>
+      <button class="tbtn copy-inc" data-inc="citrix-netscaler-88779">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="citrix-netscaler-88779">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-88779">CVE-2026-88779</button></td>
+            <td class="ctx">Citrix NetScaler ADC/Gateway memory overflow causing denial of service on SAML-configured appliances, CVSS 8.7</td>
+            <td class="seen">OCT 4</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>European police dismantle KillSec ransomware infrastructure, arrest suspected 16-year-old lead operator</h2>
+        </div>
+        <p class="inc-sum">German-led international police action, 'Operation KillSwitch,' seized KillSec's data-leak site and five core servers Sep 30, blocking unauthorized access to more than 110 terabytes of stolen victim data and investigating a group linked to roughly 1,000 suspected cyberattacks worldwide. Spanish police arrested a 16-year-old Romanian national in Alicante as the suspected main operator; two additional suspects were provisionally arrested and eight properties searched across Greece, Romania, Spain, and the UK. The suspect faces potential extradition proceedings, including a reported US extradition question, alongside ongoing legal process in France regarding surrender of a minor under a European Arrest Warrant. <b>Durable catch: 110TB of seized stolen data from a single takedown is a resource for organizations to check against — any entity that experienced an unexplained breach or extortion attempt in the group's operating window should inquire with the investigating agencies about whether their data appears in the seized cache, rather than assuming a takedown closes the matter for past victims.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-02</span><span>ACTIVE SINCE 2026-09-30</span>
+        <span>110+ TERABYTES OF STOLEN DATA SEIZED · 5 CORE SERVERS TAKEN DOWN</span>
+        <span>~1,000 SUSPECTED ATTACKS LINKED TO THE GROUP WORLDWIDE</span>
+        <span>SUSPECTED LEAD OPERATOR IS A 16-YEAR-OLD ROMANIAN NATIONAL ARRESTED IN SPAIN</span>
+          <span class="attck">T1486 · T1567.002</span>
+          <span><a href="https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html" rel="noopener">The Hacker News (Oct 2)</a> · <a href="https://www.teiss.co.uk/news/european-law-enforcement-takes-down-killsec-infrastructure-arrests-teenager-18260" rel="noopener">teiss</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">LAW ENFORCEMENT · RANSOMWARE INFRASTRUCTURE TAKEDOWN</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations that experienced a suspected KillSec extortion attempt or unexplained breach during its operating window should contact investigating authorities (German-led, with Europol coordination) to check whether their data appears in the 110TB seized cache; treat this takedown as disruption, not elimination, of the group&#x27;s broader affiliate/access-broker ecosystem given roughly 1,000 linked attacks and multiple still-provisional arrests.</span>
+      <button class="tbtn copy-inc" data-inc="killsec-takedown">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="killsec-takedown">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)">KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)</button></td>
+            <td class="ctx">Group dismantled in Operation KillSwitch</td>
+            <td class="seen">SEP 30</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>ASOS breach traced to an employee tricked into handing over login credentials by an attacker posing as a trusted contact</h2>
+        </div>
+        <p class="inc-sum">ASOS confirmed a data breach after a group calling itself the Xuanye Group gained access to an employee's account by impersonating a trusted contact to obtain login credentials, then used that access to reach information on certain third-party platforms ASOS uses. ASOS says names, contact details, delivery and email addresses, phone numbers, and recent search history were accessed, but payment card data and account passwords were not affected; the company notified customers Oct 8 and has locked down the affected platforms while working with external experts, law enforcement, and regulators. <b>Durable catch: the attacker didn't breach ASOS's own infrastructure at all — a single employee's credentials, obtained through impersonation, was sufficient to reach customer data on third-party platforms the company relies on, which is the actual control gap (third-party platform access tied to individual employee trust) rather than anything ASOS's own systems could have stopped.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-06</span>
+        <span>ATTACKER IMPERSONATED A TRUSTED CONTACT TO OBTAIN AN EMPLOYEE&#x27;S LOGIN CREDENTIALS</span>
+        <span>DATA EXPOSED: NAMES, CONTACT/DELIVERY/EMAIL DETAILS, PHONE NUMBERS, SEARCH HISTORY · NO PAYMENT DATA OR PASSWORDS</span>
+        <span>ATTACKER GROUP SELF-IDENTIFIES AS &#x27;XUANYE GROUP&#x27;</span>
+          <span class="attck">T1078.004 · T1566.004</span>
+          <span><a href="https://www.bleepingcomputer.com/news/security/asos-links-data-breach-to-social-engineering-attack-credential-theft/" rel="noopener">BleepingComputer (Oct 8)</a> · <a href="https://www.infosecurity-magazine.com/news/asos-data-breach-stolen-employee/" rel="noopener">Infosecurity Magazine</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · SOCIAL ENGINEERING · THIRD-PARTY PLATFORM</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>ASOS customers should watch for targeted phishing referencing their delivery/search history given the exposure, treating any such contact as suspicious; organizations should audit which third-party platforms a single employee&#x27;s credentials can reach and require out-of-band verification before any employee grants access changes or credential resets to a &#x27;trusted contact&#x27; claim; review third-party platform access scoping so one compromised employee account can&#x27;t reach customer data across multiple external systems.</span>
+      <button class="tbtn copy-inc" data-inc="asos-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="asos-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)">Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)</button></td>
+            <td class="ctx">Group responsible for the impersonation-based credential theft leading to the ASOS breach</td>
+            <td class="seen">OCT 8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Advantest confirms ransomware data theft 233 days after detection, citing cross-jurisdiction notification complexity</h2>
+        </div>
+        <p class="inc-sum">Advantest, which builds automatic test equipment chipmakers rely on to validate semiconductors, detected a ransomware attack Feb 15, 2026, and first acknowledged the incident publicly four days later while still investigating whether data had left the network. It took 233 days — until Oct 6 — to confirm and notify affected individuals that names, dates of birth, Social Security numbers, passport numbers, driver's license details, medical information, and financial records had been extracted from its servers. Advantest attributes the delay to reconstructing exactly what attackers accessed and matching recovered file listings against live record systems to identify affected individuals, compounded by operating across three continents where each jurisdiction carries its own notification rules; notifications went to over 500 California residents plus smaller numbers in Massachusetts and Vermont. <b>Durable catch: Advantest's stated reason for the delay — reconstructing file-listing-to-individual mapping across jurisdictions — is a forensic capability gap worth testing in your own incident-response plan before an actual breach, since 'we don't yet know which specific individuals are in the stolen files' is a much harder problem than confirming data was taken at all.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-06</span><span>ACTIVE SINCE 2026-02-15</span>
+        <span>DETECTED FEB 15, 2026 · NOTIFIED AFFECTED INDIVIDUALS OCT 6 — 233-DAY GAP</span>
+        <span>DATA: SSNs, PASSPORT/DRIVER&#x27;S LICENSE NUMBERS, MEDICAL AND FINANCIAL RECORDS</span>
+        <span>DELAY ATTRIBUTED TO FILE-TO-INDIVIDUAL RECONSTRUCTION ACROSS 3 CONTINENTS&#x27; JURISDICTIONS</span>
+          <span class="attck">T1005 · T1078</span>
+          <span><a href="https://www.bleepingcomputer.com/news/security/advantest-confirms-personal-information-stolen-in-ransomware-attack/" rel="noopener">BleepingComputer</a> · <a href="https://www.securityweek.com/chip-testing-giant-advantest-hit-by-ransomware/" rel="noopener">SecurityWeek</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · RANSOMWARE · DISCLOSURE DELAY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Affected individuals (over 500 in California, smaller numbers in Massachusetts and Vermont) should place a credit freeze given the SSN/passport/driver&#x27;s-license/financial exposure; organizations should stress-test their own ability to map stolen file listings to specific affected individuals as part of incident-response planning, since that reconstruction step — not detection or confirmation of theft — was Advantest&#x27;s actual bottleneck; multinational organizations should pre-map jurisdiction-specific notification deadlines before an incident rather than during one.</span>
+      <button class="tbtn copy-inc" data-inc="advantest-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="advantest-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Ransomware-related data theft of SSNs, passport numbers, driver&#x27;s license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026">Ransomware-related data theft of SSNs, passport numbers, driver&#x27;s license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026</button></td>
+            <td class="ctx">Scope and timeline of the disclosed breach</td>
+            <td class="seen">OCT 6</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Everest group claims flydubai breach, alleges theft of Boeing software source code and crew-training records</h2>
+        </div>
+        <p class="inc-sum">Hackmanac reported Oct 6 that the Everest cybercriminal group claims to have breached flydubai, alleging exfiltration of approximately 4.36GB across 16,517 files including flight-operations documents, crew-training records, personnel data, and proprietary Boeing software source code. flydubai has not publicly confirmed the claim or disclosed how the alleged intrusion occurred, and no sample files or additional technical detail have been independently verified as of this writing. <b>Durable catch: proprietary Boeing software source code allegedly mixed in with an airline's HR/training files is an unusual combination worth flagging specifically — if genuine, it suggests the stolen data spans both flydubai's own operational systems and vendor/OEM-provided software, which would broaden the incident's relevance well beyond flydubai itself to Boeing's own exposure.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-06</span><span>ACTIVE SINCE 2026-10-06</span>
+        <span>CLAIMED: 4.36GB ACROSS 16,517 FILES · FLIGHT OPS, CREW-TRAINING, PERSONNEL RECORDS</span>
+        <span>ALLEGEDLY INCLUDES PROPRIETARY BOEING SOFTWARE SOURCE CODE</span>
+        <span>UNCONFIRMED BY FLYDUBAI · NO SAMPLE FILES INDEPENDENTLY VERIFIED</span>
+          <span class="attck">T1567.002 · T1005</span>
+          <span><a href="https://www.rescana.com/post/flydubai-everest-breach-claim-advisory-oct-2026" rel="noopener">Rescana</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · AVIATION · EXTORTION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>flydubai should confirm or refute the claim directly given the specificity of the alleged data (Boeing source code is not a typical airline HR-breach claim); if genuine, Boeing should be notified independently of flydubai&#x27;s own response given the potential vendor-software exposure; monitor Everest&#x27;s leak site for proof files that would substantiate either the file count or the Boeing-code claim specifically.</span>
+      <button class="tbtn copy-inc" data-inc="flydubai-everest-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="flydubai-everest-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Everest (cybercriminal extortion group claiming the flydubai compromise)">Everest (cybercriminal extortion group claiming the flydubai compromise)</button></td>
+            <td class="ctx">Group behind the unverified flydubai data-theft claim</td>
+            <td class="seen">OCT 6</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Asahi Kasei Therapeutics discloses cyberattack on healthcare-professional website exposing up to 558,700 people's data</h2>
+        </div>
+        <p class="inc-sum">Asahi Kasei Therapeutics reported Oct 6 that its website for healthcare professionals was hit by a cyberattack, potentially exposing personal information for up to 558,700 people through unauthorized access. Public reporting does not yet specify the data types exposed, the intrusion vector, or the underlying timeline beyond the Oct 6 disclosure date. <b>Durable catch: a healthcare-professional-facing portal (rather than a patient-facing one) being the breach vector is a reminder that B2B/B2-professional web properties often carry weaker security investment than patient-facing systems despite holding comparably sensitive professional and potentially patient-adjacent data — worth auditing specifically if your organization runs a similar HCP portal.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-06</span><span>ACTIVE SINCE 2026-10-06</span>
+        <span>UP TO 558,700 PEOPLE POTENTIALLY AFFECTED</span>
+        <span>BREACH VECTOR: HEALTHCARE-PROFESSIONAL-FACING WEBSITE, NOT A PATIENT-FACING SYSTEM</span>
+        <span>DATA TYPES AND INTRUSION VECTOR NOT YET PUBLICLY SPECIFIED</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://pj.jiho.jp/article/256548" rel="noopener">pj.jiho.jp (Oct 6)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · HEALTHCARE PROFESSIONAL PORTAL</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations running healthcare-professional-facing (HCP) web portals should audit their security investment against that system specifically, not just patient-facing properties, since this breach vector is often comparatively under-resourced; watch for Asahi Kasei Therapeutics&#x27; fuller disclosure of data types and intrusion vector; affected healthcare professionals should monitor for targeted phishing referencing their professional credentials or affiliations.</span>
+      <button class="tbtn copy-inc" data-inc="asahi-kasei-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="asahi-kasei-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people">Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people</button></td>
+            <td class="ctx">Scope of the disclosed breach pending fuller technical detail</td>
+            <td class="seen">OCT 6</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="../feeds/issue-012-iocs.txt">issue-012-iocs.txt</a>
+  <a class="file" href="../feeds/issue-012-iocs.clean.txt">issue-012-iocs.clean.txt</a>
+  <a class="file" href="../feeds/issue-012-iocs.csv">issue-012-iocs.csv</a>
+  <a class="file" href="../feeds/issue-012.stix2.json">issue-012.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>

@@ -1,0 +1,209 @@
+{
+  "issue": 11,
+  "week": "2026-10-02",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "citrix-netscaler-zerodays-2",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · ZERO-DAY · KEV · WEB SHELL",
+      "title": "CVE-2026-88771/88772 — third NetScaler zero-day pair of the year, exploited with documented IPs, hashes, and web-shell paths",
+      "summary": "Citrix disclosed two NetScaler ADC/Gateway zero-days, both CVSS v4.0 9.5: CVE-2026-88771, a command-injection flaw letting an unauthenticated attacker run commands via a three-stage chain (Base64-encoded dropper in the User-Agent header, log poisoning, then a Perl script launching a PHP web shell), and CVE-2026-88772, a DTLS memory-overflow flaw triggered by crafted DTLS packets that drops a .deb web shell. CISA added both to KEV Sep 27 with a Sep 30 deadline. Unit 42 published specific infrastructure IPs, file hashes, and web-shell paths tied to active exploitation — making this the rare entry where defenders get concrete artifacts rather than a bare CVE number. This is the third distinct NetScaler KEV entry in roughly six weeks (after CVE-2026-8452 and CVE-2026-19490). <b>Durable catch: three independent NetScaler zero-days inside six weeks means any organization treating 'we patched the last one' as sufficient is already behind — NetScaler-adjacent monitoring needs to be continuous, not patch-and-forget.</b>",
+      "reported": "2026-09-27",
+      "first_seen": "2026-09-27",
+      "facts": ["CVE-2026-88771/88772 BOTH CVSS v4.0 9.5 · THIRD NETSCALER KEV ENTRY IN ~6 WEEKS", "REAL IOCs PUBLISHED: 10 ATTACKER IPs, 3 SHA-256 WEB SHELL HASHES, 2 WEB SHELL PATHS", "WEB SHELLS: .deb FILE IN /vpn/scripts/linux/ · PHP SHELL IN /var/netscaler/logon/LogonPoint/custom/"],
+      "attack": ["T1190", "T1505.003", "T1071.001"],
+      "sources": [
+        { "label": "Unit 42 (updated Sep 30)", "url": "https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited/" },
+        { "label": "Rapid7", "url": "https://www.rapid7.com/blog/post/etr-critical-cisco-catalyst-sd-wan-manager-api-authentication-bypass-exploited-in-the-wild-cve-2026-76504/" }
+      ],
+      "action": "Isolate and patch NetScaler ADC/Gateway per Citrix bulletin CTX697096 immediately; check for the published web-shell paths (/vpn/scripts/linux/nsgclient18.deb and /var/netscaler/logon/LogonPoint/custom/.ctxs.receiver) and hash matches on any internet-facing appliance; block the listed attacker IPs at the perimeter; review User-Agent header logs for Base64-encoded dropper patterns as the CVE-2026-88771 entry signature.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-88771 / CVE-2026-88772", "context": "NetScaler ADC/Gateway command injection (User-Agent dropper → log poisoning → Perl-launched PHP web shell) and DTLS memory overflow (.deb web shell), both CVSS v4.0 9.5", "seen": "SEP 27" },
+        { "type": "ip", "category": "net", "value": "77[.]83[.]199[.]39 ; 104[.]248[.]244[.]66 ; 193[.]149[.]176[.]207 ; 162[.]33[.]178[.]9", "context": "Attacker infrastructure IPs observed exploiting the NetScaler zero-days (plus six additional unlisted IPs)", "seen": "SEP 27" },
+        { "type": "filename", "category": "host", "value": "/vpn/scripts/linux/nsgclient18.deb ; /var/netscaler/logon/LogonPoint/custom/.ctxs.receiver", "context": "Web shell file paths dropped post-exploitation", "seen": "SEP 27" },
+        { "type": "hash", "category": "hash", "value": "ae22ef2517b5c0fb47f78745b9cb5260acee0e751b89bcd354640ff8bc8d29ec ; 79c65fa04541032e251fa4796b97800374b63c7982593dd1a2e0db605d429186 ; 1bd314b661396c7086f6367fbbb48025e03ca2de69c073d53a8b0a38aa5fbb7d", "context": "SHA-256 hashes of web shell/implant files (nsg64.deb and related)", "seen": "SEP 27" }
+      ]
+    },
+    {
+      "id": "cisco-sdwan-authbypass",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · KEV · AUTH BYPASS",
+      "title": "CVE-2026-76504 — URI-encoding trick bypasses Cisco Catalyst SD-WAN Manager authentication for full admin API access",
+      "summary": "Cisco Catalyst SD-WAN Manager's authentication rule for a privileged API endpoint performs a literal string match on the request path without normalizing encoded characters first — so a request to the encoded path /%6a_security_check doesn't match the protected string, the rule silently skips authentication, and the underlying API processes it as if a valid admin session existed. CVE-2026-76504 (CVSS 9.8) requires no credentials or user interaction; Cisco became aware of exploitation in September and published its advisory Sep 30, the same day CISA added it to KEV. Cisco states no workaround exists — patching is the only fix, across version branches from 20.9 through 26.2. <b>Durable catch: the vulnerability is specifically in how the auth rule matches the path string before decoding — any WAF or proxy sitting in front of SD-WAN Manager that normalizes URI encoding before forwarding requests would have independently blocked this, which is worth checking regardless of patch status.</b>",
+      "reported": "2026-09-30",
+      "first_seen": "2026-09-30",
+      "facts": ["CVE-2026-76504 CVSS 9.8 · UNAUTH ADMIN API ACCESS VIA ENCODED j_security_check PATH", "NO WORKAROUND EXISTS PER CISCO · PATCHING IS THE ONLY FIX", "AFFECTS RELEASES EARLIER THAN 20.9 THROUGH 26.2 BRANCHES"],
+      "attack": ["T1190", "T1078"],
+      "sources": [
+        { "label": "The Hacker News (Sep 30)", "url": "https://thehackernews.com/2026/09/cisco-warns-of-attackers-exploiting.html" },
+        { "label": "Horizon3.ai", "url": "https://horizon3.ai/attack-research/vulnerabilities/cve-2026-76504/" }
+      ],
+      "action": "Patch Cisco Catalyst SD-WAN Manager to the fixed release for your branch (e.g., 20.9.10.1, 20.12.8.2, 20.15.6.1, 20.18.4.1, 26.1.2.1, 26.2.1) immediately, since no workaround exists; audit for admin-level API actions that don't correspond to a known authenticated session; if a WAF or reverse proxy sits in front of SD-WAN Manager, confirm it normalizes URI encoding before path matching as a compensating control.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-76504", "context": "Cisco Catalyst SD-WAN Manager authentication bypass via unnormalized URI encoding on a protected API path, CVSS 9.8", "seen": "SEP 30" },
+        { "type": "detection", "category": "net", "value": "Requests to an encoded variant of the j_security_check path (e.g., /%6a_security_check)", "context": "Exact exploitation technique for this authentication bypass", "seen": "SEP 30" }
+      ]
+    },
+    {
+      "id": "fortimail-zeroday",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · ZERO-DAY · KEV · NO PATCH YET",
+      "title": "CVE-2026-104286 — FortiMail path-traversal zero-day exploited in the wild with no patch available, only a workaround",
+      "summary": "Fortinet confirmed active exploitation of CVE-2026-104286 (CVSS 9.8), a path-traversal and NULL-byte handling flaw in FortiMail that lets an unauthenticated attacker write arbitrary files via crafted HTTP(S) requests, potentially leading to remote code execution, full system compromise, and lateral movement. CISA added it to KEV Oct 1 with an Oct 4 deadline to apply a workaround, not a patch — as of this writing, Fortinet had not yet shipped a fix for the affected FortiMail 7.2.0-8.0.1 range, only interim mitigation guidance. <b>Durable catch: a KEV deadline requiring a workaround rather than a patch is itself the signal that this flaw is more urgent than a typical CVSS 9.8 — treat 'no patch available' as a reason to apply the workaround immediately rather than waiting for a more complete fix.</b>",
+      "reported": "2026-10-01",
+      "first_seen": "2026-10-01",
+      "facts": ["CVE-2026-104286 CVSS 9.8 · UNAUTH PATH TRAVERSAL/NULL-BYTE → ARBITRARY FILE WRITE", "NO PATCH AVAILABLE AS OF THIS WRITING, ONLY A WORKAROUND (FG-IR-26-175)", "AFFECTS FORTIMAIL 7.2.0-7.2.9, 7.4.0-7.4.8, 7.6.0-7.6.6, 8.0.0-8.0.1"],
+      "attack": ["T1190"],
+      "sources": [
+        { "label": "Rescana", "url": "https://www.rescana.com/post/fortinet-fortimail-cve-2026-104286-actively-exploited-critical-path-traversal-and-null-byte-vulnerability-alert" },
+        { "label": "Hard2bit", "url": "https://hard2bit.com/en/blog/fortimail-zero-day-cve-2026-104286-patch-iocs/" }
+      ],
+      "action": "Apply Fortinet's workaround immediately per FG-IR-26-175: disable IBE and/or remove internet exposure of the FortiMail management interface; do not wait for a patch given confirmed active exploitation; monitor for unexpected file writes outside expected FortiMail directories as a sign of exploitation; apply the eventual patch as soon as Fortinet ships one.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-104286", "context": "FortiMail unauthenticated path traversal/NULL-byte handling enabling arbitrary file write, CVSS 9.8, no patch available", "seen": "OCT 1" }
+      ]
+    },
+    {
+      "id": "apple-coregraphics-zeroday",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · ZERO-DAY · KEV · SPYWARE-LINKED",
+      "title": "CVE-2026-86950 — Apple CoreGraphics zero-day weaponized against specific individuals via crafted image/document files",
+      "summary": "Meta's Product Security team reported CVE-2026-86950, an out-of-bounds write in Apple's CoreGraphics framework that triggers when the system processes a maliciously crafted image or document, letting an attacker achieve arbitrary code execution on versions before iOS 27. Apple confirmed the flaw was exploited in 'an extremely sophisticated attack against specific targeted individuals' — language consistent with commercial-spyware-grade targeting rather than broad criminal exploitation. CISA added it to KEV Sep 29 with an Oct 2 federal deadline; Apple shipped fixes across iOS 26.7.1, iPadOS 26.7.1, macOS Tahoe 26.7.1, and macOS Sequoia 15.8.1. <b>Durable catch: a file-processing zero-day discovered by another company's security team (Meta, not Apple itself) targeting specific individuals is the classic signature of spyware-vendor tradecraft — high-risk individuals (journalists, dissidents, executives) should treat this patch as time-sensitive regardless of whether they believe they're personally targeted.</b>",
+      "reported": "2026-09-29",
+      "first_seen": "2026-09-29",
+      "facts": ["OUT-OF-BOUNDS WRITE IN COREGRAPHICS VIA CRAFTED IMAGE/DOCUMENT · DISCOVERED BY META PRODUCT SECURITY", "CONFIRMED EXPLOITED AGAINST SPECIFIC TARGETED INDIVIDUALS (SPYWARE-CONSISTENT PATTERN)", "FIXED: iOS/iPadOS 26.7.1, macOS TAHOE 26.7.1, macOS SEQUOIA 15.8.1"],
+      "attack": ["T1203", "T1068"],
+      "sources": [
+        { "label": "CISA KEV (Sep 29)", "url": "https://www.cisa.gov/news-events/alerts/2026/09/29/cisa-adds-one-known-exploited-vulnerability-catalog" },
+        { "label": "The Cyber Express", "url": "https://thecyberexpress.com/apple-fixes-cve-2026-86950-ios-ipados/" }
+      ],
+      "action": "Install iOS 26.7.1/iPadOS 26.7.1/macOS 26.7.1/macOS Sequoia 15.8.1 immediately; high-risk individuals should prioritize this update given the confirmed spyware-consistent targeted-attack pattern; enable Lockdown Mode on devices belonging to likely-targeted individuals (journalists, activists, dissidents, executives) as an additional layer pending full patch rollout.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-86950", "context": "Apple CoreGraphics out-of-bounds write via crafted image/document, exploited against specific targeted individuals", "seen": "SEP 29" }
+      ]
+    },
+    {
+      "id": "pentagon-dmdc-breach",
+      "severity": "crit",
+      "wide": true,
+      "kind": "DATA BREACH · DEFENSE DEPARTMENT · PERSONNEL RECORDS",
+      "title": "Pentagon confirms breach of personnel database exposing data on 3 million living and deceased service members",
+      "summary": "The Pentagon confirmed unauthorized access to a Defense Manpower Data Center (DMDC) system that occurred between October 2025 and July 2026, exposing names, dates of birth, Social Security numbers, job specialties, and other records for approximately 2.76 million living individuals and roughly 294,000 deceased people — covering service members, reservists, civilian employees, contractors, veterans, retirees, and military family members. The root cause was a vulnerability in a file-sharing system, discovered and immediately patched Jul 16, 2026; the breach confirmation and public notification began Sep 29. Officials have found no evidence yet that the stolen data has been used maliciously, but note the database's details on military and civilian personnel work assignments carry national-security risk beyond typical identity-theft exposure. Affected individuals are being offered identity protection and credit monitoring. <b>Durable catch: a nine-month gap between breach start (Oct 2025) and vulnerability discovery (Jul 2026) is the actual failure here — the fix, once found, was applied immediately, so the real lesson is about detection latency on a file-sharing system holding 60M+ personnel records, not patch speed.</b>",
+      "reported": "2026-09-29",
+      "first_seen": "2025-10",
+      "facts": ["2.76M LIVING + ~294,000 DECEASED INDIVIDUALS AFFECTED", "INTRUSION WINDOW OCT 2025-JUL 2026 · ROOT CAUSE: FILE-SHARING SYSTEM VULNERABILITY, PATCHED JUL 16", "DMDC DATABASE HOLDS 60M+ TOTAL PERSONNEL RECORDS · NO CONFIRMED MALICIOUS USE YET"],
+      "attack": ["T1005", "T1078"],
+      "sources": [
+        { "label": "Federal News Network (Sep 29)", "url": "https://federalnewsnetwork.com/defense-main/2026/09/more-than-3-million-people-affected-by-military-data-breach/" },
+        { "label": "TechTarget", "url": "https://techtarget.com/cybersecurity/news/366652020/Pentagon-breach-exposes-failure-to-follow-its-own-standards" }
+      ],
+      "action": "Affected current/former service members, civilians, contractors, veterans, and family members should enroll in the offered identity protection and credit monitoring; organizations holding large personnel/HR databases should audit file-sharing systems specifically for the detection-latency gap this incident exposed, since the vulnerability existed for roughly nine months before discovery despite being readily patchable once found; treat this as a reminder that database size alone (60M+ records here) raises the stakes of any single file-sharing misconfiguration.",
+      "iocs": [
+        { "type": "detection", "category": "host", "value": "Unauthorized access to a Defense Manpower Data Center file-sharing system between October 2025 and July 2026", "context": "Root cause and intrusion window of the confirmed breach", "seen": "SEP 29" }
+      ]
+    },
+    {
+      "id": "fbi-jobs-shinyhunters",
+      "severity": "crit",
+      "wide": true,
+      "kind": "DATA BREACH · LAW ENFORCEMENT · CONTRACTOR FAILURE",
+      "title": "ShinyHunters breaches FBI's jobs portal via an unpatched Oracle PeopleSoft flaw a contractor failed to fix, exfiltrates 2-3TB",
+      "summary": "ShinyHunters breached apply[.]fbijobs[.]gov starting the night of Sep 21-22 by exploiting an undisclosed Oracle PeopleSoft vulnerability that a third-party contractor had failed to patch despite an explicit patch being issued after a prior June 2026 exploitation wave — the contractor was subsequently removed. After gaining remote code execution without authentication, the group moved laterally into FBI-managed AWS GovCloud infrastructure and claims to have downloaded 2-3 terabytes of data; a sample shared with Reuters contained names, home addresses, Social Security numbers, duty assignments, and in some cases family members' names for current and former FBI personnel and job applicants. The FBI confirmed the breach, said it has already arrested multiple subjects with partners, and attributed the root cause directly: a contractor failed to implement a security patch explicitly issued to secure the platform. ShinyHunters says it targeted the FBI in retaliation for the bureau's May 2026 public advisory naming the group's tactics. <b>Durable catch: a patch that exists and was explicitly issued but not applied by a third-party contractor is a vendor-management failure, not a vulnerability-research gap — any organization relying on contractors for platform maintenance needs to verify patch application independently rather than trusting contractor attestation.</b>",
+      "reported": "2026-09-22",
+      "first_seen": "2026-09-21",
+      "facts": ["EXPLOITED AN ORACLE PEOPLESOFT FLAW A CONTRACTOR FAILED TO PATCH AFTER AN EXPLICIT FIX WAS ISSUED", "2-3TB EXFILTRATED VIA LATERAL MOVEMENT INTO AWS GOVCLOUD", "DATA INCLUDES SSNs, HOME ADDRESSES, FAMILY MEMBER NAMES FOR FBI PERSONNEL/APPLICANTS · MULTIPLE ARRESTS ALREADY MADE"],
+      "attack": ["T1190", "T1078.004", "T1567.002"],
+      "sources": [
+        { "label": "Vectra AI", "url": "https://www.vectra.ai/blog/shinyhunters-breached-the-fbi-by-bypassing-the-fix" },
+        { "label": "Cybersecurity Dive", "url": "https://www.cybersecuritydive.com/news/fbi-hack-shinyhunters-jobs-portal/831175/" }
+      ],
+      "action": "Organizations that rely on third-party contractors to maintain any platform should independently verify patch application rather than trusting contractor sign-off, since an unapplied-but-issued patch is exactly how this breach happened; audit AWS GovCloud or equivalent cloud environments for lateral-movement paths from a public-facing application tier; affected FBI personnel/applicants should expect targeted phishing or physical-security risk given the home-address and family-member exposure, not just identity theft.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "ShinyHunters (exploited an unpatched Oracle PeopleSoft vulnerability against apply[.]fbijobs[.]gov)", "context": "Group responsible for the FBI jobs portal breach and subsequent AWS GovCloud lateral movement", "seen": "SEP 22" }
+      ]
+    },
+    {
+      "id": "keio-ransomware-japan",
+      "severity": "high",
+      "wide": true,
+      "kind": "RANSOMWARE · TRANSPORTATION/HOSPITALITY",
+      "title": "Keio Corporation confirms ransomware attack disrupting payment and hotel systems at Tokyo rail operator's hospitality arm",
+      "summary": "Keio Corporation, a major private railway operator in Tokyo, confirmed a ransomware attack on its group servers Sep 26 and shut down its network to contain it. The attack disrupted payment systems and the hospitality business behind the group's roughly 25 hotels, including service delays and card-payment outages at properties like Keio Plaza Hotel Tokyo; core train operations were confirmed unaffected. Keio isolated its network, reported the incident to police, and engaged outside experts to trace the intrusion; as of Sep 28 no ransomware group had claimed the attack, and the company was still investigating whether customer or business-partner data was accessed. <b>Durable catch: Keio's network segmentation held — train operations stayed up while hospitality/payment systems went down — which is the segmentation outcome every operator mixing safety-critical and customer-facing systems should be designing for, and worth confirming your own environment actually achieves rather than assumes.</b>",
+      "reported": "2026-09-28",
+      "first_seen": "2026-09-26",
+      "facts": ["ATTACK CONFIRMED SEP 26 · PAYMENT AND HOTEL SYSTEMS DISRUPTED ACROSS ~25 PROPERTIES", "TRAIN OPERATIONS CONFIRMED UNAFFECTED (SEGMENTATION HELD)", "NO RANSOMWARE GROUP HAD CLAIMED THE ATTACK AS OF SEP 28 · DATA ACCESS SCOPE STILL UNDER INVESTIGATION"],
+      "attack": ["T1486", "T1489"],
+      "sources": [
+        { "label": "BleepingComputer (Sep 28)", "url": "https://www.bleepingcomputer.com/news/security/japans-keio-confirms-ransomware-attack-disrupted-business-systems/" },
+        { "label": "CPO Magazine", "url": "https://www.cpomagazine.com/cyber-security/data-breach-impacts-times-car-ride-sharing-service-as-ransomware-attack-hits-railway-operator-keio/" }
+      ],
+      "action": "Operators mixing safety-critical infrastructure (trains) with customer-facing business systems (hospitality, payments) should verify network segmentation actually isolates the two, as Keio's case suggests theirs did; monitor for a ransomware group claim that would clarify scope and likely data exposure; customers of Keio-affiliated hotels and the Times Car ride-sharing service should watch for breach notification regarding payment or personal data.",
+      "iocs": [
+        { "type": "detection", "category": "host", "value": "Ransomware encryption/disruption affecting payment and hospitality booking systems while core rail operations remain isolated and unaffected", "context": "Observed segmentation outcome in this incident", "seen": "SEP 28" }
+      ]
+    },
+    {
+      "id": "shinyhunters-oreilly-dexcom",
+      "severity": "high",
+      "wide": true,
+      "kind": "EXTORTION · LEAK SITE · INTERNAL DISCORD",
+      "title": "ShinyHunters lists O'Reilly Automotive and DexCom on a new leak site, then pulls both listings two days later",
+      "summary": "ShinyHunters posted O'Reilly Automotive and DexCom, Inc. on a newly stood-up dark-web leak site Oct 1, threatening to publish alleged corporate data from both companies by end of day that Friday if the companies didn't respond — the new site also debuted a CAPTCHA system to blunt DDoS takedown attempts. Both listings were removed just two days later, Oct 3, without explanation. The claims emerged amid visible internal disarray at ShinyHunters: a suspect known as 'Rey' was reportedly detained in Jordan and is said to be cooperating with the FBI as of Sep 29, yet leak-site activity continued after the detention, suggesting other individuals retain access to the group's infrastructure independent of any one member. <b>Durable catch: listings appearing and then being silently pulled two days later, during a period when a named member is reportedly cooperating with law enforcement, is a sign of internal conflict over the group's claims — treat any ShinyHunters listing during this period as unusually unstable evidence of actual data possession, not just unverified as a matter of routine leak-site skepticism.</b>",
+      "reported": "2026-10-01",
+      "first_seen": "2026-10-01",
+      "facts": ["O'REILLY AUTOMOTIVE AND DEXCOM LISTED OCT 1, REMOVED OCT 3 WITHOUT EXPLANATION", "COINCIDES WITH REPORTED DETENTION OF A SHINYHUNTERS SUSPECT ('REY') IN JORDAN, SEP 29", "SUGGESTS MULTIPLE INDIVIDUALS RETAIN INDEPENDENT ACCESS TO THE GROUP'S LEAK-SITE INFRASTRUCTURE"],
+      "attack": ["T1567.002"],
+      "sources": [
+        { "label": "Cybernews (Oct 1)", "url": "https://cybernews.com/news/shinyhunters-oreilly-auto-dexcom-breach-fbi-hack/" },
+        { "label": "HackRead", "url": "https://hackread.com/shinyhunters-hacker-rey-detained-jordan-fbi/" }
+      ],
+      "action": "O'Reilly Automotive and DexCom should investigate independently rather than relying on the listing's removal as evidence of resolution, given the unexplained pull; organizations named by ShinyHunters during this period of apparent internal law-enforcement pressure should expect unusually volatile, possibly uncoordinated claims rather than the group's typical consistent extortion pattern; monitor for the listings' reappearance given multiple actors evidently retain infrastructure access.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "ShinyHunters (listed, then withdrew, claims against O'Reilly Automotive and DexCom)", "context": "Group behind the short-lived Oct 1-3 extortion listing", "seen": "OCT 1" }
+      ]
+    },
+    {
+      "id": "gibson-hospital-wallstreet",
+      "severity": "med",
+      "wide": false,
+      "kind": "RANSOMWARE · HEALTHCARE",
+      "title": "Wallstreet ransomware claims Illinois nonprofit Gibson Area Hospital, alleges 600GB exfiltrated",
+      "summary": "The Wallstreet ransomware group claimed an attack on Gibson Area Hospital & Health Services, a nonprofit healthcare provider in Illinois, Sep 29, stating it had infiltrated the organization's network systems and exfiltrated roughly 600GB of sensitive data, threatening publication absent negotiation. As of Sep 30, Gibson Area Hospital had not publicly confirmed the breach or disclosed what data types were affected; attorneys have begun investigating potential class-action claims on behalf of patients, staff, and affiliated physicians. <b>Durable catch: a claimed 600GB exfiltration figure from a leak-site post is unverified until the hospital confirms scope — but the absence of confirmation is not evidence the claim is false either, so affected-population outreach (patients, staff, physicians) shouldn't wait on that confirmation to begin precautionary steps.</b>",
+      "reported": "2026-09-29",
+      "first_seen": "2026-09-29",
+      "facts": ["CLAIMED 600GB EXFILTRATED · ILLINOIS NONPROFIT HEALTHCARE PROVIDER", "NO OFFICIAL CONFIRMATION OR DATA-TYPE DISCLOSURE AS OF SEP 30"],
+      "attack": ["T1567.002", "T1486"],
+      "sources": [
+        { "label": "DeXpose", "url": "https://www.dexpose.io/wallstreet-ransomware-strikes-gibson-area-hospital-health-services/" }
+      ],
+      "action": "Gibson Area Hospital patients, staff, and affiliated physicians should monitor for official breach notification rather than waiting on the leak-site claim; the hospital should prioritize scoping and disclosure given the claimed data volume; watch Wallstreet's leak site for proof files that would substantiate the 600GB figure.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "Wallstreet ransomware", "context": "Group claiming the Gibson Area Hospital & Health Services compromise", "seen": "SEP 29" }
+      ]
+    },
+    {
+      "id": "caresource-breach",
+      "severity": "med",
+      "wide": false,
+      "kind": "DATA BREACH · HEALTHCARE",
+      "title": "CareSource/Commonwealth Care Alliance discloses medical-records breach affecting 826 Massachusetts residents",
+      "summary": "CareSource, through Commonwealth Care Alliance, disclosed a data breach involving medical records affecting 826 Massachusetts residents, filed with the state under breach number 2026-1607. Public filings do not specify when the underlying intrusion occurred, how it happened, or what other data types beyond medical records and names were affected; this is a separate, more limited incident from the much larger 2023 CareSource/MOVEit breach that affected millions. <b>Durable catch: the limited public detail here (no intrusion date, no vector, no full data-type list) is itself the finding — this is a disclosure that satisfies the minimum regulatory filing requirement without giving affected individuals or downstream organizations enough to assess their own exposure.</b>",
+      "reported": "2026-09-30",
+      "first_seen": "2026-09-30",
+      "facts": ["826 MASSACHUSETTS RESIDENTS AFFECTED · MEDICAL RECORDS AND NAMES EXPOSED", "INTRUSION DATE, VECTOR, AND FULL DATA SCOPE NOT PUBLICLY DISCLOSED", "SEPARATE, SMALLER INCIDENT FROM THE 2023 CARESOURCE/MOVEIT BREACH"],
+      "attack": ["T1078", "T1005"],
+      "sources": [
+        { "label": "Mass.gov Data Breach Notification Letters, September 2026", "url": "https://www.mass.gov/lists/data-breach-notification-letters-september-2026" }
+      ],
+      "action": "Affected Massachusetts residents should request specifics on intrusion timeline and full data scope directly from CareSource/Commonwealth Care Alliance given the minimal public filing detail; healthcare organizations should treat a filing this sparse as a floor, not a model, for their own breach-notification practices.",
+      "iocs": [
+        { "type": "detection", "category": "host", "value": "Unauthorized access to medical records affecting 826 Massachusetts residents", "context": "Scope of the disclosed breach per Massachusetts filing", "seen": "SEP 30" }
+      ]
+    }
+  ]
+}

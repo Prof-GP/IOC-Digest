@@ -1,0 +1,204 @@
+{
+  "issue": 12,
+  "week": "2026-10-09",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "idcf-cloud-ransomware",
+      "severity": "crit",
+      "wide": true,
+      "kind": "RANSOMWARE · CLOUD PROVIDER · BACKUP DESTRUCTION",
+      "title": "Ransomware knocks out SoftBank-affiliated IDCF Cloud, attacker claims to have destroyed 41.5PB of backups across 495 clients",
+      "summary": "IDC Frontier's IDCF Cloud service suffered a ransomware attack beginning approximately 3:40am Japan time Oct 7, causing a large-scale outage across its East Japan Region 1 data center cluster and affecting 495 companies and local governments under contract. IDC Frontier told customers Oct 8 that data stored across four zones of that cluster may be difficult or impossible to retrieve, and the attacker claims to have destroyed 41.5 petabytes of backups — meaning recovery for affected organizations depends entirely on backups they kept outside IDCF Cloud themselves. IDC Frontier isolated the affected region and halted systems to contain secondary damage and potential data leakage. <b>Durable catch: a 41.5PB backup-destruction claim against a cloud provider means every one of its 495 customers just had their disaster-recovery assumption invalidated at once — if your DR plan assumed your cloud provider's backups were a safety net independent of your own, this incident is the proof that assumption needed its own backup.</b>",
+      "reported": "2026-10-08",
+      "first_seen": "2026-10-07",
+      "facts": ["495 COMPANIES AND LOCAL GOVERNMENTS AFFECTED · 4 DATA-CENTER ZONES UNRECOVERABLE", "ATTACKER CLAIMS 41.5 PETABYTES OF BACKUPS DESTROYED", "RECOVERY DEPENDS ENTIRELY ON CUSTOMER-HELD BACKUPS OUTSIDE IDCF CLOUD"],
+      "attack": ["T1486", "T1490", "T1489"],
+      "sources": [
+        { "label": "BleepingComputer (Oct 7)", "url": "https://bleepingcomputer.com/news/security/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/amp" },
+        { "label": "tech-insider.org", "url": "https://tech-insider.org/idcf-cloud-ransomware-zones-unrecoverable-backups-2026/" }
+      ],
+      "action": "Any organization using IDCF Cloud should immediately assess whether it holds an independent, offline backup outside the provider, since provider-side recovery across the four affected zones is not assured; cloud customers generally should treat this as a prompt to verify their own DR plan doesn't rely solely on a single provider's backup infrastructure; monitor for confirmation of whether customer data was exfiltrated in addition to the backup destruction.",
+      "iocs": [
+        { "type": "detection", "category": "host", "value": "Large-scale ransomware encryption and backup destruction across a cloud provider's data-center zones, locking customers out of virtual servers", "context": "Scope of the IDCF Cloud incident", "seen": "OCT 7" }
+      ]
+    },
+    {
+      "id": "atns-southafrica-ransomware",
+      "severity": "high",
+      "wide": true,
+      "kind": "ICS/OT · AVIATION · RANSOMWARE PRECURSOR",
+      "title": "South Africa's air navigation provider finds ransomware-linked malware in OT network supporting aviation weather services",
+      "summary": "Air Traffic and Navigation Services (ATNS), which manages roughly 10% of the world's airspace and handles South Africa's air traffic control and aviation weather operations, discovered malware commonly associated with early-stage ransomware attacks inside its operational technology network supporting weather services. Preliminary findings suggested possible data exfiltration to external IP addresses in China; ATNS's technical team believes it contained the intrusion but is engaging external cyber-forensics firms, with the investigation also examining Port Elizabeth, East London, and Maputo International airports for a possible insider-assisted data theft angle. No disruption to actual air traffic or flights was reported, since the affected systems support weather services rather than live traffic control. <b>Durable catch: this was caught at the ransomware-precursor stage, before encryption — the fact that early-stage malware in an OT network supporting weather services for 10% of the world's airspace was found before impact is itself the story worth noting, since most OT ransomware incidents in this digest are caught only after disruption.</b>",
+      "reported": "2026-10-05",
+      "first_seen": "2026-10-05",
+      "facts": ["ATNS MANAGES ~10% OF WORLD'S AIRSPACE · MALWARE FOUND IN OT NETWORK SUPPORTING WEATHER SERVICES", "SUSPECTED DATA EXFILTRATION TO EXTERNAL IPs IN CHINA", "CAUGHT PRE-ENCRYPTION · NO AIR TRAFFIC OR FLIGHT DISRUPTION REPORTED · POSSIBLE INSIDER ANGLE UNDER INVESTIGATION"],
+      "attack": ["T1190", "T1567.002", "T1071.001"],
+      "sources": [
+        { "label": "SC World (Oct 5)", "url": "https://www.scworld.com/brief/south-african-air-traffic-control-firm-investigates-ransomware-linked-malware-in-ot-network" },
+        { "label": "mybroadband.co.za", "url": "https://mybroadband.co.za/news/security/670359-china-linked-hackers-attacked-south-africas-air-traffic-control-system.html" }
+      ],
+      "action": "Air navigation and aviation weather providers should treat early-stage ransomware-precursor malware detection in OT networks as a model to replicate — ATNS's catch before encryption/disruption is the outcome to study; investigate the insider-theft angle at the named airports (Port Elizabeth, East London, Maputo) independently of the broader ransomware investigation; monitor for confirmation of data exfiltration scope and the China-linked IP attribution.",
+      "iocs": [
+        { "type": "detection", "category": "net", "value": "Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China", "context": "Observed pattern at ATNS prior to any confirmed disruption", "seen": "OCT 5" }
+      ]
+    },
+    {
+      "id": "citrix-netscaler-88779",
+      "severity": "high",
+      "wide": true,
+      "kind": "CVE · ZERO-DAY · KEV · SAML DOS",
+      "title": "CVE-2026-88779 — fourth NetScaler zero-day in two months knocks SAML-configured appliances offline in targeted attacks",
+      "summary": "Citrix published a bulletin Oct 3 for CVE-2026-88779 (CVSS 8.7), a memory-overflow denial-of-service flaw that lets an attacker with only network access — no valid account needed — overflow a NetScaler ADC/Gateway appliance's memory and force it offline, but only when the appliance is configured as a SAML service provider or identity provider for single sign-on. Citrix confirmed targeted-attack exploitation Oct 4; CISA added it to KEV Oct 5 with an Oct 7 federal deadline. This is the fourth distinct NetScaler CVE added to KEV within roughly two months, following CVE-2026-8452, CVE-2026-19490, and the CVE-2026-88771/88772 pair. <b>Durable catch: four NetScaler KEV entries in two months is no longer a pattern of isolated bugs — any organization running NetScaler as a SAML SSO front end should treat the platform itself as a standing high-priority monitoring target rather than waiting for each individual CVE announcement.</b>",
+      "reported": "2026-10-04",
+      "first_seen": "2026-10-03",
+      "facts": ["CVE-2026-88779 CVSS 8.7 · UNAUTH MEMORY-OVERFLOW DOS, SAML-CONFIGURED APPLIANCES ONLY", "4TH DISTINCT NETSCALER KEV ENTRY IN ~2 MONTHS", "CONFIRMED TARGETED-ATTACK EXPLOITATION, NOT JUST THEORETICAL"],
+      "attack": ["T1190", "T1499"],
+      "sources": [
+        { "label": "The Hacker News", "url": "https://thehackernews.com/2026/10/new-netscaler-zero-day-exploited-in.html" },
+        { "label": "Help Net Security (Oct 5)", "url": "https://www.helpnetsecurity.com/2026/10/05/cisa-flags-new-exploited-netscaler-flaw-as-attackers-crash-appliances-cve-2026-88779/" }
+      ],
+      "action": "Patch NetScaler ADC/Gateway 14.1 and 13.1 branches (including FIPS/NDcPP builds) to the fixed build immediately, or apply Citrix's interim mitigation if patching is delayed; if the appliance is not configured for SAML, exposure to this specific CVE doesn't apply, but given the fourth-in-two-months pattern, review all NetScaler CVEs from this cycle together rather than one at a time; treat SAML-configured NetScaler appliances as a standing monitoring priority.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-88779", "context": "Citrix NetScaler ADC/Gateway memory overflow causing denial of service on SAML-configured appliances, CVSS 8.7", "seen": "OCT 4" }
+      ]
+    },
+    {
+      "id": "artex-ai-pentest-korea",
+      "severity": "high",
+      "wide": true,
+      "kind": "AI-DRIVEN · FINANCIAL SECTOR · DATA THEFT",
+      "title": "ARTEX — AI pentesting tool combined with multiple LLMs automates data-theft campaign against South Korean banks",
+      "summary": "CrowdStrike Intelligence disclosed a campaign active from late September to early October 2026 that combined ARTEX, an open-source Chinese-developed penetration-testing platform, with multiple large language models (DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6) to automate reconnaissance, exploitation, and data exfiltration against South Korean financial organizations including Shinhan Bank, Kookmin Bank, Hana Bank, BNK Busan Bank, Yegaram Savings Bank, Hyundai Capital, and Welcome Savings Bank. CrowdStrike assesses with moderate confidence the operator is Chinese-speaking and financially motivated; open directories on attacker-controlled servers inadvertently exposed Claude Code session histories, ARTEX configuration files, and Claude memory files, letting researchers reconstruct the operator's prompt-by-prompt workflow. South Korea's Financial Services Commission and Financial Supervisory Service issued a public warning urging consumers to watch for phishing and loan scams stemming from the leaked data. <b>Durable catch: the attacker's own exposed Claude Code session history is the actual intelligence goldmine here — reconstructing an adversary's prompt-by-prompt reasoning is a new category of attribution evidence that didn't exist before AI-agent-driven intrusions, and defenders should know to look for exposed AI tool session logs/config directories on any attacker infrastructure they gain visibility into.</b>",
+      "reported": "2026-10-08",
+      "first_seen": "2026-09-22",
+      "facts": ["7+ SOUTH KOREAN BANKS/LENDERS TARGETED · ACTIVE LATE SEP-EARLY OCT 2026", "COMBINED ARTEX (CHINESE OSS PENTEST TOOL) WITH MULTIPLE LLMs TO AUTOMATE THE ATTACK CHAIN", "ATTACKER'S OWN EXPOSED CLAUDE CODE SESSION LOGS/CONFIG FILES ENABLED PROMPT-BY-PROMPT RECONSTRUCTION"],
+      "attack": ["T1588.002", "T1190", "T1567.002"],
+      "sources": [
+        { "label": "The Hacker News (Oct 8)", "url": "https://thehackernews.com/2026/10/artex-ai-pentesting-tool-used-in-data.html" },
+        { "label": "Security Affairs", "url": "https://securityaffairs.com/200661/hacking/ai-driven-tool-artex-used-in-attacks-against-south-korean-banks.html" }
+      ],
+      "action": "South Korean financial institutions should treat ARTEX-pattern automated reconnaissance-to-exfiltration as an active threat and review exposure to the named banks' incident reports for shared infrastructure or vendor overlap; consumers of affected institutions should heed the FSC/FSS warning and watch for phishing and loan-scam attempts using leaked data; defenders who gain visibility into attacker-controlled infrastructure should specifically check for exposed AI-tool session logs and config directories, which proved to be a uniquely rich attribution source in this case.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6", "context": "AI-driven toolchain used to automate the attack against South Korean financial organizations", "seen": "OCT 8" }
+      ]
+    },
+    {
+      "id": "tensorlake-npm-chaindrop",
+      "severity": "high",
+      "wide": true,
+      "kind": "SUPPLY CHAIN · NPM · AI AGENT INFRASTRUCTURE",
+      "title": "Malicious npm release of 'tensorlake' extends the ChainDrop/Shai-Hulud worm into AI agent infrastructure",
+      "summary": "Socket flagged version 0.5.144 of the npm package 'tensorlake' (a TypeScript SDK for Tensorlake applications) shortly after its Oct 8 publication, finding it carried obfuscated malware consistent with prior ChainDrop/Shai-Hulud supply-chain compromises. The payload harvests and exfiltrates npm tokens, GitHub tokens, AWS credentials, Kubernetes credentials, SSH keys, cryptocurrency wallets, and — notably — configuration files for AI tools including Anthropic Claude, establishes persistence, and can execute remotely supplied code. This marks the campaign's extension from general developer-credential theft into AI-agent-specific infrastructure, since Claude and similar tool configs often hold API keys and session context with their own blast radius. <b>Durable catch: a compromised dependency now specifically hunts for AI-tool configuration files alongside the usual cloud/SSH/crypto targets — any organization auditing a supply-chain compromise's blast radius needs to add 'what AI tool configs and API keys were present on affected machines' to the standard credential-rotation checklist, not just cloud and git credentials.</b>",
+      "reported": "2026-10-08",
+      "first_seen": "2026-10-08",
+      "facts": ["MALICIOUS tensorlake v0.5.144 PUBLISHED AND FLAGGED SAME DAY, OCT 8", "HARVESTS NPM/GITHUB/AWS/K8S CREDENTIALS, SSH KEYS, CRYPTO WALLETS, AND AI-TOOL (ANTHROPIC CLAUDE) CONFIG FILES", "CONSISTENT WITH PRIOR CHAINDROP/SHAI-HULUD CAMPAIGN TTPs · EXTENDS TARGETING INTO AI AGENT INFRASTRUCTURE"],
+      "attack": ["T1195.002", "T1552.001"],
+      "sources": [
+        { "label": "SC World", "url": "https://www.scworld.com/brief/tensorlake-npm-package-compromised-in-supply-chain-attack" }
+      ],
+      "action": "Remove tensorlake v0.5.144 from any dependency tree immediately and rotate all credential types the malware targets — npm, GitHub, AWS, Kubernetes, SSH keys, crypto wallets, and any AI-tool (Claude or similar) configuration files/API keys present on affected machines; audit build/CI systems that may have installed this version for persistence mechanisms or remote code execution since Oct 8; treat AI-tool config exposure as a standard item in supply-chain incident response going forward, not an afterthought.",
+      "iocs": [
+        { "type": "package", "category": "host", "value": "tensorlake v0.5.144 (published Oct 8, 2026)", "context": "Malicious npm release carrying a ChainDrop/Shai-Hulud-consistent credential-harvesting payload targeting cloud, SSH, crypto, and AI-tool configs", "seen": "OCT 8" }
+      ]
+    },
+    {
+      "id": "killsec-takedown",
+      "severity": "high",
+      "wide": true,
+      "kind": "LAW ENFORCEMENT · RANSOMWARE INFRASTRUCTURE TAKEDOWN",
+      "title": "European police dismantle KillSec ransomware infrastructure, arrest suspected 16-year-old lead operator",
+      "summary": "German-led international police action, 'Operation KillSwitch,' seized KillSec's data-leak site and five core servers Sep 30, blocking unauthorized access to more than 110 terabytes of stolen victim data and investigating a group linked to roughly 1,000 suspected cyberattacks worldwide. Spanish police arrested a 16-year-old Romanian national in Alicante as the suspected main operator; two additional suspects were provisionally arrested and eight properties searched across Greece, Romania, Spain, and the UK. The suspect faces potential extradition proceedings, including a reported US extradition question, alongside ongoing legal process in France regarding surrender of a minor under a European Arrest Warrant. <b>Durable catch: 110TB of seized stolen data from a single takedown is a resource for organizations to check against — any entity that experienced an unexplained breach or extortion attempt in the group's operating window should inquire with the investigating agencies about whether their data appears in the seized cache, rather than assuming a takedown closes the matter for past victims.</b>",
+      "reported": "2026-10-02",
+      "first_seen": "2026-09-30",
+      "facts": ["110+ TERABYTES OF STOLEN DATA SEIZED · 5 CORE SERVERS TAKEN DOWN", "~1,000 SUSPECTED ATTACKS LINKED TO THE GROUP WORLDWIDE", "SUSPECTED LEAD OPERATOR IS A 16-YEAR-OLD ROMANIAN NATIONAL ARRESTED IN SPAIN"],
+      "attack": ["T1486", "T1567.002"],
+      "sources": [
+        { "label": "The Hacker News (Oct 2)", "url": "https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html" },
+        { "label": "teiss", "url": "https://www.teiss.co.uk/news/european-law-enforcement-takes-down-killsec-infrastructure-arrests-teenager-18260" }
+      ],
+      "action": "Organizations that experienced a suspected KillSec extortion attempt or unexplained breach during its operating window should contact investigating authorities (German-led, with Europol coordination) to check whether their data appears in the 110TB seized cache; treat this takedown as disruption, not elimination, of the group's broader affiliate/access-broker ecosystem given roughly 1,000 linked attacks and multiple still-provisional arrests.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)", "context": "Group dismantled in Operation KillSwitch", "seen": "SEP 30" }
+      ]
+    },
+    {
+      "id": "advantest-breach",
+      "severity": "med",
+      "wide": false,
+      "kind": "DATA BREACH · RANSOMWARE · DISCLOSURE DELAY",
+      "title": "Advantest confirms ransomware data theft 233 days after detection, citing cross-jurisdiction notification complexity",
+      "summary": "Advantest, which builds automatic test equipment chipmakers rely on to validate semiconductors, detected a ransomware attack Feb 15, 2026, and first acknowledged the incident publicly four days later while still investigating whether data had left the network. It took 233 days — until Oct 6 — to confirm and notify affected individuals that names, dates of birth, Social Security numbers, passport numbers, driver's license details, medical information, and financial records had been extracted from its servers. Advantest attributes the delay to reconstructing exactly what attackers accessed and matching recovered file listings against live record systems to identify affected individuals, compounded by operating across three continents where each jurisdiction carries its own notification rules; notifications went to over 500 California residents plus smaller numbers in Massachusetts and Vermont. <b>Durable catch: Advantest's stated reason for the delay — reconstructing file-listing-to-individual mapping across jurisdictions — is a forensic capability gap worth testing in your own incident-response plan before an actual breach, since 'we don't yet know which specific individuals are in the stolen files' is a much harder problem than confirming data was taken at all.</b>",
+      "reported": "2026-10-06",
+      "first_seen": "2026-02-15",
+      "facts": ["DETECTED FEB 15, 2026 · NOTIFIED AFFECTED INDIVIDUALS OCT 6 — 233-DAY GAP", "DATA: SSNs, PASSPORT/DRIVER'S LICENSE NUMBERS, MEDICAL AND FINANCIAL RECORDS", "DELAY ATTRIBUTED TO FILE-TO-INDIVIDUAL RECONSTRUCTION ACROSS 3 CONTINENTS' JURISDICTIONS"],
+      "attack": ["T1005", "T1078"],
+      "sources": [
+        { "label": "BleepingComputer", "url": "https://www.bleepingcomputer.com/news/security/advantest-confirms-personal-information-stolen-in-ransomware-attack/" },
+        { "label": "SecurityWeek", "url": "https://www.securityweek.com/chip-testing-giant-advantest-hit-by-ransomware/" }
+      ],
+      "action": "Affected individuals (over 500 in California, smaller numbers in Massachusetts and Vermont) should place a credit freeze given the SSN/passport/driver's-license/financial exposure; organizations should stress-test their own ability to map stolen file listings to specific affected individuals as part of incident-response planning, since that reconstruction step — not detection or confirmation of theft — was Advantest's actual bottleneck; multinational organizations should pre-map jurisdiction-specific notification deadlines before an incident rather than during one.",
+      "iocs": [
+        { "type": "detection", "category": "host", "value": "Ransomware-related data theft of SSNs, passport numbers, driver's license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026", "context": "Scope and timeline of the disclosed breach", "seen": "OCT 6" }
+      ]
+    },
+    {
+      "id": "asos-breach",
+      "severity": "med",
+      "wide": true,
+      "kind": "DATA BREACH · SOCIAL ENGINEERING · THIRD-PARTY PLATFORM",
+      "title": "ASOS breach traced to an employee tricked into handing over login credentials by an attacker posing as a trusted contact",
+      "summary": "ASOS confirmed a data breach after a group calling itself the Xuanye Group gained access to an employee's account by impersonating a trusted contact to obtain login credentials, then used that access to reach information on certain third-party platforms ASOS uses. ASOS says names, contact details, delivery and email addresses, phone numbers, and recent search history were accessed, but payment card data and account passwords were not affected; the company notified customers Oct 8 and has locked down the affected platforms while working with external experts, law enforcement, and regulators. <b>Durable catch: the attacker didn't breach ASOS's own infrastructure at all — a single employee's credentials, obtained through impersonation, was sufficient to reach customer data on third-party platforms the company relies on, which is the actual control gap (third-party platform access tied to individual employee trust) rather than anything ASOS's own systems could have stopped.</b>",
+      "reported": "2026-10-08",
+      "first_seen": "2026-10-06",
+      "facts": ["ATTACKER IMPERSONATED A TRUSTED CONTACT TO OBTAIN AN EMPLOYEE'S LOGIN CREDENTIALS", "DATA EXPOSED: NAMES, CONTACT/DELIVERY/EMAIL DETAILS, PHONE NUMBERS, SEARCH HISTORY · NO PAYMENT DATA OR PASSWORDS", "ATTACKER GROUP SELF-IDENTIFIES AS 'XUANYE GROUP'"],
+      "attack": ["T1078.004", "T1566.004"],
+      "sources": [
+        { "label": "BleepingComputer (Oct 8)", "url": "https://www.bleepingcomputer.com/news/security/asos-links-data-breach-to-social-engineering-attack-credential-theft/" },
+        { "label": "Infosecurity Magazine", "url": "https://www.infosecurity-magazine.com/news/asos-data-breach-stolen-employee/" }
+      ],
+      "action": "ASOS customers should watch for targeted phishing referencing their delivery/search history given the exposure, treating any such contact as suspicious; organizations should audit which third-party platforms a single employee's credentials can reach and require out-of-band verification before any employee grants access changes or credential resets to a 'trusted contact' claim; review third-party platform access scoping so one compromised employee account can't reach customer data across multiple external systems.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)", "context": "Group responsible for the impersonation-based credential theft leading to the ASOS breach", "seen": "OCT 8" }
+      ]
+    },
+    {
+      "id": "flydubai-everest-breach",
+      "severity": "med",
+      "wide": false,
+      "kind": "DATA BREACH · AVIATION · EXTORTION",
+      "title": "Everest group claims flydubai breach, alleges theft of Boeing software source code and crew-training records",
+      "summary": "Hackmanac reported Oct 6 that the Everest cybercriminal group claims to have breached flydubai, alleging exfiltration of approximately 4.36GB across 16,517 files including flight-operations documents, crew-training records, personnel data, and proprietary Boeing software source code. flydubai has not publicly confirmed the claim or disclosed how the alleged intrusion occurred, and no sample files or additional technical detail have been independently verified as of this writing. <b>Durable catch: proprietary Boeing software source code allegedly mixed in with an airline's HR/training files is an unusual combination worth flagging specifically — if genuine, it suggests the stolen data spans both flydubai's own operational systems and vendor/OEM-provided software, which would broaden the incident's relevance well beyond flydubai itself to Boeing's own exposure.</b>",
+      "reported": "2026-10-06",
+      "first_seen": "2026-10-06",
+      "facts": ["CLAIMED: 4.36GB ACROSS 16,517 FILES · FLIGHT OPS, CREW-TRAINING, PERSONNEL RECORDS", "ALLEGEDLY INCLUDES PROPRIETARY BOEING SOFTWARE SOURCE CODE", "UNCONFIRMED BY FLYDUBAI · NO SAMPLE FILES INDEPENDENTLY VERIFIED"],
+      "attack": ["T1567.002", "T1005"],
+      "sources": [
+        { "label": "Rescana", "url": "https://www.rescana.com/post/flydubai-everest-breach-claim-advisory-oct-2026" }
+      ],
+      "action": "flydubai should confirm or refute the claim directly given the specificity of the alleged data (Boeing source code is not a typical airline HR-breach claim); if genuine, Boeing should be notified independently of flydubai's own response given the potential vendor-software exposure; monitor Everest's leak site for proof files that would substantiate either the file count or the Boeing-code claim specifically.",
+      "iocs": [
+        { "type": "tool", "category": "host", "value": "Everest (cybercriminal extortion group claiming the flydubai compromise)", "context": "Group behind the unverified flydubai data-theft claim", "seen": "OCT 6" }
+      ]
+    },
+    {
+      "id": "asahi-kasei-breach",
+      "severity": "med",
+      "wide": false,
+      "kind": "DATA BREACH · HEALTHCARE PROFESSIONAL PORTAL",
+      "title": "Asahi Kasei Therapeutics discloses cyberattack on healthcare-professional website exposing up to 558,700 people's data",
+      "summary": "Asahi Kasei Therapeutics reported Oct 6 that its website for healthcare professionals was hit by a cyberattack, potentially exposing personal information for up to 558,700 people through unauthorized access. Public reporting does not yet specify the data types exposed, the intrusion vector, or the underlying timeline beyond the Oct 6 disclosure date. <b>Durable catch: a healthcare-professional-facing portal (rather than a patient-facing one) being the breach vector is a reminder that B2B/B2-professional web properties often carry weaker security investment than patient-facing systems despite holding comparably sensitive professional and potentially patient-adjacent data — worth auditing specifically if your organization runs a similar HCP portal.</b>",
+      "reported": "2026-10-06",
+      "first_seen": "2026-10-06",
+      "facts": ["UP TO 558,700 PEOPLE POTENTIALLY AFFECTED", "BREACH VECTOR: HEALTHCARE-PROFESSIONAL-FACING WEBSITE, NOT A PATIENT-FACING SYSTEM", "DATA TYPES AND INTRUSION VECTOR NOT YET PUBLICLY SPECIFIED"],
+      "attack": ["T1078", "T1005"],
+      "sources": [
+        { "label": "pj.jiho.jp (Oct 6)", "url": "https://pj.jiho.jp/article/256548" }
+      ],
+      "action": "Organizations running healthcare-professional-facing (HCP) web portals should audit their security investment against that system specifically, not just patient-facing properties, since this breach vector is often comparatively under-resourced; watch for Asahi Kasei Therapeutics' fuller disclosure of data types and intrusion vector; affected healthcare professionals should monitor for targeted phishing referencing their professional credentials or affiliations.",
+      "iocs": [
+        { "type": "detection", "category": "host", "value": "Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people", "context": "Scope of the disclosed breach pending fuller technical detail", "seen": "OCT 6" }
+      ]
+    }
+  ]
+}

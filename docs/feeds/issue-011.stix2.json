@@ -1,0 +1,21 @@
+{
+  "type": "bundle",
+  "id": "bundle--73fcc33f-aec1-5c44-a95f-0d7ec036c634",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--2d270c08-1fc6-5624-a6bc-20e10ca35242",
+      "created": "2026-10-02T00:00:00.000Z",
+      "modified": "2026-10-02T00:00:00.000Z",
+      "name": "CVE-2026-88771/88772 \u2014 third NetScaler zero-day pair of the year, exploited with documented IPs, hashes, and web-shell paths: Attacker infrastructure IPs observed exploiting the NetScaler zero-days (plus six additional unlisted IPs)",
+      "description": "Source: https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited/; https://www.rapid7.com/blog/post/etr-critical-cisco-catalyst-sd-wan-manager-api-authentication-bypass-exploited-in-the-wild-cve-2026-76504/",
+      "pattern": "[ipv4-addr:value = '77.83.199.39 ; 104.248.244.66 ; 193.149.176.207 ; 162.33.178.9']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-02T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}
