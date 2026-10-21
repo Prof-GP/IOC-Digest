@@ -1,0 +1,968 @@
+<title>IOC Digest — Issue 013 · Week of 2026-10-16</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+  .inc-meta .reported { color: var(--accent); font-weight: 600; }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 013 · WK 2026-10-16 · 10 INCIDENTS · 18 IOCs</span>
+  <a class="navlink" href="index.html">← ALL ISSUES</a>
+  <button class="fchip on" data-type="all">ALL<b>18</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>0</b></button>
+  <button class="fchip" data-type="host">HOST<b>18</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>China-nexus ARMORY CASTLE exploited BeyondTrust Remote Support zero-day for seven weeks, deployed Sawfly web shell and Bareclaw tunneler</h2>
+        </div>
+        <p class="inc-sum">Mandiant and Google Threat Intelligence Group attribute exploitation of CVE-2026-102764 (CVSS 9.3), an improper-origin-validation flaw in a BeyondTrust Remote Support internal messaging component, to ARMORY CASTLE — a suspected PRC-nexus espionage group also tracked as UNC5221/Warp Panda. Exploitation began as early as Aug 29 against one BeyondTrust-hosted instance and one self-hosted appliance; the group escalated to root, deployed the Sawfly web shell and a Bareclaw tunneler for persistence, used a legitimate administrative utility to pull passwords and API keys from the appliance's native secrets vault, opened Remote Support sessions against internal endpoints to download documents, and deleted system/web-server/application logs to cover tracks. The intrusion was detected and contained Sep 28 — roughly 30 days after it began — but public disclosure didn't follow until mid-October, meaning the privileged remote-access platform sat exploitable for nearly seven weeks total. BeyondTrust shipped the fix (BT26-05-RS) to SaaS customers automatically Oct 8-9; self-hosted customers must patch manually. Google warns other organizations may have been compromised before disclosure and should expect potential widespread exploitation. <b>Durable catch: the attacker specifically targeted the appliance's native secrets vault using a legitimate admin utility rather than a custom tool — any BeyondTrust Remote Support deployment should treat vault access logs as a priority hunting target even without other signs of compromise, since that's the step this actor prioritized.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-15</span><span>ACTIVE SINCE 2026-08-29</span>
+        <span>CVE-2026-102764 CVSS 9.3 · EXPLOITED FROM AUG 29, DETECTED/CONTAINED SEP 28 (~30 DAYS)</span>
+        <span>ATTRIBUTED TO ARMORY CASTLE/UNC5221/WARP PANDA (PRC-NEXUS)</span>
+        <span>SAWFLY WEB SHELL + BARECLAW TUNNELER · SECRETS-VAULT ACCESS VIA LEGITIMATE ADMIN UTILITY · LOGS DELETED</span>
+          <span class="attck">T1190 · T1505.003 · T1572 · T1070.001</span>
+          <span><a href="https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-beyondtrust" rel="noopener">Google Cloud Threat Intelligence</a> · <a href="https://www.securityweek.com/chinese-apt-exploited-beyondtrust-vulnerability-as-zero-day/" rel="noopener">SecurityWeek</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · CHINA-NEXUS APT · ROOT ACCESS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Apply BT26-05-RS immediately on any self-hosted BeyondTrust Remote Support appliance (SaaS already patched automatically); hunt for Sawfly web shell and Bareclaw tunneler artifacts and secrets-vault access events dating back to Aug 29; treat any credentials retrieved via the appliance&#x27;s secrets vault as compromised and rotate them; review Remote Support session logs for sessions opened against internal endpoints that weren&#x27;t part of a legitimate support ticket.</span>
+      <button class="tbtn copy-inc" data-inc="beyondtrust-armory-castle">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="beyondtrust-armory-castle">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-102764">CVE-2026-102764</button></td>
+            <td class="ctx">BeyondTrust Remote Support improper origin validation in internal messaging, enabling authentication bypass by spoofing, CVSS 9.3</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Sawfly (web shell) ; Bareclaw (tunneler)">Sawfly (web shell) ; Bareclaw (tunneler)</button></td>
+            <td class="ctx">Post-exploitation tools deployed by ARMORY CASTLE for persistence</td>
+            <td class="seen">AUG 29</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)">ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)</button></td>
+            <td class="ctx">Threat group responsible for the exploitation</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>AhsayCBS backup console flaws chained for unauthenticated root execution, deploying web shells and XMRig miners through three incomplete patch attempts</h2>
+        </div>
+        <p class="inc-sum">Huntress identified attackers chaining CVE-2026-105133 (authentication bypass in the checkSysPwd function) with CVE-2026-105134 (command injection in the Replication Receiver endpoint, /rps/api/json/UpdateReceivers.do) against AhsayCBS backup consoles, achieving unauthenticated code execution as SYSTEM. Huntress first observed attacks Oct 7 and had identified five targeted organizations by Oct 8; payloads included JSP web shells and an XMRig cryptominer disguised as an Edge executable, with Windows-service persistence. Ahsay's patching has struggled to keep pace: its existing v10.3.4.0 release did not fully address either CVE as Ahsay itself acknowledged Oct 10, an Oct 12 hotfix addressed only CVE-2026-105133, and The Hacker News reported Oct 15 that further updates had shipped — meaning three distinct patch releases across roughly two weeks before the chain was fully closed. <b>Durable catch: Ahsay's own v10.3.4.0 was marketed as a fix but didn't close either CVE — any organization that patched to that version and considered the matter resolved was still exposed; verify against Ahsay's most current advisory rather than trusting a single patch-version number as sufficient.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-15</span><span>ACTIVE SINCE 2026-10-07</span>
+        <span>CVE-2026-105133 (AUTH BYPASS) CHAINED WITH CVE-2026-105134 (COMMAND INJECTION) → UNAUTH SYSTEM CODE EXECUTION</span>
+        <span>3 SEPARATE PATCH ATTEMPTS OVER ~2 WEEKS BEFORE THE CHAIN WAS FULLY CLOSED</span>
+        <span>PAYLOADS: JSP WEB SHELLS + XMRig MINER DISGUISED AS AN EDGE EXECUTABLE · 5 ORGS HIT BY OCT 8</span>
+          <span class="attck">T1190 · T1505.003 · T1496</span>
+          <span><a href="https://www.huntress.com/blog/ahsaycbs-flaws-exploit" rel="noopener">Huntress</a> · <a href="https://thehackernews.com/2026/10/ahsaycbs-flaws-exploited-to-deploy-web.html" rel="noopener">The Hacker News (Oct 15)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · BACKUP SERVER · INCOMPLETE PATCHES</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Apply Ahsay&#x27;s most current hotfix (verify directly against Ahsay&#x27;s advisory, not just a version number, given the history of incomplete patches) immediately; restrict network access to the AhsayCBS console; check hosts for suspicious child processes of cbssvcX64.exe, unexpected JSP web shells, and an Edge-disguised executable consistent with XMRig; given AhsayCBS is backup infrastructure, treat any confirmed compromise as a threat to backup integrity, not just the console itself.</span>
+      <button class="tbtn copy-inc" data-inc="ahsaycbs-backup-exploited">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="ahsaycbs-backup-exploited">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-105133 / CVE-2026-105134">CVE-2026-105133 / CVE-2026-105134</button></td>
+            <td class="ctx">AhsayCBS authentication bypass (checkSysPwd) chained with command injection (Replication Receiver /rps/api/json/UpdateReceivers.do), unauthenticated SYSTEM code execution</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)">XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)</button></td>
+            <td class="ctx">Payload deployed post-exploitation</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host">Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host</button></td>
+            <td class="ctx">Exploitation indicators per Huntress</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-0322 — authenticated code-injection flaw in PAN-OS management interface grants root, exploited in limited attacks</h2>
+        </div>
+        <p class="inc-sum">Palo Alto Networks disclosed CVE-2026-0322 (CVSS v4.0 8.6), a code-injection flaw (CWE-94) in PAN-OS that lets an authenticated attacker with network access to the management interface execute arbitrary code with root privileges on PA-Series and VM-Series firewalls plus Panorama appliances; Cloud NGFW and Prisma Access are unaffected. Palo Alto discovered the zero-day internally and says 'very limited exploitation has been observed targeting the management interface,' releasing a short list of IOC IP addresses alongside the patch. CISA added it to KEV the same week with an Oct 17 federal deadline; no workaround exists beyond restricting management-interface access, and Palo Alto recommends allowing access only through a dedicated jump box. <b>Durable catch: this flaw requires authentication, which narrows the realistic attack path to an already-compromised credential or an exposed management interface reachable by an insider/already-authenticated actor — restricting management access to a jump box closes the exposure regardless of credential compromise elsewhere.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-14</span>
+        <span>CVE-2026-0322 CVSS v4.0 8.6 · AUTHENTICATED ROOT CODE EXECUTION VIA MANAGEMENT INTERFACE</span>
+        <span>DISCOVERED INTERNALLY BY PALO ALTO · &#x27;VERY LIMITED&#x27; CONFIRMED EXPLOITATION</span>
+        <span>AFFECTS PA-SERIES/VM-SERIES FIREWALLS AND PANORAMA · NO WORKAROUND BEYOND ACCESS RESTRICTION</span>
+          <span class="attck">T1068 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/10/palo-alto-networks-patches-pan-os.html" rel="noopener">The Hacker News (Oct 14)</a> · <a href="https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/" rel="noopener">BleepingComputer</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · ROOT RCE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch PAN-OS branches 10.2, 11.1, 11.2, 12.1, and 12.2 to the fixed build immediately; restrict management-interface access to trusted internal addresses only, ideally through a dedicated jump box, since no other workaround exists; audit for authenticated sessions against the management interface from unexpected source addresses given the exploitation requires valid authentication.</span>
+      <button class="tbtn copy-inc" data-inc="panos-rce-cve0322">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="panos-rce-cve0322">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-0322">CVE-2026-0322</button></td>
+            <td class="ctx">PAN-OS authenticated code injection via management interface, root privilege execution, CVSS v4.0 8.6</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-76519 — second exploited Cisco Secure Email Gateway flaw in a month lets a single crafted email grant root</h2>
+        </div>
+        <p class="inc-sum">CVE-2026-76519 (CVSS 9.8) is an arbitrary-file-write flaw in Cisco Secure Email Gateway's Advanced Malware Protection feature: an unauthenticated remote attacker sends an email with a crafted attachment, and the gateway writes arbitrary files and executes commands with root privileges — no interaction beyond the gateway processing the email is required. Exposure requires File Reputation enabled and assigned to a mail policy with Content Scanner Tools older than 25.3.0.5525. Cisco became aware of active exploitation in October and found malicious activity on some Secure Email Cloud devices, contacting those customers directly; CISA added it to KEV Oct 14 with an Oct 17 deadline. Cisco shipped fixes for this flaw back on Sep 14 (versions 15.5.5-014 and 16.5.0-780) — a month before the KEV listing — and says no workaround exists beyond patching. This is the second exploited Secure Email Gateway flaw in roughly a month, following CVE-2026-76461. <b>Durable catch: two root-RCE email gateway flaws exploited within a month means any Secure Email Gateway deployment should treat the platform itself as a standing high-priority asset for patch verification, not wait for each individual CVE announcement — and specifically check whether File Reputation/Content Scanner Tools versioning puts you in the exposed configuration.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-01</span>
+        <span>CVE-2026-76519 CVSS 9.8 · UNAUTH ROOT RCE VIA A SINGLE CRAFTED EMAIL ATTACHMENT</span>
+        <span>SECOND EXPLOITED SECURE EMAIL GATEWAY FLAW IN ~1 MONTH (AFTER CVE-2026-76461)</span>
+        <span>FIX SHIPPED SEP 14, A MONTH BEFORE THE KEV LISTING · NO WORKAROUND EXISTS</span>
+          <span class="attck">T1190 · T1566.001 · T1068</span>
+          <span><a href="https://www.securityweek.com/cisco-warns-of-exploited-secure-email-gateway-vulnerability/" rel="noopener">SecurityWeek</a> · <a href="https://cyberexperts.com/2026-10-15-cisco-email-gateway/" rel="noopener">CyberExperts (Oct 15)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · EMAIL-BORNE ROOT RCE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Confirm Secure Email Gateway is on 15.5.5-014, 16.5.0-780, or later, and that Content Scanner Tools is updated past 25.3.0.5525 — if File Reputation is enabled on an older Content Scanner Tools version, treat the gateway as exposed regardless of overall AsyncOS patch level; since Cisco contacted some Secure Email Cloud customers directly about confirmed malicious activity, verify with Cisco whether your deployment was among those notified; given this is the second exploited flaw in this product line within a month, schedule a full review of Secure Email Gateway&#x27;s patch history rather than tracking CVEs individually.</span>
+      <button class="tbtn copy-inc" data-inc="cisco-secure-email-gateway-76519">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="cisco-secure-email-gateway-76519">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-76519">CVE-2026-76519</button></td>
+            <td class="ctx">Cisco Secure Email Gateway arbitrary file write via crafted email attachment in Advanced Malware Protection, root RCE, CVSS 9.8</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)">Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)</button></td>
+            <td class="ctx">Fixed releases</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Nikkei discloses its third breach in a month after stolen cloud-development credentials expose 1.83 million records</h2>
+        </div>
+        <p class="inc-sum">Nikkei Inc. disclosed a breach involving approximately 1.83 million records after an attacker gained access to a cloud development environment using stolen credentials; Nikkei reported the incident to Japan's Personal Information Protection Commission Oct 11 and disabled the compromised credentials, with the public disclosure following Oct 16. The company says it has found no evidence of data misuse so far. Per the reporting source, this is Nikkei's third breach disclosed within a single month, though the other two incidents' details and dates weren't specified in available reporting. <b>Durable catch: a third breach within one month at the same organization is itself the signal, independent of any single incident's severity — repeated breaches in a short window typically point to a systemic gap (credential hygiene, cloud environment access controls, or detection capability) rather than three unrelated unlucky events, and warrant investigating the common root cause across all three rather than remediating each in isolation.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-16</span><span>ACTIVE SINCE 2026-10-11</span>
+        <span>1.83M RECORDS EXPOSED VIA STOLEN CLOUD-DEVELOPMENT CREDENTIALS</span>
+        <span>REPORTED TO JAPAN&#x27;S PPC OCT 11 · PUBLIC DISCLOSURE OCT 16 · NO CONFIRMED DATA MISUSE YET</span>
+        <span>THIRD BREACH DISCLOSED BY NIKKEI WITHIN A SINGLE MONTH PER REPORTING</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://www.rescana.com/post/nikkei-inc-cloud-data-breach-analysis-credential-compromise-exposes-1-83-million-records-in-october-2026" rel="noopener">Rescana</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · CLOUD CREDENTIALS · MEDIA</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Nikkei should investigate whether its three breaches within one month share a common root cause (credential management, cloud access controls, or detection gap) rather than treating each as isolated; affected individuals should monitor for misuse of exposed data despite the company&#x27;s current &#x27;no evidence&#x27; assessment; organizations generally should rotate and audit cloud-development credentials on a schedule independent of any single incident, given credential theft was the entry point here.</span>
+      <button class="tbtn copy-inc" data-inc="nikkei-breach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="nikkei-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized access to a cloud development environment via stolen credentials">Unauthorized access to a cloud development environment via stolen credentials</button></td>
+            <td class="ctx">Entry vector for the disclosed breach</td>
+            <td class="seen">OCT 16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-21589 — Atlassian Data Center flaw let unauthenticated attackers read known file paths from Jira, Confluence, and Bitbucket</h2>
+        </div>
+        <p class="inc-sum">An unauthenticated attacker who knows the exact file name and path can read it from the web root of self-hosted Atlassian Data Center products — CVE-2026-21589, CVSS v4.0 9.3, affecting Jira, Jira Service Management, Jira Software, Bamboo, Crowd, Crucible, and Fisheye Data Center. The flaw doesn't permit directory listing or enumeration, so an attacker needs to already know the target path, but watchTowr observed active in-the-wild exploitation beginning Oct 6, the day after Atlassian published fixes (Oct 5) — and The Hacker News reported exploitation attempts beginning within two hours of public technical details circulating. CISA added it to KEV Oct 15 with an Oct 18 deadline. Atlassian Cloud products were already patched and require no customer action. <b>Durable catch: a two-hour gap between public technical details and observed exploitation is now the realistic patch window for a disclosed Data Center vulnerability — any organization running self-hosted Atlassian products needs patching automation fast enough to beat that window, not a standard change-management cycle.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-15</span><span>ACTIVE SINCE 2026-10-06</span>
+        <span>CVE-2026-21589 CVSS v4.0 9.3 · UNAUTH READ OF KNOWN FILE PATHS, NO DIRECTORY LISTING</span>
+        <span>EXPLOITATION OBSERVED WITHIN 2 HOURS OF PUBLIC TECHNICAL DETAILS</span>
+        <span>AFFECTS 7 SELF-HOSTED DATA CENTER PRODUCTS · CLOUD ALREADY PATCHED</span>
+          <span class="attck">T1190 · T1005</span>
+          <span><a href="https://thehackernews.com/2026/10/atlassian-data-center-flaw-draws.html" rel="noopener">The Hacker News</a> · <a href="https://www.rapid7.com/blog/post/etr-cve-2026-21589-critical-unauthenticated-arbitrary-file-access-in-atlassian-products/" rel="noopener">Rapid7</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · ARBITRARY FILE ACCESS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch self-hosted Atlassian Data Center products immediately (e.g., Bitbucket 9.4.26/10.2.8/10.5.1, Confluence 9.2.26/10.2.19 — confirm the fixed version for each affected product against Atlassian&#x27;s advisory); review web-server access logs for requests to known sensitive file paths (configuration files, credential stores) since Oct 6, since public PoC scripts exist; given the two-hour exploitation window observed here, prioritize automated patch deployment for any internet-facing Data Center instance.</span>
+      <button class="tbtn copy-inc" data-inc="atlassian-cve-21589">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="atlassian-cve-21589">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-21589">CVE-2026-21589</button></td>
+            <td class="ctx">Atlassian Data Center unauthenticated arbitrary file access from the web root (no directory listing), affecting Jira/Confluence/Bitbucket/Bamboo/Crowd/Crucible/Fisheye, CVSS v4.0 9.3</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>IDCF Cloud says no evidence data was taken, as attacker claims 225 databases and 3.6PB encrypted</h2>
+        </div>
+        <p class="inc-sum">A week after the ransomware attack on IDC Frontier's IDCF Cloud disrupted 495 corporate and government customers (covered in Issue 012), the company said Oct 14 it had found no evidence that data on the affected servers was exfiltrated — a materially different claim from the attacker's own, which asserts encryption of 225 databases totaling 3.6 petabytes, an even larger figure than the 41.5PB of destroyed backups claimed the prior week. Neither IDC Frontier's 'no evidence of data theft' statement nor the attacker's encryption-scope figures have been independently verified; the gap between the two claims leaves affected customers without a reliable number to plan recovery around. <b>Durable catch: 'no evidence data was taken' is a narrower and different claim than 'data was not taken' — it means the company hasn't found proof of exfiltration, not that exfiltration didn't happen, and affected customers should treat the distinction as material when assessing their own notification obligations.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-07</span>
+        <span>IDC FRONTIER: &#x27;NO EVIDENCE&#x27; DATA WAS TAKEN FROM AFFECTED SERVERS, STATED OCT 14</span>
+        <span>ATTACKER CLAIMS 225 DATABASES / 3.6PB ENCRYPTED — UNVERIFIED AND DISTINCT FROM EARLIER 41.5PB BACKUP-DESTRUCTION CLAIM</span>
+        <span>NEITHER FIGURE INDEPENDENTLY CONFIRMED · 495 CUSTOMERS STILL AWAITING A RELIABLE SCOPE NUMBER</span>
+          <span class="attck">T1486 · T1490</span>
+          <span><a href="https://konbriefing.com/en-topics/cyber-attacks.html" rel="noopener">ScWorld tracker references (Oct 14 update)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · CLOUD PROVIDER · FOLLOW-UP</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>IDCF Cloud customers should treat &#x27;no evidence data was taken&#x27; as provisional, not a clearance, and continue their own independent assessment of potential exposure; do not rely on the attacker&#x27;s 225-database/3.6PB figure as verified scope either; organizations evaluating cloud-provider incident communications generally should distinguish &#x27;no evidence of X&#x27; from &#x27;X did not happen&#x27; as a matter of course.</span>
+      <button class="tbtn copy-inc" data-inc="idcf-cloud-followup">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="idcf-cloud-followup">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted">Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted</button></td>
+            <td class="ctx">Status update to the IDCF Cloud incident originally reported in Issue 012</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Ampath Laboratories confirms cyberattack, disputes attacker's 80-million-record claim as inflated database-entry counting</h2>
+        </div>
+        <p class="inc-sum">South African pathology provider Ampath Laboratories confirmed it detected and contained a cybersecurity incident affecting part of its IT environment Oct 2; the group ByteToBreach, assessed by KELA as likely an individual based in Algeria, posted claims on a hacker forum Oct 13 asserting it fully copied 10 of Ampath's 375 databases — including staff records, several patient databases, finance systems, and provider data — and that the admission table alone holds over 80 million records. Ampath disputes the headline figure, arguing it likely reflects database records/entries rather than unique patients, since a single patient generates many records over years; its regulatory notice lists names, ID numbers, dates of birth, contact details, medical aid details, and payment information as potentially affected, with no evidence yet that medical records, diagnoses, test results, or banking details were taken. MyBroadband separately scanned one of the attacker's posted data samples and found it laced with malware, including backdoors and trojans — a direct warning against downloading any purported proof file from this claim. <b>Durable catch: the posted 'sample data' itself being malware-laden is a distinct hazard from the breach — anyone trying to verify this claim by downloading the attacker's proof files is a secondary attack target, not just a researcher checking facts.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-13</span><span>ACTIVE SINCE 2026-10-02</span>
+        <span>AMPATH CONFIRMS INTRUSION OCT 2 · BYTETOBREACH CLAIMS POSTED OCT 13</span>
+        <span>DISPUTED FIGURE: ATTACKER CLAIMS 80M+ ADMISSION RECORDS ACROSS 10 OF 375 DATABASES</span>
+        <span>POSTED &#x27;SAMPLE&#x27; DATA FILES FOUND TO CONTAIN BACKDOORS/TROJANS — DO NOT DOWNLOAD</span>
+          <span class="attck">T1567.002 · T1005</span>
+          <span><a href="https://www.bankinfosecurity.com/pathology-lab-confirms-hack-but-disputes-data-theft-claims-a-33106" rel="noopener">BankInfoSecurity</a> · <a href="https://mybroadband.co.za/news/security/672153-attackers-claim-to-have-stolen-80-million-south-african-patient-records-in-massive-ampath-laboratories-data-breach.html" rel="noopener">mybroadband.co.za</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · HEALTHCARE · DISPUTED CLAIM</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Do not download or open any files presented as proof/sample data from this claim, given confirmed malware in at least one sample; Ampath patients should monitor for fraudulent communication referencing personal/medical-aid details per the company&#x27;s own notice, independent of the disputed record count; researchers and journalists verifying this claim should request verification through safe, sandboxed channels rather than direct download.</span>
+      <button class="tbtn copy-inc" data-inc="ampath-labs-bytetobreach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="ampath-labs-bytetobreach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)">ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)</button></td>
+            <td class="ctx">Group claiming the Ampath Laboratories database theft</td>
+            <td class="seen">OCT 13</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Backdoor and trojan malware embedded in files presented as &#x27;sample&#x27; proof data for this breach claim">Backdoor and trojan malware embedded in files presented as &#x27;sample&#x27; proof data for this breach claim</button></td>
+            <td class="ctx">Confirmed by independent scan of a posted sample file</td>
+            <td class="seen">OCT 13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>SeetelHotels discloses ransomware attack on internal IT, Incransom later lists guest and payment data on leak site</h2>
+        </div>
+        <p class="inc-sum">German hotel group SeetelHotels disclosed a ransomware attack on its internal IT systems with an intrusion beginning Oct 10-11; by Oct 14 parts of its systems and data had been encrypted, whether data had been exfiltrated was still under review, and the company's internal IT team said it detected and largely contained the intrusion early. Hotel operations continued with possible delays to phone/email inquiries; as of Oct 14 no ransom demand had been made, and the company said it would follow German federal police (BKA) guidance and not contact the attackers. The Incransom ransomware group subsequently listed Seetelhotels[.]de on its leak site, claiming guest identity records, passport/ID numbers, payment card details, medical/dietary information, and financial records including invoices and transaction logs — claims the company has not confirmed. <b>Durable catch: SeetelHotels' stated policy of following BKA guidance and not contacting the attacker is itself a datapoint other organizations can reference when setting their own negotiation policy in advance of an incident, rather than deciding reactively under pressure.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-10</span>
+        <span>INTRUSION BEGAN OCT 10-11 · DETECTED AND LARGELY CONTAINED EARLY BY INTERNAL IT</span>
+        <span>NO RANSOM DEMAND AS OF OCT 14 · COMPANY FOLLOWING BKA GUIDANCE, NOT CONTACTING ATTACKERS</span>
+        <span>INCRANSOM LATER CLAIMED GUEST ID/PASSPORT/PAYMENT/MEDICAL-DIETARY DATA — UNCONFIRMED BY COMPANY</span>
+          <span class="attck">T1486 · T1567.002</span>
+          <span><a href="https://www.tageskarte.io/detail/seetelhotels-meldet-ransomware-angriff-auf-interne-it-systeme.html" rel="noopener">Tageskarte</a> · <a href="https://www.ahgz.de/hotellerie/news/digitale-kriminalitaet-cyberangriff-auf-seetelhotels-320393" rel="noopener">ahgz.de</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · HOSPITALITY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>SeetelHotels guests and business partners should watch for official confirmation of the Incransom claim before treating the passport/payment/medical-dietary data exposure as confirmed; hospitality operators generally should pre-establish a ransom-negotiation policy aligned with national law-enforcement guidance before an incident, following SeetelHotels&#x27; stated approach as a reference point; monitor Incransom&#x27;s leak site for proof files substantiating scope.</span>
+      <button class="tbtn copy-inc" data-inc="seetelhotels-germany">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="seetelhotels-germany">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)">Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)</button></td>
+            <td class="ctx">Group that listed SeetelHotels on its leak site following the Oct 10-11 intrusion</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>Midnight Mimosa firmware malware ships pre-installed on budget Android phones in 150+ countries, can't be uninstalled</h2>
+        </div>
+        <p class="inc-sum">Bitdefender detailed Midnight Mimosa, firmware-level malware present on budget MediaTek-based Android phones (notably Doogee S200 X and Cubot KINGKONG X models, plus counterfeit devices spoofing flagship model strings like 'S25 Ultra') before the device is ever switched on — owners cannot uninstall it. The core component, a hidden system app named com.android.system.lite (also shipped as com.android.sys.prot, com.android.sys.gmsprot, and com.android.sys.bcprot under developer accounts 'fivedev' and 'CPS Developer'), runs as the system user, sends device identifiers (IMEI, Android ID, MAC address, timezone) to a C2 server, and can silently install/remove apps, grant permissions, and load remote code. It installs and removes at least 32 disguised ad-fraud apps that display screen-covering ads marked 'secure' to evade screen-capture detection, with C2-controlled timing to mimic human taps; infected devices also become residential-proxy relay nodes and botnet members sold on for DDoS use. The same ad-fraud code appeared in 13 Google Play Store apps across at least two developer accounts before being disabled; the malware disables the Play Store itself to prevent Play Protect's on-device scanner from running. Thousands of devices across 150+ countries have been affected over roughly two years, concentrated in Mexico, France, Italy, the US, Germany, Brazil, and Spain. <b>Durable catch: the malware disabling the Play Store specifically to block Play Protect's scanner is the operative evasion mechanism — a budget Android device where the Play Store app appears broken, missing, or won't update is a stronger indicator of this infection than any single permission grant, since that's the step the malware takes to blind its own detection.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-12</span><span>ACTIVE SINCE 2024</span>
+        <span>THOUSANDS OF DEVICES ACROSS 150+ COUNTRIES · ~2 YEARS ACTIVE · FIRMWARE-LEVEL, PRE-INSTALLED, CANNOT BE REMOVED BY OWNER</span>
+        <span>DISABLES GOOGLE PLAY STORE TO BLOCK PLAY PROTECT SCANNING</span>
+        <span>SAME AD-FRAUD CODE ALSO FOUND IN 13 GOOGLE PLAY STORE APPS ACROSS 2+ DEVELOPER ACCOUNTS</span>
+          <span class="attck">T1195.003 · T1071.001 · T1584.005</span>
+          <span><a href="https://www.helpnetsecurity.com/2026/10/12/midnight-mimosa-malware-cheap-android-phones/" rel="noopener">Help Net Security (Oct 12)</a> · <a href="https://gbhackers.com/android-firmware-malware/" rel="noopener">GBHackers</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">SUPPLY CHAIN · FIRMWARE MALWARE · AD FRAUD/BOTNET</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Avoid budget MediaTek-based Android devices from unverified sellers, especially those claiming flagship model names at low prices; if a device&#x27;s Google Play Store app is missing, disabled, or won&#x27;t function, treat that as a strong indicator of firmware-level compromise rather than a minor software glitch; organizations issuing low-cost Android devices to staff should source only from verified OEM channels and scan for the named package names (com.android.system.lite and its variants) before deployment.</span>
+      <button class="tbtn copy-inc" data-inc="midnight-mimosa-android">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="midnight-mimosa-android">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot">com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot</button></td>
+            <td class="ctx">Hidden firmware-level system app (and renamed variants) running as the Midnight Mimosa enabler</td>
+            <td class="seen">OCT 12</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="com.mobile.applock.wt">com.mobile.applock.wt</button></td>
+            <td class="ctx">Related obfuscated dropper associated with the campaign, though not confirmed as root cause</td>
+            <td class="seen">OCT 12</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Developer accounts &#x27;fivedev&#x27; and &#x27;CPS Developer&#x27;; certificate name &#x27;Shenzhen Zediel&#x27; on some system-app builds; Google Play Store disabled or non-functional on a budget Android device">Developer accounts &#x27;fivedev&#x27; and &#x27;CPS Developer&#x27;; certificate name &#x27;Shenzhen Zediel&#x27; on some system-app builds; Google Play Store disabled or non-functional on a budget Android device</button></td>
+            <td class="ctx">Identifiers associated with the campaign per Bitdefender</td>
+            <td class="seen">OCT 12</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="../feeds/issue-013-iocs.txt">issue-013-iocs.txt</a>
+  <a class="file" href="../feeds/issue-013-iocs.clean.txt">issue-013-iocs.clean.txt</a>
+  <a class="file" href="../feeds/issue-013-iocs.csv">issue-013-iocs.csv</a>
+  <a class="file" href="../feeds/issue-013.stix2.json">issue-013.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>

@@ -1,0 +1,40 @@
+# IOC//DIGEST issue 013 - week of 2026-10-16
+# DEFANGED values. Refang: replace [.] with .  (sed 's/\[\.\]/./g')
+#
+# --- China-nexus ARMORY CASTLE exploited BeyondTrust Remote Support zero-day for seven weeks, deployed Sawfly web shell and Bareclaw tunneler  (https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-beyondtrust, https://www.securityweek.com/chinese-apt-exploited-beyondtrust-vulnerability-as-zero-day/)
+CVE-2026-102764
+Sawfly (web shell) ; Bareclaw (tunneler)
+ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)
+#
+# --- AhsayCBS backup console flaws chained for unauthenticated root execution, deploying web shells and XMRig miners through three incomplete patch attempts  (https://www.huntress.com/blog/ahsaycbs-flaws-exploit, https://thehackernews.com/2026/10/ahsaycbs-flaws-exploited-to-deploy-web.html)
+CVE-2026-105133 / CVE-2026-105134
+XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)
+Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host
+#
+# --- CVE-2026-0322 \u2014 authenticated code-injection flaw in PAN-OS management interface grants root, exploited in limited attacks  (https://thehackernews.com/2026/10/palo-alto-networks-patches-pan-os.html, https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/)
+CVE-2026-0322
+#
+# --- CVE-2026-76519 \u2014 second exploited Cisco Secure Email Gateway flaw in a month lets a single crafted email grant root  (https://www.securityweek.com/cisco-warns-of-exploited-secure-email-gateway-vulnerability/, https://cyberexperts.com/2026-10-15-cisco-email-gateway/)
+CVE-2026-76519
+Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)
+#
+# --- Nikkei discloses its third breach in a month after stolen cloud-development credentials expose 1.83 million records  (https://www.rescana.com/post/nikkei-inc-cloud-data-breach-analysis-credential-compromise-exposes-1-83-million-records-in-october-2026)
+Unauthorized access to a cloud development environment via stolen credentials
+#
+# --- CVE-2026-21589 \u2014 Atlassian Data Center flaw let unauthenticated attackers read known file paths from Jira, Confluence, and Bitbucket  (https://thehackernews.com/2026/10/atlassian-data-center-flaw-draws.html, https://www.rapid7.com/blog/post/etr-cve-2026-21589-critical-unauthenticated-arbitrary-file-access-in-atlassian-products/)
+CVE-2026-21589
+#
+# --- IDCF Cloud says no evidence data was taken, as attacker claims 225 databases and 3.6PB encrypted  (https://konbriefing.com/en-topics/cyber-attacks.html)
+Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted
+#
+# --- Ampath Laboratories confirms cyberattack, disputes attacker's 80-million-record claim as inflated database-entry counting  (https://www.bankinfosecurity.com/pathology-lab-confirms-hack-but-disputes-data-theft-claims-a-33106, https://mybroadband.co.za/news/security/672153-attackers-claim-to-have-stolen-80-million-south-african-patient-records-in-massive-ampath-laboratories-data-breach.html)
+ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)
+Backdoor and trojan malware embedded in files presented as 'sample' proof data for this breach claim
+#
+# --- SeetelHotels discloses ransomware attack on internal IT, Incransom later lists guest and payment data on leak site  (https://www.tageskarte.io/detail/seetelhotels-meldet-ransomware-angriff-auf-interne-it-systeme.html, https://www.ahgz.de/hotellerie/news/digitale-kriminalitaet-cyberangriff-auf-seetelhotels-320393)
+Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)
+#
+# --- Midnight Mimosa firmware malware ships pre-installed on budget Android phones in 150+ countries, can't be uninstalled  (https://www.helpnetsecurity.com/2026/10/12/midnight-mimosa-malware-cheap-android-phones/, https://gbhackers.com/android-firmware-malware/)
+com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot
+com.mobile.applock.wt
+Developer accounts 'fivedev' and 'CPS Developer'; certificate name 'Shenzhen Zediel' on some system-app builds; Google Play Store disabled or non-functional on a budget Android device

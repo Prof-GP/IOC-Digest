@@ -1,4 +1,4 @@
-<title>IOC Digest — Issue 012 · Week of 2026-10-09</title>
+<title>IOC Digest — Issue 013 · Week of 2026-10-16</title>
 <style>
   /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
      spent semantically (type, severity, interactivity), the ground stays neutral. */
@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 012 · WK 2026-10-09 · 10 INCIDENTS · 10 IOCs</span>
+  <span class="issue-meta">ISSUE 013 · WK 2026-10-16 · 10 INCIDENTS · 18 IOCs</span>
   <a class="navlink" href="archive/">ARCHIVE ▾</a>
-  <button class="fchip on" data-type="all">ALL<b>10</b></button>
+  <button class="fchip on" data-type="all">ALL<b>18</b></button>
   <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>1</b></button>
-  <button class="fchip" data-type="host">HOST<b>9</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>0</b></button>
+  <button class="fchip" data-type="host">HOST<b>18</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -437,196 +437,186 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev crit">CRITICAL</span>
-          <h2>Ransomware knocks out SoftBank-affiliated IDCF Cloud, attacker claims to have destroyed 41.5PB of backups across 495 clients</h2>
+          <h2>China-nexus ARMORY CASTLE exploited BeyondTrust Remote Support zero-day for seven weeks, deployed Sawfly web shell and Bareclaw tunneler</h2>
         </div>
-        <p class="inc-sum">IDC Frontier's IDCF Cloud service suffered a ransomware attack beginning approximately 3:40am Japan time Oct 7, causing a large-scale outage across its East Japan Region 1 data center cluster and affecting 495 companies and local governments under contract. IDC Frontier told customers Oct 8 that data stored across four zones of that cluster may be difficult or impossible to retrieve, and the attacker claims to have destroyed 41.5 petabytes of backups — meaning recovery for affected organizations depends entirely on backups they kept outside IDCF Cloud themselves. IDC Frontier isolated the affected region and halted systems to contain secondary damage and potential data leakage. <b>Durable catch: a 41.5PB backup-destruction claim against a cloud provider means every one of its 495 customers just had their disaster-recovery assumption invalidated at once — if your DR plan assumed your cloud provider's backups were a safety net independent of your own, this incident is the proof that assumption needed its own backup.</b></p>
+        <p class="inc-sum">Mandiant and Google Threat Intelligence Group attribute exploitation of CVE-2026-102764 (CVSS 9.3), an improper-origin-validation flaw in a BeyondTrust Remote Support internal messaging component, to ARMORY CASTLE — a suspected PRC-nexus espionage group also tracked as UNC5221/Warp Panda. Exploitation began as early as Aug 29 against one BeyondTrust-hosted instance and one self-hosted appliance; the group escalated to root, deployed the Sawfly web shell and a Bareclaw tunneler for persistence, used a legitimate administrative utility to pull passwords and API keys from the appliance's native secrets vault, opened Remote Support sessions against internal endpoints to download documents, and deleted system/web-server/application logs to cover tracks. The intrusion was detected and contained Sep 28 — roughly 30 days after it began — but public disclosure didn't follow until mid-October, meaning the privileged remote-access platform sat exploitable for nearly seven weeks total. BeyondTrust shipped the fix (BT26-05-RS) to SaaS customers automatically Oct 8-9; self-hosted customers must patch manually. Google warns other organizations may have been compromised before disclosure and should expect potential widespread exploitation. <b>Durable catch: the attacker specifically targeted the appliance's native secrets vault using a legitimate admin utility rather than a custom tool — any BeyondTrust Remote Support deployment should treat vault access logs as a priority hunting target even without other signs of compromise, since that's the step this actor prioritized.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-07</span>
-        <span>495 COMPANIES AND LOCAL GOVERNMENTS AFFECTED · 4 DATA-CENTER ZONES UNRECOVERABLE</span>
-        <span>ATTACKER CLAIMS 41.5 PETABYTES OF BACKUPS DESTROYED</span>
-        <span>RECOVERY DEPENDS ENTIRELY ON CUSTOMER-HELD BACKUPS OUTSIDE IDCF CLOUD</span>
-          <span class="attck">T1486 · T1490 · T1489</span>
-          <span><a href="https://bleepingcomputer.com/news/security/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/amp" rel="noopener">BleepingComputer (Oct 7)</a> · <a href="https://tech-insider.org/idcf-cloud-ransomware-zones-unrecoverable-backups-2026/" rel="noopener">tech-insider.org</a></span>
+          <span class="reported">REPORTED 2026-10-15</span><span>ACTIVE SINCE 2026-08-29</span>
+        <span>CVE-2026-102764 CVSS 9.3 · EXPLOITED FROM AUG 29, DETECTED/CONTAINED SEP 28 (~30 DAYS)</span>
+        <span>ATTRIBUTED TO ARMORY CASTLE/UNC5221/WARP PANDA (PRC-NEXUS)</span>
+        <span>SAWFLY WEB SHELL + BARECLAW TUNNELER · SECRETS-VAULT ACCESS VIA LEGITIMATE ADMIN UTILITY · LOGS DELETED</span>
+          <span class="attck">T1190 · T1505.003 · T1572 · T1070.001</span>
+          <span><a href="https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-beyondtrust" rel="noopener">Google Cloud Threat Intelligence</a> · <a href="https://www.securityweek.com/chinese-apt-exploited-beyondtrust-vulnerability-as-zero-day/" rel="noopener">SecurityWeek</a></span>
         </div>
       </div>
-      <span class="inc-kind">RANSOMWARE · CLOUD PROVIDER · BACKUP DESTRUCTION</span>
+      <span class="inc-kind">CVE · ZERO-DAY · CHINA-NEXUS APT · ROOT ACCESS</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Any organization using IDCF Cloud should immediately assess whether it holds an independent, offline backup outside the provider, since provider-side recovery across the four affected zones is not assured; cloud customers generally should treat this as a prompt to verify their own DR plan doesn&#x27;t rely solely on a single provider&#x27;s backup infrastructure; monitor for confirmation of whether customer data was exfiltrated in addition to the backup destruction.</span>
-      <button class="tbtn copy-inc" data-inc="idcf-cloud-ransomware">COPY IOCs</button>
+      <span>Apply BT26-05-RS immediately on any self-hosted BeyondTrust Remote Support appliance (SaaS already patched automatically); hunt for Sawfly web shell and Bareclaw tunneler artifacts and secrets-vault access events dating back to Aug 29; treat any credentials retrieved via the appliance&#x27;s secrets vault as compromised and rotate them; review Remote Support session logs for sessions opened against internal endpoints that weren&#x27;t part of a legitimate support ticket.</span>
+      <button class="tbtn copy-inc" data-inc="beyondtrust-armory-castle">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="idcf-cloud-ransomware">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Large-scale ransomware encryption and backup destruction across a cloud provider&#x27;s data-center zones, locking customers out of virtual servers">Large-scale ransomware encryption and backup destruction across a cloud provider&#x27;s data-center zones, locking customers out of virtual servers</button></td>
-            <td class="ctx">Scope of the IDCF Cloud incident</td>
-            <td class="seen">OCT 7</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident high wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev high">HIGH</span>
-          <h2>ARTEX — AI pentesting tool combined with multiple LLMs automates data-theft campaign against South Korean banks</h2>
-        </div>
-        <p class="inc-sum">CrowdStrike Intelligence disclosed a campaign active from late September to early October 2026 that combined ARTEX, an open-source Chinese-developed penetration-testing platform, with multiple large language models (DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6) to automate reconnaissance, exploitation, and data exfiltration against South Korean financial organizations including Shinhan Bank, Kookmin Bank, Hana Bank, BNK Busan Bank, Yegaram Savings Bank, Hyundai Capital, and Welcome Savings Bank. CrowdStrike assesses with moderate confidence the operator is Chinese-speaking and financially motivated; open directories on attacker-controlled servers inadvertently exposed Claude Code session histories, ARTEX configuration files, and Claude memory files, letting researchers reconstruct the operator's prompt-by-prompt workflow. South Korea's Financial Services Commission and Financial Supervisory Service issued a public warning urging consumers to watch for phishing and loan scams stemming from the leaked data. <b>Durable catch: the attacker's own exposed Claude Code session history is the actual intelligence goldmine here — reconstructing an adversary's prompt-by-prompt reasoning is a new category of attribution evidence that didn't exist before AI-agent-driven intrusions, and defenders should know to look for exposed AI tool session logs/config directories on any attacker infrastructure they gain visibility into.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-09-22</span>
-        <span>7+ SOUTH KOREAN BANKS/LENDERS TARGETED · ACTIVE LATE SEP-EARLY OCT 2026</span>
-        <span>COMBINED ARTEX (CHINESE OSS PENTEST TOOL) WITH MULTIPLE LLMs TO AUTOMATE THE ATTACK CHAIN</span>
-        <span>ATTACKER&#x27;S OWN EXPOSED CLAUDE CODE SESSION LOGS/CONFIG FILES ENABLED PROMPT-BY-PROMPT RECONSTRUCTION</span>
-          <span class="attck">T1588.002 · T1190 · T1567.002</span>
-          <span><a href="https://thehackernews.com/2026/10/artex-ai-pentesting-tool-used-in-data.html" rel="noopener">The Hacker News (Oct 8)</a> · <a href="https://securityaffairs.com/200661/hacking/ai-driven-tool-artex-used-in-attacks-against-south-korean-banks.html" rel="noopener">Security Affairs</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">AI-DRIVEN · FINANCIAL SECTOR · DATA THEFT</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>South Korean financial institutions should treat ARTEX-pattern automated reconnaissance-to-exfiltration as an active threat and review exposure to the named banks&#x27; incident reports for shared infrastructure or vendor overlap; consumers of affected institutions should heed the FSC/FSS warning and watch for phishing and loan-scam attempts using leaked data; defenders who gain visibility into attacker-controlled infrastructure should specifically check for exposed AI-tool session logs and config directories, which proved to be a uniquely rich attribution source in this case.</span>
-      <button class="tbtn copy-inc" data-inc="artex-ai-pentest-korea">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="artex-ai-pentest-korea">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6">ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6</button></td>
-            <td class="ctx">AI-driven toolchain used to automate the attack against South Korean financial organizations</td>
-            <td class="seen">OCT 8</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident high wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev high">HIGH</span>
-          <h2>Malicious npm release of 'tensorlake' extends the ChainDrop/Shai-Hulud worm into AI agent infrastructure</h2>
-        </div>
-        <p class="inc-sum">Socket flagged version 0.5.144 of the npm package 'tensorlake' (a TypeScript SDK for Tensorlake applications) shortly after its Oct 8 publication, finding it carried obfuscated malware consistent with prior ChainDrop/Shai-Hulud supply-chain compromises. The payload harvests and exfiltrates npm tokens, GitHub tokens, AWS credentials, Kubernetes credentials, SSH keys, cryptocurrency wallets, and — notably — configuration files for AI tools including Anthropic Claude, establishes persistence, and can execute remotely supplied code. This marks the campaign's extension from general developer-credential theft into AI-agent-specific infrastructure, since Claude and similar tool configs often hold API keys and session context with their own blast radius. <b>Durable catch: a compromised dependency now specifically hunts for AI-tool configuration files alongside the usual cloud/SSH/crypto targets — any organization auditing a supply-chain compromise's blast radius needs to add 'what AI tool configs and API keys were present on affected machines' to the standard credential-rotation checklist, not just cloud and git credentials.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-08</span>
-        <span>MALICIOUS tensorlake v0.5.144 PUBLISHED AND FLAGGED SAME DAY, OCT 8</span>
-        <span>HARVESTS NPM/GITHUB/AWS/K8S CREDENTIALS, SSH KEYS, CRYPTO WALLETS, AND AI-TOOL (ANTHROPIC CLAUDE) CONFIG FILES</span>
-        <span>CONSISTENT WITH PRIOR CHAINDROP/SHAI-HULUD CAMPAIGN TTPs · EXTENDS TARGETING INTO AI AGENT INFRASTRUCTURE</span>
-          <span class="attck">T1195.002 · T1552.001</span>
-          <span><a href="https://www.scworld.com/brief/tensorlake-npm-package-compromised-in-supply-chain-attack" rel="noopener">SC World</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">SUPPLY CHAIN · NPM · AI AGENT INFRASTRUCTURE</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Remove tensorlake v0.5.144 from any dependency tree immediately and rotate all credential types the malware targets — npm, GitHub, AWS, Kubernetes, SSH keys, crypto wallets, and any AI-tool (Claude or similar) configuration files/API keys present on affected machines; audit build/CI systems that may have installed this version for persistence mechanisms or remote code execution since Oct 8; treat AI-tool config exposure as a standard item in supply-chain incident response going forward, not an afterthought.</span>
-      <button class="tbtn copy-inc" data-inc="tensorlake-npm-chaindrop">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="tensorlake-npm-chaindrop">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">package</span></td>
-            <td><button class="val" data-defanged="tensorlake v0.5.144 (published Oct 8, 2026)">tensorlake v0.5.144 (published Oct 8, 2026)</button></td>
-            <td class="ctx">Malicious npm release carrying a ChainDrop/Shai-Hulud-consistent credential-harvesting payload targeting cloud, SSH, crypto, and AI-tool configs</td>
-            <td class="seen">OCT 8</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident high wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev high">HIGH</span>
-          <h2>South Africa's air navigation provider finds ransomware-linked malware in OT network supporting aviation weather services</h2>
-        </div>
-        <p class="inc-sum">Air Traffic and Navigation Services (ATNS), which manages roughly 10% of the world's airspace and handles South Africa's air traffic control and aviation weather operations, discovered malware commonly associated with early-stage ransomware attacks inside its operational technology network supporting weather services. Preliminary findings suggested possible data exfiltration to external IP addresses in China; ATNS's technical team believes it contained the intrusion but is engaging external cyber-forensics firms, with the investigation also examining Port Elizabeth, East London, and Maputo International airports for a possible insider-assisted data theft angle. No disruption to actual air traffic or flights was reported, since the affected systems support weather services rather than live traffic control. <b>Durable catch: this was caught at the ransomware-precursor stage, before encryption — the fact that early-stage malware in an OT network supporting weather services for 10% of the world's airspace was found before impact is itself the story worth noting, since most OT ransomware incidents in this digest are caught only after disruption.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-05</span><span>ACTIVE SINCE 2026-10-05</span>
-        <span>ATNS MANAGES ~10% OF WORLD&#x27;S AIRSPACE · MALWARE FOUND IN OT NETWORK SUPPORTING WEATHER SERVICES</span>
-        <span>SUSPECTED DATA EXFILTRATION TO EXTERNAL IPs IN CHINA</span>
-        <span>CAUGHT PRE-ENCRYPTION · NO AIR TRAFFIC OR FLIGHT DISRUPTION REPORTED · POSSIBLE INSIDER ANGLE UNDER INVESTIGATION</span>
-          <span class="attck">T1190 · T1567.002 · T1071.001</span>
-          <span><a href="https://www.scworld.com/brief/south-african-air-traffic-control-firm-investigates-ransomware-linked-malware-in-ot-network" rel="noopener">SC World (Oct 5)</a> · <a href="https://mybroadband.co.za/news/security/670359-china-linked-hackers-attacked-south-africas-air-traffic-control-system.html" rel="noopener">mybroadband.co.za</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">ICS/OT · AVIATION · RANSOMWARE PRECURSOR</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Air navigation and aviation weather providers should treat early-stage ransomware-precursor malware detection in OT networks as a model to replicate — ATNS&#x27;s catch before encryption/disruption is the outcome to study; investigate the insider-theft angle at the named airports (Port Elizabeth, East London, Maputo) independently of the broader ransomware investigation; monitor for confirmation of data exfiltration scope and the China-linked IP attribution.</span>
-      <button class="tbtn copy-inc" data-inc="atns-southafrica-ransomware">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="atns-southafrica-ransomware">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China">Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China</button></td>
-            <td class="ctx">Observed pattern at ATNS prior to any confirmed disruption</td>
-            <td class="seen">OCT 5</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident high wide">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev high">HIGH</span>
-          <h2>CVE-2026-88779 — fourth NetScaler zero-day in two months knocks SAML-configured appliances offline in targeted attacks</h2>
-        </div>
-        <p class="inc-sum">Citrix published a bulletin Oct 3 for CVE-2026-88779 (CVSS 8.7), a memory-overflow denial-of-service flaw that lets an attacker with only network access — no valid account needed — overflow a NetScaler ADC/Gateway appliance's memory and force it offline, but only when the appliance is configured as a SAML service provider or identity provider for single sign-on. Citrix confirmed targeted-attack exploitation Oct 4; CISA added it to KEV Oct 5 with an Oct 7 federal deadline. This is the fourth distinct NetScaler CVE added to KEV within roughly two months, following CVE-2026-8452, CVE-2026-19490, and the CVE-2026-88771/88772 pair. <b>Durable catch: four NetScaler KEV entries in two months is no longer a pattern of isolated bugs — any organization running NetScaler as a SAML SSO front end should treat the platform itself as a standing high-priority monitoring target rather than waiting for each individual CVE announcement.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-04</span><span>ACTIVE SINCE 2026-10-03</span>
-        <span>CVE-2026-88779 CVSS 8.7 · UNAUTH MEMORY-OVERFLOW DOS, SAML-CONFIGURED APPLIANCES ONLY</span>
-        <span>4TH DISTINCT NETSCALER KEV ENTRY IN ~2 MONTHS</span>
-        <span>CONFIRMED TARGETED-ATTACK EXPLOITATION, NOT JUST THEORETICAL</span>
-          <span class="attck">T1190 · T1499</span>
-          <span><a href="https://thehackernews.com/2026/10/new-netscaler-zero-day-exploited-in.html" rel="noopener">The Hacker News</a> · <a href="https://www.helpnetsecurity.com/2026/10/05/cisa-flags-new-exploited-netscaler-flaw-as-attackers-crash-appliances-cve-2026-88779/" rel="noopener">Help Net Security (Oct 5)</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">CVE · ZERO-DAY · KEV · SAML DOS</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Patch NetScaler ADC/Gateway 14.1 and 13.1 branches (including FIPS/NDcPP builds) to the fixed build immediately, or apply Citrix&#x27;s interim mitigation if patching is delayed; if the appliance is not configured for SAML, exposure to this specific CVE doesn&#x27;t apply, but given the fourth-in-two-months pattern, review all NetScaler CVEs from this cycle together rather than one at a time; treat SAML-configured NetScaler appliances as a standing monitoring priority.</span>
-      <button class="tbtn copy-inc" data-inc="citrix-netscaler-88779">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="citrix-netscaler-88779">
+      <table data-inc="beyondtrust-armory-castle">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-88779">CVE-2026-88779</button></td>
-            <td class="ctx">Citrix NetScaler ADC/Gateway memory overflow causing denial of service on SAML-configured appliances, CVSS 8.7</td>
-            <td class="seen">OCT 4</td>
+            <td><button class="val" data-defanged="CVE-2026-102764">CVE-2026-102764</button></td>
+            <td class="ctx">BeyondTrust Remote Support improper origin validation in internal messaging, enabling authentication bypass by spoofing, CVSS 9.3</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Sawfly (web shell) ; Bareclaw (tunneler)">Sawfly (web shell) ; Bareclaw (tunneler)</button></td>
+            <td class="ctx">Post-exploitation tools deployed by ARMORY CASTLE for persistence</td>
+            <td class="seen">AUG 29</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)">ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)</button></td>
+            <td class="ctx">Threat group responsible for the exploitation</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>AhsayCBS backup console flaws chained for unauthenticated root execution, deploying web shells and XMRig miners through three incomplete patch attempts</h2>
+        </div>
+        <p class="inc-sum">Huntress identified attackers chaining CVE-2026-105133 (authentication bypass in the checkSysPwd function) with CVE-2026-105134 (command injection in the Replication Receiver endpoint, /rps/api/json/UpdateReceivers.do) against AhsayCBS backup consoles, achieving unauthenticated code execution as SYSTEM. Huntress first observed attacks Oct 7 and had identified five targeted organizations by Oct 8; payloads included JSP web shells and an XMRig cryptominer disguised as an Edge executable, with Windows-service persistence. Ahsay's patching has struggled to keep pace: its existing v10.3.4.0 release did not fully address either CVE as Ahsay itself acknowledged Oct 10, an Oct 12 hotfix addressed only CVE-2026-105133, and The Hacker News reported Oct 15 that further updates had shipped — meaning three distinct patch releases across roughly two weeks before the chain was fully closed. <b>Durable catch: Ahsay's own v10.3.4.0 was marketed as a fix but didn't close either CVE — any organization that patched to that version and considered the matter resolved was still exposed; verify against Ahsay's most current advisory rather than trusting a single patch-version number as sufficient.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-15</span><span>ACTIVE SINCE 2026-10-07</span>
+        <span>CVE-2026-105133 (AUTH BYPASS) CHAINED WITH CVE-2026-105134 (COMMAND INJECTION) → UNAUTH SYSTEM CODE EXECUTION</span>
+        <span>3 SEPARATE PATCH ATTEMPTS OVER ~2 WEEKS BEFORE THE CHAIN WAS FULLY CLOSED</span>
+        <span>PAYLOADS: JSP WEB SHELLS + XMRig MINER DISGUISED AS AN EDGE EXECUTABLE · 5 ORGS HIT BY OCT 8</span>
+          <span class="attck">T1190 · T1505.003 · T1496</span>
+          <span><a href="https://www.huntress.com/blog/ahsaycbs-flaws-exploit" rel="noopener">Huntress</a> · <a href="https://thehackernews.com/2026/10/ahsaycbs-flaws-exploited-to-deploy-web.html" rel="noopener">The Hacker News (Oct 15)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · BACKUP SERVER · INCOMPLETE PATCHES</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Apply Ahsay&#x27;s most current hotfix (verify directly against Ahsay&#x27;s advisory, not just a version number, given the history of incomplete patches) immediately; restrict network access to the AhsayCBS console; check hosts for suspicious child processes of cbssvcX64.exe, unexpected JSP web shells, and an Edge-disguised executable consistent with XMRig; given AhsayCBS is backup infrastructure, treat any confirmed compromise as a threat to backup integrity, not just the console itself.</span>
+      <button class="tbtn copy-inc" data-inc="ahsaycbs-backup-exploited">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="ahsaycbs-backup-exploited">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-105133 / CVE-2026-105134">CVE-2026-105133 / CVE-2026-105134</button></td>
+            <td class="ctx">AhsayCBS authentication bypass (checkSysPwd) chained with command injection (Replication Receiver /rps/api/json/UpdateReceivers.do), unauthenticated SYSTEM code execution</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)">XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)</button></td>
+            <td class="ctx">Payload deployed post-exploitation</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host">Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host</button></td>
+            <td class="ctx">Exploitation indicators per Huntress</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-0322 — authenticated code-injection flaw in PAN-OS management interface grants root, exploited in limited attacks</h2>
+        </div>
+        <p class="inc-sum">Palo Alto Networks disclosed CVE-2026-0322 (CVSS v4.0 8.6), a code-injection flaw (CWE-94) in PAN-OS that lets an authenticated attacker with network access to the management interface execute arbitrary code with root privileges on PA-Series and VM-Series firewalls plus Panorama appliances; Cloud NGFW and Prisma Access are unaffected. Palo Alto discovered the zero-day internally and says 'very limited exploitation has been observed targeting the management interface,' releasing a short list of IOC IP addresses alongside the patch. CISA added it to KEV the same week with an Oct 17 federal deadline; no workaround exists beyond restricting management-interface access, and Palo Alto recommends allowing access only through a dedicated jump box. <b>Durable catch: this flaw requires authentication, which narrows the realistic attack path to an already-compromised credential or an exposed management interface reachable by an insider/already-authenticated actor — restricting management access to a jump box closes the exposure regardless of credential compromise elsewhere.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-14</span>
+        <span>CVE-2026-0322 CVSS v4.0 8.6 · AUTHENTICATED ROOT CODE EXECUTION VIA MANAGEMENT INTERFACE</span>
+        <span>DISCOVERED INTERNALLY BY PALO ALTO · &#x27;VERY LIMITED&#x27; CONFIRMED EXPLOITATION</span>
+        <span>AFFECTS PA-SERIES/VM-SERIES FIREWALLS AND PANORAMA · NO WORKAROUND BEYOND ACCESS RESTRICTION</span>
+          <span class="attck">T1068 · T1078</span>
+          <span><a href="https://thehackernews.com/2026/10/palo-alto-networks-patches-pan-os.html" rel="noopener">The Hacker News (Oct 14)</a> · <a href="https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/" rel="noopener">BleepingComputer</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · ROOT RCE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch PAN-OS branches 10.2, 11.1, 11.2, 12.1, and 12.2 to the fixed build immediately; restrict management-interface access to trusted internal addresses only, ideally through a dedicated jump box, since no other workaround exists; audit for authenticated sessions against the management interface from unexpected source addresses given the exploitation requires valid authentication.</span>
+      <button class="tbtn copy-inc" data-inc="panos-rce-cve0322">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="panos-rce-cve0322">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-0322">CVE-2026-0322</button></td>
+            <td class="ctx">PAN-OS authenticated code injection via management interface, root privilege execution, CVSS v4.0 8.6</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>CVE-2026-76519 — second exploited Cisco Secure Email Gateway flaw in a month lets a single crafted email grant root</h2>
+        </div>
+        <p class="inc-sum">CVE-2026-76519 (CVSS 9.8) is an arbitrary-file-write flaw in Cisco Secure Email Gateway's Advanced Malware Protection feature: an unauthenticated remote attacker sends an email with a crafted attachment, and the gateway writes arbitrary files and executes commands with root privileges — no interaction beyond the gateway processing the email is required. Exposure requires File Reputation enabled and assigned to a mail policy with Content Scanner Tools older than 25.3.0.5525. Cisco became aware of active exploitation in October and found malicious activity on some Secure Email Cloud devices, contacting those customers directly; CISA added it to KEV Oct 14 with an Oct 17 deadline. Cisco shipped fixes for this flaw back on Sep 14 (versions 15.5.5-014 and 16.5.0-780) — a month before the KEV listing — and says no workaround exists beyond patching. This is the second exploited Secure Email Gateway flaw in roughly a month, following CVE-2026-76461. <b>Durable catch: two root-RCE email gateway flaws exploited within a month means any Secure Email Gateway deployment should treat the platform itself as a standing high-priority asset for patch verification, not wait for each individual CVE announcement — and specifically check whether File Reputation/Content Scanner Tools versioning puts you in the exposed configuration.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-01</span>
+        <span>CVE-2026-76519 CVSS 9.8 · UNAUTH ROOT RCE VIA A SINGLE CRAFTED EMAIL ATTACHMENT</span>
+        <span>SECOND EXPLOITED SECURE EMAIL GATEWAY FLAW IN ~1 MONTH (AFTER CVE-2026-76461)</span>
+        <span>FIX SHIPPED SEP 14, A MONTH BEFORE THE KEV LISTING · NO WORKAROUND EXISTS</span>
+          <span class="attck">T1190 · T1566.001 · T1068</span>
+          <span><a href="https://www.securityweek.com/cisco-warns-of-exploited-secure-email-gateway-vulnerability/" rel="noopener">SecurityWeek</a> · <a href="https://cyberexperts.com/2026-10-15-cisco-email-gateway/" rel="noopener">CyberExperts (Oct 15)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · EMAIL-BORNE ROOT RCE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Confirm Secure Email Gateway is on 15.5.5-014, 16.5.0-780, or later, and that Content Scanner Tools is updated past 25.3.0.5525 — if File Reputation is enabled on an older Content Scanner Tools version, treat the gateway as exposed regardless of overall AsyncOS patch level; since Cisco contacted some Secure Email Cloud customers directly about confirmed malicious activity, verify with Cisco whether your deployment was among those notified; given this is the second exploited flaw in this product line within a month, schedule a full review of Secure Email Gateway&#x27;s patch history rather than tracking CVEs individually.</span>
+      <button class="tbtn copy-inc" data-inc="cisco-secure-email-gateway-76519">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="cisco-secure-email-gateway-76519">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-76519">CVE-2026-76519</button></td>
+            <td class="ctx">Cisco Secure Email Gateway arbitrary file write via crafted email attachment in Advanced Malware Protection, root RCE, CVSS 9.8</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">patch</span></td>
+            <td><button class="val" data-defanged="Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)">Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)</button></td>
+            <td class="ctx">Fixed releases</td>
+            <td class="seen">OCT 14</td>
           </tr>
         </tbody>
       </table>
@@ -637,36 +627,202 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev high">HIGH</span>
-          <h2>European police dismantle KillSec ransomware infrastructure, arrest suspected 16-year-old lead operator</h2>
+          <h2>Nikkei discloses its third breach in a month after stolen cloud-development credentials expose 1.83 million records</h2>
         </div>
-        <p class="inc-sum">German-led international police action, 'Operation KillSwitch,' seized KillSec's data-leak site and five core servers Sep 30, blocking unauthorized access to more than 110 terabytes of stolen victim data and investigating a group linked to roughly 1,000 suspected cyberattacks worldwide. Spanish police arrested a 16-year-old Romanian national in Alicante as the suspected main operator; two additional suspects were provisionally arrested and eight properties searched across Greece, Romania, Spain, and the UK. The suspect faces potential extradition proceedings, including a reported US extradition question, alongside ongoing legal process in France regarding surrender of a minor under a European Arrest Warrant. <b>Durable catch: 110TB of seized stolen data from a single takedown is a resource for organizations to check against — any entity that experienced an unexplained breach or extortion attempt in the group's operating window should inquire with the investigating agencies about whether their data appears in the seized cache, rather than assuming a takedown closes the matter for past victims.</b></p>
+        <p class="inc-sum">Nikkei Inc. disclosed a breach involving approximately 1.83 million records after an attacker gained access to a cloud development environment using stolen credentials; Nikkei reported the incident to Japan's Personal Information Protection Commission Oct 11 and disabled the compromised credentials, with the public disclosure following Oct 16. The company says it has found no evidence of data misuse so far. Per the reporting source, this is Nikkei's third breach disclosed within a single month, though the other two incidents' details and dates weren't specified in available reporting. <b>Durable catch: a third breach within one month at the same organization is itself the signal, independent of any single incident's severity — repeated breaches in a short window typically point to a systemic gap (credential hygiene, cloud environment access controls, or detection capability) rather than three unrelated unlucky events, and warrant investigating the common root cause across all three rather than remediating each in isolation.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-02</span><span>ACTIVE SINCE 2026-09-30</span>
-        <span>110+ TERABYTES OF STOLEN DATA SEIZED · 5 CORE SERVERS TAKEN DOWN</span>
-        <span>~1,000 SUSPECTED ATTACKS LINKED TO THE GROUP WORLDWIDE</span>
-        <span>SUSPECTED LEAD OPERATOR IS A 16-YEAR-OLD ROMANIAN NATIONAL ARRESTED IN SPAIN</span>
-          <span class="attck">T1486 · T1567.002</span>
-          <span><a href="https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html" rel="noopener">The Hacker News (Oct 2)</a> · <a href="https://www.teiss.co.uk/news/european-law-enforcement-takes-down-killsec-infrastructure-arrests-teenager-18260" rel="noopener">teiss</a></span>
+          <span class="reported">REPORTED 2026-10-16</span><span>ACTIVE SINCE 2026-10-11</span>
+        <span>1.83M RECORDS EXPOSED VIA STOLEN CLOUD-DEVELOPMENT CREDENTIALS</span>
+        <span>REPORTED TO JAPAN&#x27;S PPC OCT 11 · PUBLIC DISCLOSURE OCT 16 · NO CONFIRMED DATA MISUSE YET</span>
+        <span>THIRD BREACH DISCLOSED BY NIKKEI WITHIN A SINGLE MONTH PER REPORTING</span>
+          <span class="attck">T1078 · T1005</span>
+          <span><a href="https://www.rescana.com/post/nikkei-inc-cloud-data-breach-analysis-credential-compromise-exposes-1-83-million-records-in-october-2026" rel="noopener">Rescana</a></span>
         </div>
       </div>
-      <span class="inc-kind">LAW ENFORCEMENT · RANSOMWARE INFRASTRUCTURE TAKEDOWN</span>
+      <span class="inc-kind">DATA BREACH · CLOUD CREDENTIALS · MEDIA</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations that experienced a suspected KillSec extortion attempt or unexplained breach during its operating window should contact investigating authorities (German-led, with Europol coordination) to check whether their data appears in the 110TB seized cache; treat this takedown as disruption, not elimination, of the group&#x27;s broader affiliate/access-broker ecosystem given roughly 1,000 linked attacks and multiple still-provisional arrests.</span>
-      <button class="tbtn copy-inc" data-inc="killsec-takedown">COPY IOCs</button>
+      <span>Nikkei should investigate whether its three breaches within one month share a common root cause (credential management, cloud access controls, or detection gap) rather than treating each as isolated; affected individuals should monitor for misuse of exposed data despite the company&#x27;s current &#x27;no evidence&#x27; assessment; organizations generally should rotate and audit cloud-development credentials on a schedule independent of any single incident, given credential theft was the entry point here.</span>
+      <button class="tbtn copy-inc" data-inc="nikkei-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="killsec-takedown">
+      <table data-inc="nikkei-breach">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Unauthorized access to a cloud development environment via stolen credentials">Unauthorized access to a cloud development environment via stolen credentials</button></td>
+            <td class="ctx">Entry vector for the disclosed breach</td>
+            <td class="seen">OCT 16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>CVE-2026-21589 — Atlassian Data Center flaw let unauthenticated attackers read known file paths from Jira, Confluence, and Bitbucket</h2>
+        </div>
+        <p class="inc-sum">An unauthenticated attacker who knows the exact file name and path can read it from the web root of self-hosted Atlassian Data Center products — CVE-2026-21589, CVSS v4.0 9.3, affecting Jira, Jira Service Management, Jira Software, Bamboo, Crowd, Crucible, and Fisheye Data Center. The flaw doesn't permit directory listing or enumeration, so an attacker needs to already know the target path, but watchTowr observed active in-the-wild exploitation beginning Oct 6, the day after Atlassian published fixes (Oct 5) — and The Hacker News reported exploitation attempts beginning within two hours of public technical details circulating. CISA added it to KEV Oct 15 with an Oct 18 deadline. Atlassian Cloud products were already patched and require no customer action. <b>Durable catch: a two-hour gap between public technical details and observed exploitation is now the realistic patch window for a disclosed Data Center vulnerability — any organization running self-hosted Atlassian products needs patching automation fast enough to beat that window, not a standard change-management cycle.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-15</span><span>ACTIVE SINCE 2026-10-06</span>
+        <span>CVE-2026-21589 CVSS v4.0 9.3 · UNAUTH READ OF KNOWN FILE PATHS, NO DIRECTORY LISTING</span>
+        <span>EXPLOITATION OBSERVED WITHIN 2 HOURS OF PUBLIC TECHNICAL DETAILS</span>
+        <span>AFFECTS 7 SELF-HOSTED DATA CENTER PRODUCTS · CLOUD ALREADY PATCHED</span>
+          <span class="attck">T1190 · T1005</span>
+          <span><a href="https://thehackernews.com/2026/10/atlassian-data-center-flaw-draws.html" rel="noopener">The Hacker News</a> · <a href="https://www.rapid7.com/blog/post/etr-cve-2026-21589-critical-unauthenticated-arbitrary-file-access-in-atlassian-products/" rel="noopener">Rapid7</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · ARBITRARY FILE ACCESS</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch self-hosted Atlassian Data Center products immediately (e.g., Bitbucket 9.4.26/10.2.8/10.5.1, Confluence 9.2.26/10.2.19 — confirm the fixed version for each affected product against Atlassian&#x27;s advisory); review web-server access logs for requests to known sensitive file paths (configuration files, credential stores) since Oct 6, since public PoC scripts exist; given the two-hour exploitation window observed here, prioritize automated patch deployment for any internet-facing Data Center instance.</span>
+      <button class="tbtn copy-inc" data-inc="atlassian-cve-21589">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="atlassian-cve-21589">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-21589">CVE-2026-21589</button></td>
+            <td class="ctx">Atlassian Data Center unauthenticated arbitrary file access from the web root (no directory listing), affecting Jira/Confluence/Bitbucket/Bamboo/Crowd/Crucible/Fisheye, CVSS v4.0 9.3</td>
+            <td class="seen">OCT 15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>IDCF Cloud says no evidence data was taken, as attacker claims 225 databases and 3.6PB encrypted</h2>
+        </div>
+        <p class="inc-sum">A week after the ransomware attack on IDC Frontier's IDCF Cloud disrupted 495 corporate and government customers (covered in Issue 012), the company said Oct 14 it had found no evidence that data on the affected servers was exfiltrated — a materially different claim from the attacker's own, which asserts encryption of 225 databases totaling 3.6 petabytes, an even larger figure than the 41.5PB of destroyed backups claimed the prior week. Neither IDC Frontier's 'no evidence of data theft' statement nor the attacker's encryption-scope figures have been independently verified; the gap between the two claims leaves affected customers without a reliable number to plan recovery around. <b>Durable catch: 'no evidence data was taken' is a narrower and different claim than 'data was not taken' — it means the company hasn't found proof of exfiltration, not that exfiltration didn't happen, and affected customers should treat the distinction as material when assessing their own notification obligations.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-07</span>
+        <span>IDC FRONTIER: &#x27;NO EVIDENCE&#x27; DATA WAS TAKEN FROM AFFECTED SERVERS, STATED OCT 14</span>
+        <span>ATTACKER CLAIMS 225 DATABASES / 3.6PB ENCRYPTED — UNVERIFIED AND DISTINCT FROM EARLIER 41.5PB BACKUP-DESTRUCTION CLAIM</span>
+        <span>NEITHER FIGURE INDEPENDENTLY CONFIRMED · 495 CUSTOMERS STILL AWAITING A RELIABLE SCOPE NUMBER</span>
+          <span class="attck">T1486 · T1490</span>
+          <span><a href="https://konbriefing.com/en-topics/cyber-attacks.html" rel="noopener">ScWorld tracker references (Oct 14 update)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · CLOUD PROVIDER · FOLLOW-UP</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>IDCF Cloud customers should treat &#x27;no evidence data was taken&#x27; as provisional, not a clearance, and continue their own independent assessment of potential exposure; do not rely on the attacker&#x27;s 225-database/3.6PB figure as verified scope either; organizations evaluating cloud-provider incident communications generally should distinguish &#x27;no evidence of X&#x27; from &#x27;X did not happen&#x27; as a matter of course.</span>
+      <button class="tbtn copy-inc" data-inc="idcf-cloud-followup">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="idcf-cloud-followup">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted">Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted</button></td>
+            <td class="ctx">Status update to the IDCF Cloud incident originally reported in Issue 012</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Ampath Laboratories confirms cyberattack, disputes attacker's 80-million-record claim as inflated database-entry counting</h2>
+        </div>
+        <p class="inc-sum">South African pathology provider Ampath Laboratories confirmed it detected and contained a cybersecurity incident affecting part of its IT environment Oct 2; the group ByteToBreach, assessed by KELA as likely an individual based in Algeria, posted claims on a hacker forum Oct 13 asserting it fully copied 10 of Ampath's 375 databases — including staff records, several patient databases, finance systems, and provider data — and that the admission table alone holds over 80 million records. Ampath disputes the headline figure, arguing it likely reflects database records/entries rather than unique patients, since a single patient generates many records over years; its regulatory notice lists names, ID numbers, dates of birth, contact details, medical aid details, and payment information as potentially affected, with no evidence yet that medical records, diagnoses, test results, or banking details were taken. MyBroadband separately scanned one of the attacker's posted data samples and found it laced with malware, including backdoors and trojans — a direct warning against downloading any purported proof file from this claim. <b>Durable catch: the posted 'sample data' itself being malware-laden is a distinct hazard from the breach — anyone trying to verify this claim by downloading the attacker's proof files is a secondary attack target, not just a researcher checking facts.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-13</span><span>ACTIVE SINCE 2026-10-02</span>
+        <span>AMPATH CONFIRMS INTRUSION OCT 2 · BYTETOBREACH CLAIMS POSTED OCT 13</span>
+        <span>DISPUTED FIGURE: ATTACKER CLAIMS 80M+ ADMISSION RECORDS ACROSS 10 OF 375 DATABASES</span>
+        <span>POSTED &#x27;SAMPLE&#x27; DATA FILES FOUND TO CONTAIN BACKDOORS/TROJANS — DO NOT DOWNLOAD</span>
+          <span class="attck">T1567.002 · T1005</span>
+          <span><a href="https://www.bankinfosecurity.com/pathology-lab-confirms-hack-but-disputes-data-theft-claims-a-33106" rel="noopener">BankInfoSecurity</a> · <a href="https://mybroadband.co.za/news/security/672153-attackers-claim-to-have-stolen-80-million-south-african-patient-records-in-massive-ampath-laboratories-data-breach.html" rel="noopener">mybroadband.co.za</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA BREACH · HEALTHCARE · DISPUTED CLAIM</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Do not download or open any files presented as proof/sample data from this claim, given confirmed malware in at least one sample; Ampath patients should monitor for fraudulent communication referencing personal/medical-aid details per the company&#x27;s own notice, independent of the disputed record count; researchers and journalists verifying this claim should request verification through safe, sandboxed channels rather than direct download.</span>
+      <button class="tbtn copy-inc" data-inc="ampath-labs-bytetobreach">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="ampath-labs-bytetobreach">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)">KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)</button></td>
-            <td class="ctx">Group dismantled in Operation KillSwitch</td>
-            <td class="seen">SEP 30</td>
+            <td><button class="val" data-defanged="ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)">ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)</button></td>
+            <td class="ctx">Group claiming the Ampath Laboratories database theft</td>
+            <td class="seen">OCT 13</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">detection</span></td>
+            <td><button class="val" data-defanged="Backdoor and trojan malware embedded in files presented as &#x27;sample&#x27; proof data for this breach claim">Backdoor and trojan malware embedded in files presented as &#x27;sample&#x27; proof data for this breach claim</button></td>
+            <td class="ctx">Confirmed by independent scan of a posted sample file</td>
+            <td class="seen">OCT 13</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>SeetelHotels discloses ransomware attack on internal IT, Incransom later lists guest and payment data on leak site</h2>
+        </div>
+        <p class="inc-sum">German hotel group SeetelHotels disclosed a ransomware attack on its internal IT systems with an intrusion beginning Oct 10-11; by Oct 14 parts of its systems and data had been encrypted, whether data had been exfiltrated was still under review, and the company's internal IT team said it detected and largely contained the intrusion early. Hotel operations continued with possible delays to phone/email inquiries; as of Oct 14 no ransom demand had been made, and the company said it would follow German federal police (BKA) guidance and not contact the attackers. The Incransom ransomware group subsequently listed Seetelhotels[.]de on its leak site, claiming guest identity records, passport/ID numbers, payment card details, medical/dietary information, and financial records including invoices and transaction logs — claims the company has not confirmed. <b>Durable catch: SeetelHotels' stated policy of following BKA guidance and not contacting the attacker is itself a datapoint other organizations can reference when setting their own negotiation policy in advance of an incident, rather than deciding reactively under pressure.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-14</span><span>ACTIVE SINCE 2026-10-10</span>
+        <span>INTRUSION BEGAN OCT 10-11 · DETECTED AND LARGELY CONTAINED EARLY BY INTERNAL IT</span>
+        <span>NO RANSOM DEMAND AS OF OCT 14 · COMPANY FOLLOWING BKA GUIDANCE, NOT CONTACTING ATTACKERS</span>
+        <span>INCRANSOM LATER CLAIMED GUEST ID/PASSPORT/PAYMENT/MEDICAL-DIETARY DATA — UNCONFIRMED BY COMPANY</span>
+          <span class="attck">T1486 · T1567.002</span>
+          <span><a href="https://www.tageskarte.io/detail/seetelhotels-meldet-ransomware-angriff-auf-interne-it-systeme.html" rel="noopener">Tageskarte</a> · <a href="https://www.ahgz.de/hotellerie/news/digitale-kriminalitaet-cyberangriff-auf-seetelhotels-320393" rel="noopener">ahgz.de</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · HOSPITALITY</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>SeetelHotels guests and business partners should watch for official confirmation of the Incransom claim before treating the passport/payment/medical-dietary data exposure as confirmed; hospitality operators generally should pre-establish a ransom-negotiation policy aligned with national law-enforcement guidance before an incident, following SeetelHotels&#x27; stated approach as a reference point; monitor Incransom&#x27;s leak site for proof files substantiating scope.</span>
+      <button class="tbtn copy-inc" data-inc="seetelhotels-germany">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="seetelhotels-germany">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)">Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)</button></td>
+            <td class="ctx">Group that listed SeetelHotels on its leak site following the Oct 10-11 intrusion</td>
+            <td class="seen">OCT 14</td>
           </tr>
         </tbody>
       </table>
@@ -677,156 +833,48 @@
       <div class="inc-lead">
         <div class="inc-title">
           <span class="sev med">MEDIUM</span>
-          <h2>ASOS breach traced to an employee tricked into handing over login credentials by an attacker posing as a trusted contact</h2>
+          <h2>Midnight Mimosa firmware malware ships pre-installed on budget Android phones in 150+ countries, can't be uninstalled</h2>
         </div>
-        <p class="inc-sum">ASOS confirmed a data breach after a group calling itself the Xuanye Group gained access to an employee's account by impersonating a trusted contact to obtain login credentials, then used that access to reach information on certain third-party platforms ASOS uses. ASOS says names, contact details, delivery and email addresses, phone numbers, and recent search history were accessed, but payment card data and account passwords were not affected; the company notified customers Oct 8 and has locked down the affected platforms while working with external experts, law enforcement, and regulators. <b>Durable catch: the attacker didn't breach ASOS's own infrastructure at all — a single employee's credentials, obtained through impersonation, was sufficient to reach customer data on third-party platforms the company relies on, which is the actual control gap (third-party platform access tied to individual employee trust) rather than anything ASOS's own systems could have stopped.</b></p>
+        <p class="inc-sum">Bitdefender detailed Midnight Mimosa, firmware-level malware present on budget MediaTek-based Android phones (notably Doogee S200 X and Cubot KINGKONG X models, plus counterfeit devices spoofing flagship model strings like 'S25 Ultra') before the device is ever switched on — owners cannot uninstall it. The core component, a hidden system app named com.android.system.lite (also shipped as com.android.sys.prot, com.android.sys.gmsprot, and com.android.sys.bcprot under developer accounts 'fivedev' and 'CPS Developer'), runs as the system user, sends device identifiers (IMEI, Android ID, MAC address, timezone) to a C2 server, and can silently install/remove apps, grant permissions, and load remote code. It installs and removes at least 32 disguised ad-fraud apps that display screen-covering ads marked 'secure' to evade screen-capture detection, with C2-controlled timing to mimic human taps; infected devices also become residential-proxy relay nodes and botnet members sold on for DDoS use. The same ad-fraud code appeared in 13 Google Play Store apps across at least two developer accounts before being disabled; the malware disables the Play Store itself to prevent Play Protect's on-device scanner from running. Thousands of devices across 150+ countries have been affected over roughly two years, concentrated in Mexico, France, Italy, the US, Germany, Brazil, and Spain. <b>Durable catch: the malware disabling the Play Store specifically to block Play Protect's scanner is the operative evasion mechanism — a budget Android device where the Play Store app appears broken, missing, or won't update is a stronger indicator of this infection than any single permission grant, since that's the step the malware takes to blind its own detection.</b></p>
         <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-06</span>
-        <span>ATTACKER IMPERSONATED A TRUSTED CONTACT TO OBTAIN AN EMPLOYEE&#x27;S LOGIN CREDENTIALS</span>
-        <span>DATA EXPOSED: NAMES, CONTACT/DELIVERY/EMAIL DETAILS, PHONE NUMBERS, SEARCH HISTORY · NO PAYMENT DATA OR PASSWORDS</span>
-        <span>ATTACKER GROUP SELF-IDENTIFIES AS &#x27;XUANYE GROUP&#x27;</span>
-          <span class="attck">T1078.004 · T1566.004</span>
-          <span><a href="https://www.bleepingcomputer.com/news/security/asos-links-data-breach-to-social-engineering-attack-credential-theft/" rel="noopener">BleepingComputer (Oct 8)</a> · <a href="https://www.infosecurity-magazine.com/news/asos-data-breach-stolen-employee/" rel="noopener">Infosecurity Magazine</a></span>
+          <span class="reported">REPORTED 2026-10-12</span><span>ACTIVE SINCE 2024</span>
+        <span>THOUSANDS OF DEVICES ACROSS 150+ COUNTRIES · ~2 YEARS ACTIVE · FIRMWARE-LEVEL, PRE-INSTALLED, CANNOT BE REMOVED BY OWNER</span>
+        <span>DISABLES GOOGLE PLAY STORE TO BLOCK PLAY PROTECT SCANNING</span>
+        <span>SAME AD-FRAUD CODE ALSO FOUND IN 13 GOOGLE PLAY STORE APPS ACROSS 2+ DEVELOPER ACCOUNTS</span>
+          <span class="attck">T1195.003 · T1071.001 · T1584.005</span>
+          <span><a href="https://www.helpnetsecurity.com/2026/10/12/midnight-mimosa-malware-cheap-android-phones/" rel="noopener">Help Net Security (Oct 12)</a> · <a href="https://gbhackers.com/android-firmware-malware/" rel="noopener">GBHackers</a></span>
         </div>
       </div>
-      <span class="inc-kind">DATA BREACH · SOCIAL ENGINEERING · THIRD-PARTY PLATFORM</span>
+      <span class="inc-kind">SUPPLY CHAIN · FIRMWARE MALWARE · AD FRAUD/BOTNET</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>ASOS customers should watch for targeted phishing referencing their delivery/search history given the exposure, treating any such contact as suspicious; organizations should audit which third-party platforms a single employee&#x27;s credentials can reach and require out-of-band verification before any employee grants access changes or credential resets to a &#x27;trusted contact&#x27; claim; review third-party platform access scoping so one compromised employee account can&#x27;t reach customer data across multiple external systems.</span>
-      <button class="tbtn copy-inc" data-inc="asos-breach">COPY IOCs</button>
+      <span>Avoid budget MediaTek-based Android devices from unverified sellers, especially those claiming flagship model names at low prices; if a device&#x27;s Google Play Store app is missing, disabled, or won&#x27;t function, treat that as a strong indicator of firmware-level compromise rather than a minor software glitch; organizations issuing low-cost Android devices to staff should source only from verified OEM channels and scan for the named package names (com.android.system.lite and its variants) before deployment.</span>
+      <button class="tbtn copy-inc" data-inc="midnight-mimosa-android">COPY IOCs</button>
     </div>
     <div class="scroll">
-      <table data-inc="asos-breach">
+      <table data-inc="midnight-mimosa-android">
         <thead>
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)">Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)</button></td>
-            <td class="ctx">Group responsible for the impersonation-based credential theft leading to the ASOS breach</td>
-            <td class="seen">OCT 8</td>
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot">com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot</button></td>
+            <td class="ctx">Hidden firmware-level system app (and renamed variants) running as the Midnight Mimosa enabler</td>
+            <td class="seen">OCT 12</td>
           </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>Advantest confirms ransomware data theft 233 days after detection, citing cross-jurisdiction notification complexity</h2>
-        </div>
-        <p class="inc-sum">Advantest, which builds automatic test equipment chipmakers rely on to validate semiconductors, detected a ransomware attack Feb 15, 2026, and first acknowledged the incident publicly four days later while still investigating whether data had left the network. It took 233 days — until Oct 6 — to confirm and notify affected individuals that names, dates of birth, Social Security numbers, passport numbers, driver's license details, medical information, and financial records had been extracted from its servers. Advantest attributes the delay to reconstructing exactly what attackers accessed and matching recovered file listings against live record systems to identify affected individuals, compounded by operating across three continents where each jurisdiction carries its own notification rules; notifications went to over 500 California residents plus smaller numbers in Massachusetts and Vermont. <b>Durable catch: Advantest's stated reason for the delay — reconstructing file-listing-to-individual mapping across jurisdictions — is a forensic capability gap worth testing in your own incident-response plan before an actual breach, since 'we don't yet know which specific individuals are in the stolen files' is a much harder problem than confirming data was taken at all.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-06</span><span>ACTIVE SINCE 2026-02-15</span>
-        <span>DETECTED FEB 15, 2026 · NOTIFIED AFFECTED INDIVIDUALS OCT 6 — 233-DAY GAP</span>
-        <span>DATA: SSNs, PASSPORT/DRIVER&#x27;S LICENSE NUMBERS, MEDICAL AND FINANCIAL RECORDS</span>
-        <span>DELAY ATTRIBUTED TO FILE-TO-INDIVIDUAL RECONSTRUCTION ACROSS 3 CONTINENTS&#x27; JURISDICTIONS</span>
-          <span class="attck">T1005 · T1078</span>
-          <span><a href="https://www.bleepingcomputer.com/news/security/advantest-confirms-personal-information-stolen-in-ransomware-attack/" rel="noopener">BleepingComputer</a> · <a href="https://www.securityweek.com/chip-testing-giant-advantest-hit-by-ransomware/" rel="noopener">SecurityWeek</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">DATA BREACH · RANSOMWARE · DISCLOSURE DELAY</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Affected individuals (over 500 in California, smaller numbers in Massachusetts and Vermont) should place a credit freeze given the SSN/passport/driver&#x27;s-license/financial exposure; organizations should stress-test their own ability to map stolen file listings to specific affected individuals as part of incident-response planning, since that reconstruction step — not detection or confirmation of theft — was Advantest&#x27;s actual bottleneck; multinational organizations should pre-map jurisdiction-specific notification deadlines before an incident rather than during one.</span>
-      <button class="tbtn copy-inc" data-inc="advantest-breach">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="advantest-breach">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="com.mobile.applock.wt">com.mobile.applock.wt</button></td>
+            <td class="ctx">Related obfuscated dropper associated with the campaign, though not confirmed as root cause</td>
+            <td class="seen">OCT 12</td>
+          </tr>
           <tr data-type="host">
             <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Ransomware-related data theft of SSNs, passport numbers, driver&#x27;s license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026">Ransomware-related data theft of SSNs, passport numbers, driver&#x27;s license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026</button></td>
-            <td class="ctx">Scope and timeline of the disclosed breach</td>
-            <td class="seen">OCT 6</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>Everest group claims flydubai breach, alleges theft of Boeing software source code and crew-training records</h2>
-        </div>
-        <p class="inc-sum">Hackmanac reported Oct 6 that the Everest cybercriminal group claims to have breached flydubai, alleging exfiltration of approximately 4.36GB across 16,517 files including flight-operations documents, crew-training records, personnel data, and proprietary Boeing software source code. flydubai has not publicly confirmed the claim or disclosed how the alleged intrusion occurred, and no sample files or additional technical detail have been independently verified as of this writing. <b>Durable catch: proprietary Boeing software source code allegedly mixed in with an airline's HR/training files is an unusual combination worth flagging specifically — if genuine, it suggests the stolen data spans both flydubai's own operational systems and vendor/OEM-provided software, which would broaden the incident's relevance well beyond flydubai itself to Boeing's own exposure.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-06</span><span>ACTIVE SINCE 2026-10-06</span>
-        <span>CLAIMED: 4.36GB ACROSS 16,517 FILES · FLIGHT OPS, CREW-TRAINING, PERSONNEL RECORDS</span>
-        <span>ALLEGEDLY INCLUDES PROPRIETARY BOEING SOFTWARE SOURCE CODE</span>
-        <span>UNCONFIRMED BY FLYDUBAI · NO SAMPLE FILES INDEPENDENTLY VERIFIED</span>
-          <span class="attck">T1567.002 · T1005</span>
-          <span><a href="https://www.rescana.com/post/flydubai-everest-breach-claim-advisory-oct-2026" rel="noopener">Rescana</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">DATA BREACH · AVIATION · EXTORTION</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>flydubai should confirm or refute the claim directly given the specificity of the alleged data (Boeing source code is not a typical airline HR-breach claim); if genuine, Boeing should be notified independently of flydubai&#x27;s own response given the potential vendor-software exposure; monitor Everest&#x27;s leak site for proof files that would substantiate either the file count or the Boeing-code claim specifically.</span>
-      <button class="tbtn copy-inc" data-inc="flydubai-everest-breach">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="flydubai-everest-breach">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Everest (cybercriminal extortion group claiming the flydubai compromise)">Everest (cybercriminal extortion group claiming the flydubai compromise)</button></td>
-            <td class="ctx">Group behind the unverified flydubai data-theft claim</td>
-            <td class="seen">OCT 6</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-  <section class="incident med">
-    <div class="inc-head">
-      <div class="inc-lead">
-        <div class="inc-title">
-          <span class="sev med">MEDIUM</span>
-          <h2>Asahi Kasei Therapeutics discloses cyberattack on healthcare-professional website exposing up to 558,700 people's data</h2>
-        </div>
-        <p class="inc-sum">Asahi Kasei Therapeutics reported Oct 6 that its website for healthcare professionals was hit by a cyberattack, potentially exposing personal information for up to 558,700 people through unauthorized access. Public reporting does not yet specify the data types exposed, the intrusion vector, or the underlying timeline beyond the Oct 6 disclosure date. <b>Durable catch: a healthcare-professional-facing portal (rather than a patient-facing one) being the breach vector is a reminder that B2B/B2-professional web properties often carry weaker security investment than patient-facing systems despite holding comparably sensitive professional and potentially patient-adjacent data — worth auditing specifically if your organization runs a similar HCP portal.</b></p>
-        <div class="inc-meta">
-          <span class="reported">REPORTED 2026-10-06</span><span>ACTIVE SINCE 2026-10-06</span>
-        <span>UP TO 558,700 PEOPLE POTENTIALLY AFFECTED</span>
-        <span>BREACH VECTOR: HEALTHCARE-PROFESSIONAL-FACING WEBSITE, NOT A PATIENT-FACING SYSTEM</span>
-        <span>DATA TYPES AND INTRUSION VECTOR NOT YET PUBLICLY SPECIFIED</span>
-          <span class="attck">T1078 · T1005</span>
-          <span><a href="https://pj.jiho.jp/article/256548" rel="noopener">pj.jiho.jp (Oct 6)</a></span>
-        </div>
-      </div>
-      <span class="inc-kind">DATA BREACH · HEALTHCARE PROFESSIONAL PORTAL</span>
-    </div>
-    <div class="act-row">
-      <b>ACTION</b>
-      <span>Organizations running healthcare-professional-facing (HCP) web portals should audit their security investment against that system specifically, not just patient-facing properties, since this breach vector is often comparatively under-resourced; watch for Asahi Kasei Therapeutics&#x27; fuller disclosure of data types and intrusion vector; affected healthcare professionals should monitor for targeted phishing referencing their professional credentials or affiliations.</span>
-      <button class="tbtn copy-inc" data-inc="asahi-kasei-breach">COPY IOCs</button>
-    </div>
-    <div class="scroll">
-      <table data-inc="asahi-kasei-breach">
-        <thead>
-          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
-        </thead>
-        <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people">Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people</button></td>
-            <td class="ctx">Scope of the disclosed breach pending fuller technical detail</td>
-            <td class="seen">OCT 6</td>
+            <td><button class="val" data-defanged="Developer accounts &#x27;fivedev&#x27; and &#x27;CPS Developer&#x27;; certificate name &#x27;Shenzhen Zediel&#x27; on some system-app builds; Google Play Store disabled or non-functional on a budget Android device">Developer accounts &#x27;fivedev&#x27; and &#x27;CPS Developer&#x27;; certificate name &#x27;Shenzhen Zediel&#x27; on some system-app builds; Google Play Store disabled or non-functional on a budget Android device</button></td>
+            <td class="ctx">Identifiers associated with the campaign per Bitdefender</td>
+            <td class="seen">OCT 12</td>
           </tr>
         </tbody>
       </table>
@@ -838,10 +886,10 @@
 
 <footer>
   <span>MACHINE-READABLE:</span>
-  <a class="file" href="feeds/issue-012-iocs.txt">issue-012-iocs.txt</a>
-  <a class="file" href="feeds/issue-012-iocs.clean.txt">issue-012-iocs.clean.txt</a>
-  <a class="file" href="feeds/issue-012-iocs.csv">issue-012-iocs.csv</a>
-  <a class="file" href="feeds/issue-012.stix2.json">issue-012.stix2.json</a>
+  <a class="file" href="feeds/issue-013-iocs.txt">issue-013-iocs.txt</a>
+  <a class="file" href="feeds/issue-013-iocs.clean.txt">issue-013-iocs.clean.txt</a>
+  <a class="file" href="feeds/issue-013-iocs.csv">issue-013-iocs.csv</a>
+  <a class="file" href="feeds/issue-013.stix2.json">issue-013.stix2.json</a>
   <span class="spacer"></span>
   <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
 </footer>
