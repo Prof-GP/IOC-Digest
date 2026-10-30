@@ -1,5 +1,111 @@
 {
   "type": "bundle",
   "id": "bundle--0dee1602-2653-5cb7-bacc-95295e74c995",
-  "objects": []
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7156e7a4-5afa-54de-9c29-a5291bee6f6b",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "RatHat \u2014 AI-driven Android trojan uses a live model to navigate infected devices and reconstruct PINs: C2 domain for the \"Panda Workshop V6\" RatHat console build, per Cleafy",
+      "description": "Source: https://www.malwarebytes.com/blog/news/2026/09/new-android-malware-uses-ai-to-steal-bank-logins-and-pins; https://gbhackers.com/ai-powered-rathat-android-trojan-steals-bank-credentials/",
+      "pattern": "[domain-name:value = 'admin.chunhuating.best']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--93af9803-2be9-5002-8652-0ac9d32dd222",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "RatHat \u2014 AI-driven Android trojan uses a live model to navigate infected devices and reconstruct PINs: Download URL distributing the Sept 2026 RatHat sample",
+      "description": "Source: https://www.malwarebytes.com/blog/news/2026/09/new-android-malware-uses-ai-to-steal-bank-logins-and-pins; https://gbhackers.com/ai-powered-rathat-android-trojan-steals-bank-credentials/",
+      "pattern": "[url:value = 'hxxps[://]dramaspoolcoa.com/en.html']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0309646f-b90a-5edd-a1b8-97c2a8bf4580",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "China-aligned FamousSparrow deploys new SparroWocky backdoor against Latin American governments via public-facing Exchange servers: SparroWocky C2 IP addresses per ESET Research",
+      "description": "Source: https://thehackernews.com/2026/09/china-aligned-famoussparrow-deploys.html; https://therecord.media/china-hackers-latin-america-espionage",
+      "pattern": "[ipv4-addr:value = '38.54.57.17 ; 38.60.197.55 ; 38.60.209.106 ; 38.60.224.51 ; 38.60.224.235 ; 38.60.241.65 ; 38.60.241.127 ; 38.60.241.193 ; 77.111.101.40 ; 91.148.134.115 ; 130.94.101.82 ; 140.99.164.199 ; 149.104.87.228 ; 149.104.90.203 ; 216.238.92.2 ; 216.238.105.53 ; 216.238.110.120 ; 216.238.121.164']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--aa310ff2-2d1d-55bc-b68b-1de9e1d04f54",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "Passkey-themed vishing campaign hijacks Microsoft cloud accounts, active since May with automated post-compromise collection: Lure domains used for fake IT help-desk passkey/MFA/SSO enrollment pages; organizations are typically targeted via a company-name subdomain (e.g. contoso[.]add-passkey[.]com)",
+      "description": "Source: https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/; https://thehackernews.com/2026/09/attackers-use-passkey-phishing-to.html",
+      "pattern": "[domain-name:value = 'passkeyhelpdesk.com ; secure-passkey.com ; setupmypasskey.com ; add-passkey.com ; integratedsso.com ; oktasession.com ; keysyncos.com ; oskeysync.com ; oskeysetup.com ; oskeyregister.com ; syncmykey.com ; myconnectkey.com ; oskeyconnect.com ; validationsetupac.com ; portalsetuphub.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b25f384c-1964-57dc-ac0a-02f87a082297",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "Malicious Twitch browser extension leaked OAuth tokens for ~31,000 users to a Russian-language bot service: Proxy/infrastructure domains the extension forwarded OAuth tokens to",
+      "description": "Source: https://socket.dev/blog/malicious-twitch-browser-extension; https://thehackernews.com/2026/09/malicious-twitch-browser-extension.html",
+      "pattern": "[domain-name:value = 'enhanced.jeetbot.cc ; ext-styles.jeetbot.cc ; proxy.morphilina.me']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e3eb76ea-6588-5ca8-ac92-b09f3350e0c2",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "Over 1 million CEO-impersonation emails push fake ServiceNow subscription invoices to trigger fraudulent ACH transfers: Lookalike ServiceNow domain registered Jul 31, 2026, used for the spoofed ServiceNow executive address and invoice contact",
+      "description": "Source: https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/",
+      "pattern": "[domain-name:value = 'service-nowinc.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--7bb2280b-f32a-56a1-b31d-54af1cd6dd18",
+      "created": "2026-09-18T00:00:00.000Z",
+      "modified": "2026-09-18T00:00:00.000Z",
+      "name": "Over 1 million CEO-impersonation emails push fake ServiceNow subscription invoices to trigger fraudulent ACH transfers: Newly registered domain used in the campaign's Reply-To address",
+      "description": "Source: https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/",
+      "pattern": "[domain-name:value = 'domainlify.net']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-18T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
 }

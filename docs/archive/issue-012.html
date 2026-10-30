@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 012 · WK 2026-10-09 · 10 INCIDENTS · 10 IOCs</span>
+  <span class="issue-meta">ISSUE 012 · WK 2026-10-09 · 10 INCIDENTS · 8 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>10</b></button>
+  <button class="fchip on" data-type="all">ALL<b>8</b></button>
   <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>1</b></button>
-  <button class="fchip" data-type="host">HOST<b>9</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>5</b></button>
+  <button class="fchip" data-type="host">HOST<b>3</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -453,7 +453,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Any organization using IDCF Cloud should immediately assess whether it holds an independent, offline backup outside the provider, since provider-side recovery across the four affected zones is not assured; cloud customers generally should treat this as a prompt to verify their own DR plan doesn&#x27;t rely solely on a single provider&#x27;s backup infrastructure; monitor for confirmation of whether customer data was exfiltrated in addition to the backup destruction.</span>
+      <span>Any organization using IDCF Cloud should immediately assess whether it holds an independent, offline backup outside the provider, since provider-side recovery across the four affected zones is not assured; cloud customers generally should treat this as a prompt to verify their own DR plan doesn&#x27;t rely solely on a single provider&#x27;s backup infrastructure; monitor for confirmation of whether customer data was exfiltrated in addition to the backup destruction. No ransomware group has been named and no file hash, extension, or C2 infrastructure has been publicly disclosed for this intrusion as of this writing — an attacker-left console message was attributed by outside observers to an X/Twitter handle (J416DY), but that attribution is unconfirmed by any investigator and we&#x27;re not treating it as an indicator.</span>
       <button class="tbtn copy-inc" data-inc="idcf-cloud-ransomware">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -462,12 +462,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Large-scale ransomware encryption and backup destruction across a cloud provider&#x27;s data-center zones, locking customers out of virtual servers">Large-scale ransomware encryption and backup destruction across a cloud provider&#x27;s data-center zones, locking customers out of virtual servers</button></td>
-            <td class="ctx">Scope of the IDCF Cloud incident</td>
-            <td class="seen">OCT 7</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -479,7 +474,7 @@
           <span class="sev high">HIGH</span>
           <h2>ARTEX — AI pentesting tool combined with multiple LLMs automates data-theft campaign against South Korean banks</h2>
         </div>
-        <p class="inc-sum">CrowdStrike Intelligence disclosed a campaign active from late September to early October 2026 that combined ARTEX, an open-source Chinese-developed penetration-testing platform, with multiple large language models (DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6) to automate reconnaissance, exploitation, and data exfiltration against South Korean financial organizations including Shinhan Bank, Kookmin Bank, Hana Bank, BNK Busan Bank, Yegaram Savings Bank, Hyundai Capital, and Welcome Savings Bank. CrowdStrike assesses with moderate confidence the operator is Chinese-speaking and financially motivated; open directories on attacker-controlled servers inadvertently exposed Claude Code session histories, ARTEX configuration files, and Claude memory files, letting researchers reconstruct the operator's prompt-by-prompt workflow. South Korea's Financial Services Commission and Financial Supervisory Service issued a public warning urging consumers to watch for phishing and loan scams stemming from the leaked data. <b>Durable catch: the attacker's own exposed Claude Code session history is the actual intelligence goldmine here — reconstructing an adversary's prompt-by-prompt reasoning is a new category of attribution evidence that didn't exist before AI-agent-driven intrusions, and defenders should know to look for exposed AI tool session logs/config directories on any attacker infrastructure they gain visibility into.</b></p>
+        <p class="inc-sum">CrowdStrike Intelligence disclosed a campaign active from late September to early October 2026 that combined ARTEX, an open-source Chinese-developed penetration-testing platform, with multiple large language models (DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6) to automate reconnaissance, exploitation, and data exfiltration against South Korean financial organizations including Shinhan Bank, Kookmin Bank, Hana Bank, BNK Busan Bank, Yegaram Savings Bank, Hyundai Capital, and Welcome Savings Bank. CrowdStrike assesses with moderate confidence the operator is Chinese-speaking and financially motivated; an open directory at IP 38.244.50[.]120, hosting an ARTEX instance, inadvertently exposed Claude Code session histories (including a markdown file at path /.claude/CLAUDE.md), ARTEX configuration files, and Claude memory files, letting researchers reconstruct the operator's prompt-by-prompt workflow. CrowdStrike also identified nine proxy IP addresses tied to the campaign's infrastructure. South Korea's Financial Services Commission and Financial Supervisory Service issued a public warning urging consumers to watch for phishing and loan scams stemming from the leaked data. <b>Durable catch: the attacker's own exposed Claude Code session history is the actual intelligence goldmine here — reconstructing an adversary's prompt-by-prompt reasoning is a new category of attribution evidence that didn't exist before AI-agent-driven intrusions, and defenders should know to look for exposed AI tool session logs/config directories on any attacker infrastructure they gain visibility into.</b></p>
         <div class="inc-meta">
           <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-09-22</span>
         <span>7+ SOUTH KOREAN BANKS/LENDERS TARGETED · ACTIVE LATE SEP-EARLY OCT 2026</span>
@@ -493,7 +488,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>South Korean financial institutions should treat ARTEX-pattern automated reconnaissance-to-exfiltration as an active threat and review exposure to the named banks&#x27; incident reports for shared infrastructure or vendor overlap; consumers of affected institutions should heed the FSC/FSS warning and watch for phishing and loan-scam attempts using leaked data; defenders who gain visibility into attacker-controlled infrastructure should specifically check for exposed AI-tool session logs and config directories, which proved to be a uniquely rich attribution source in this case.</span>
+      <span>South Korean financial institutions should treat ARTEX-pattern automated reconnaissance-to-exfiltration as an active threat and review exposure to the named banks&#x27; incident reports for shared infrastructure or vendor overlap; consumers of affected institutions should heed the FSC/FSS warning and watch for phishing and loan-scam attempts using leaked data; defenders who gain visibility into attacker-controlled infrastructure should specifically check for exposed AI-tool session logs and config directories (e.g. /.claude/CLAUDE.md), which proved to be a uniquely rich attribution source in this case; block/monitor traffic to the attacker-controlled IP and associated proxy infrastructure below.</span>
       <button class="tbtn copy-inc" data-inc="artex-ai-pentest-korea">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -502,11 +497,17 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="38[.]244[.]50[.]120">38[.]244[.]50[.]120</button></td>
+            <td class="ctx">Attacker-controlled server hosting an open directory with an ARTEX instance and exposed Claude Code session files</td>
+            <td class="seen">OCT 7-8</td>
+          </tr>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6">ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6</button></td>
-            <td class="ctx">AI-driven toolchain used to automate the attack against South Korean financial organizations</td>
-            <td class="seen">OCT 8</td>
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/.claude/CLAUDE.md">/.claude/CLAUDE.md</button></td>
+            <td class="ctx">Exposed Claude Code markdown file found in the attacker&#x27;s open directory, used by CrowdStrike to reconstruct the operator&#x27;s workflow</td>
+            <td class="seen">OCT 7-8</td>
           </tr>
         </tbody>
       </table>
@@ -519,7 +520,7 @@
           <span class="sev high">HIGH</span>
           <h2>Malicious npm release of 'tensorlake' extends the ChainDrop/Shai-Hulud worm into AI agent infrastructure</h2>
         </div>
-        <p class="inc-sum">Socket flagged version 0.5.144 of the npm package 'tensorlake' (a TypeScript SDK for Tensorlake applications) shortly after its Oct 8 publication, finding it carried obfuscated malware consistent with prior ChainDrop/Shai-Hulud supply-chain compromises. The payload harvests and exfiltrates npm tokens, GitHub tokens, AWS credentials, Kubernetes credentials, SSH keys, cryptocurrency wallets, and — notably — configuration files for AI tools including Anthropic Claude, establishes persistence, and can execute remotely supplied code. This marks the campaign's extension from general developer-credential theft into AI-agent-specific infrastructure, since Claude and similar tool configs often hold API keys and session context with their own blast radius. <b>Durable catch: a compromised dependency now specifically hunts for AI-tool configuration files alongside the usual cloud/SSH/crypto targets — any organization auditing a supply-chain compromise's blast radius needs to add 'what AI tool configs and API keys were present on affected machines' to the standard credential-rotation checklist, not just cloud and git credentials.</b></p>
+        <p class="inc-sum">Socket flagged version 0.5.144 of the npm package 'tensorlake' (a TypeScript SDK for Tensorlake applications) shortly after its Oct 8 publication, finding it carried obfuscated malware consistent with prior ChainDrop/Shai-Hulud supply-chain compromises. The payload harvests and exfiltrates npm tokens, GitHub tokens, AWS credentials, Kubernetes credentials, SSH keys, cryptocurrency wallets, and — notably — configuration files for AI tools including Anthropic Claude; it writes a persistence/token-monitor hook into .claude/settings.json and .vscode/tasks.json in reachable repos so it reruns whenever the project is reopened in Claude Code or VS Code, and can execute remotely supplied code. The Hacker News reported the malware first posts stolen data to iseekaigogo[.]com over port 443, falling back to an Ethereum-contract lookup (which itself resolves back to iseekaigogo[.]com) and then to a GitHub repo for staging; Socket's own analysis reportedly found no hardcoded C2 domain, so we're flagging that domain as disputed between sources rather than fully confirmed. This marks the campaign's extension from general developer-credential theft into AI-agent-specific infrastructure, since Claude and similar tool configs often hold API keys and session context with their own blast radius. <b>Durable catch: a compromised dependency now specifically hunts for AI-tool configuration files alongside the usual cloud/SSH/crypto targets — any organization auditing a supply-chain compromise's blast radius needs to add 'what AI tool configs and API keys were present on affected machines' to the standard credential-rotation checklist, not just cloud and git credentials.</b></p>
         <div class="inc-meta">
           <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-08</span>
         <span>MALICIOUS tensorlake v0.5.144 PUBLISHED AND FLAGGED SAME DAY, OCT 8</span>
@@ -533,7 +534,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Remove tensorlake v0.5.144 from any dependency tree immediately and rotate all credential types the malware targets — npm, GitHub, AWS, Kubernetes, SSH keys, crypto wallets, and any AI-tool (Claude or similar) configuration files/API keys present on affected machines; audit build/CI systems that may have installed this version for persistence mechanisms or remote code execution since Oct 8; treat AI-tool config exposure as a standard item in supply-chain incident response going forward, not an afterthought.</span>
+      <span>Remove tensorlake v0.5.144 from any dependency tree immediately — do not simply revoke exposed tokens first, since the persistent GitHub-token monitor it installs can trigger destructive behavior if revocation happens before the monitor is removed; rotate all credential types the malware targets (npm, GitHub, AWS, Kubernetes, SSH keys, crypto wallets, AI-tool config/API keys); audit any repo for the .claude/settings.json / .vscode/tasks.json persistence hooks and block/monitor the C2 domain below (noting it is disputed by at least one vendor&#x27;s analysis).</span>
       <button class="tbtn copy-inc" data-inc="tensorlake-npm-chaindrop">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -544,8 +545,20 @@
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">package</span></td>
-            <td><button class="val" data-defanged="tensorlake v0.5.144 (published Oct 8, 2026)">tensorlake v0.5.144 (published Oct 8, 2026)</button></td>
-            <td class="ctx">Malicious npm release carrying a ChainDrop/Shai-Hulud-consistent credential-harvesting payload targeting cloud, SSH, crypto, and AI-tool configs</td>
+            <td><button class="val" data-defanged="tensorlake@0.5.144">tensorlake@0.5.144</button></td>
+            <td class="ctx">Malicious npm release carrying a ChainDrop/Shai-Hulud-consistent credential-harvesting payload, published Oct 8, 2026</td>
+            <td class="seen">OCT 8</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="iseekaigogo[.]com">iseekaigogo[.]com</button></td>
+            <td class="ctx">Reported C2/exfiltration domain for the tensorlake payload (port 443, path /router); disputed — Socket&#x27;s own analysis reportedly found no hardcoded C2 domain</td>
+            <td class="seen">OCT 8</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged=".claude/settings.json ; .vscode/tasks.json">.claude/settings.json ; .vscode/tasks.json</button></td>
+            <td class="ctx">Persistence hooks the malware writes into reachable repos so it reruns when reopened in Claude Code or VS Code</td>
             <td class="seen">OCT 8</td>
           </tr>
         </tbody>
@@ -573,7 +586,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Air navigation and aviation weather providers should treat early-stage ransomware-precursor malware detection in OT networks as a model to replicate — ATNS&#x27;s catch before encryption/disruption is the outcome to study; investigate the insider-theft angle at the named airports (Port Elizabeth, East London, Maputo) independently of the broader ransomware investigation; monitor for confirmation of data exfiltration scope and the China-linked IP attribution.</span>
+      <span>Air navigation and aviation weather providers should treat early-stage ransomware-precursor malware detection in OT networks as a model to replicate — ATNS&#x27;s catch before encryption/disruption is the outcome to study; investigate the insider-theft angle at the named airports (Port Elizabeth, East London, Maputo) independently of the broader ransomware investigation; monitor for confirmation of data exfiltration scope and the China-linked IP attribution. ATNS and the reporting to date have not published the specific external IP addresses or malware family involved — only &quot;external IP addresses in China&quot; in general terms — so no atomic indicator is available as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="atns-southafrica-ransomware">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -582,12 +595,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China">Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China</button></td>
-            <td class="ctx">Observed pattern at ATNS prior to any confirmed disruption</td>
-            <td class="seen">OCT 5</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -613,7 +621,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch NetScaler ADC/Gateway 14.1 and 13.1 branches (including FIPS/NDcPP builds) to the fixed build immediately, or apply Citrix&#x27;s interim mitigation if patching is delayed; if the appliance is not configured for SAML, exposure to this specific CVE doesn&#x27;t apply, but given the fourth-in-two-months pattern, review all NetScaler CVEs from this cycle together rather than one at a time; treat SAML-configured NetScaler appliances as a standing monitoring priority.</span>
+      <span>Patch NetScaler ADC/Gateway 14.1 and 13.1 branches (including FIPS/NDcPP builds) to the fixed build (14.1-73.41 / 13.1-64.28) immediately, or apply Citrix&#x27;s interim mitigation if patching is delayed; if the appliance is not configured for SAML, exposure to this specific CVE doesn&#x27;t apply, but given the fourth-in-two-months pattern, review all NetScaler CVEs from this cycle together rather than one at a time; check Citrix&#x27;s NetScaler Console IOC feed directly, since Citrix has not published specific attacker IPs or hashes for this CVE in its public bulletin — unconfirmed reporting describes attackers chaining this DoS with CVE-2026-88771 to force a reboot and then run previously injected commands, but no atomic artifact from that chain has been independently verified as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="citrix-netscaler-88779">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -622,12 +630,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-88779">CVE-2026-88779</button></td>
-            <td class="ctx">Citrix NetScaler ADC/Gateway memory overflow causing denial of service on SAML-configured appliances, CVSS 8.7</td>
-            <td class="seen">OCT 4</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -653,7 +656,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations that experienced a suspected KillSec extortion attempt or unexplained breach during its operating window should contact investigating authorities (German-led, with Europol coordination) to check whether their data appears in the 110TB seized cache; treat this takedown as disruption, not elimination, of the group&#x27;s broader affiliate/access-broker ecosystem given roughly 1,000 linked attacks and multiple still-provisional arrests.</span>
+      <span>Organizations that experienced a suspected KillSec extortion attempt or unexplained breach during its operating window should contact investigating authorities (German-led, with Europol coordination) to check whether their data appears in the 110TB seized cache; treat this takedown as disruption, not elimination, of the group&#x27;s broader affiliate/access-broker ecosystem given roughly 1,000 linked attacks and multiple still-provisional arrests. The leak-site addresses below are now law-enforcement-controlled/seized rather than live attacker infrastructure, but remain useful for confirming whether an organization&#x27;s data was among the group&#x27;s historical postings.</span>
       <button class="tbtn copy-inc" data-inc="killsec-takedown">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -662,10 +665,16 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)">KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)</button></td>
-            <td class="ctx">Group dismantled in Operation KillSwitch</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="kill432ltnkqvaqntbalnsgojqqs2wz4lhnamrqjg66tq6fuvcztilyd[.]onion">kill432ltnkqvaqntbalnsgojqqs2wz4lhnamrqjg66tq6fuvcztilyd[.]onion</button></td>
+            <td class="ctx">KillSec&#x27;s primary Tor leak site, seized by law enforcement Sep 30 in Operation KillSwitch</td>
+            <td class="seen">SEP 30</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="ks5424y3wpr5zlug5c7i6svvxweinhbdcqcfnptkfcutrncfazzgz5id[.]onion">ks5424y3wpr5zlug5c7i6svvxweinhbdcqcfnptkfcutrncfazzgz5id[.]onion</button></td>
+            <td class="ctx">Secondary KillSec Tor leak-site address tracked by multiple ransomware trackers</td>
             <td class="seen">SEP 30</td>
           </tr>
         </tbody>
@@ -679,7 +688,7 @@
           <span class="sev med">MEDIUM</span>
           <h2>ASOS breach traced to an employee tricked into handing over login credentials by an attacker posing as a trusted contact</h2>
         </div>
-        <p class="inc-sum">ASOS confirmed a data breach after a group calling itself the Xuanye Group gained access to an employee's account by impersonating a trusted contact to obtain login credentials, then used that access to reach information on certain third-party platforms ASOS uses. ASOS says names, contact details, delivery and email addresses, phone numbers, and recent search history were accessed, but payment card data and account passwords were not affected; the company notified customers Oct 8 and has locked down the affected platforms while working with external experts, law enforcement, and regulators. <b>Durable catch: the attacker didn't breach ASOS's own infrastructure at all — a single employee's credentials, obtained through impersonation, was sufficient to reach customer data on third-party platforms the company relies on, which is the actual control gap (third-party platform access tied to individual employee trust) rather than anything ASOS's own systems could have stopped.</b></p>
+        <p class="inc-sum">ASOS confirmed a data breach after a group calling itself the Xuanye Group gained access to an employee's account by impersonating a trusted contact to obtain login credentials, then used that access to reach information on certain third-party platforms ASOS uses. ASOS says names, contact details, delivery and email addresses, phone numbers, and recent search history were accessed, but payment card data and account passwords were not affected; the company notified customers Oct 8 and has locked down the affected platforms while working with external experts, law enforcement, and regulators. The group pushed malicious in-app push notifications containing a link to a Telegram channel it operates — currently @xuanyegroup, after renaming itself from @JohnCzwartacki (active early September) and then @NFTmoonstock before settling on its current handle Oct 6 — and unconfirmed reporting (BBC) describes the access point as a compromised Simon AI instance, though that detail has not been independently verified. <b>Durable catch: the attacker didn't breach ASOS's own infrastructure at all — a single employee's credentials, obtained through impersonation, was sufficient to reach customer data on third-party platforms the company relies on, which is the actual control gap (third-party platform access tied to individual employee trust) rather than anything ASOS's own systems could have stopped.</b></p>
         <div class="inc-meta">
           <span class="reported">REPORTED 2026-10-08</span><span>ACTIVE SINCE 2026-10-06</span>
         <span>ATTACKER IMPERSONATED A TRUSTED CONTACT TO OBTAIN AN EMPLOYEE&#x27;S LOGIN CREDENTIALS</span>
@@ -693,7 +702,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>ASOS customers should watch for targeted phishing referencing their delivery/search history given the exposure, treating any such contact as suspicious; organizations should audit which third-party platforms a single employee&#x27;s credentials can reach and require out-of-band verification before any employee grants access changes or credential resets to a &#x27;trusted contact&#x27; claim; review third-party platform access scoping so one compromised employee account can&#x27;t reach customer data across multiple external systems.</span>
+      <span>ASOS customers should watch for targeted phishing referencing their delivery/search history given the exposure, treating any such contact as suspicious, and should not click links in unexpected ASOS app push notifications; organizations should audit which third-party platforms a single employee&#x27;s credentials can reach and require out-of-band verification before any employee grants access changes or credential resets to a &#x27;trusted contact&#x27; claim; block/report the Telegram channel below if encountered.</span>
       <button class="tbtn copy-inc" data-inc="asos-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -702,11 +711,11 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)">Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)</button></td>
-            <td class="ctx">Group responsible for the impersonation-based credential theft leading to the ASOS breach</td>
-            <td class="seen">OCT 8</td>
+          <tr data-type="net">
+            <td><span class="t-badge">account</span></td>
+            <td><button class="val" data-defanged="@xuanyegroup">@xuanyegroup</button></td>
+            <td class="ctx">Telegram channel the attacker group used to distribute its data-theft claim via malicious ASOS app push notifications; previously operated as @JohnCzwartacki and @NFTmoonstock</td>
+            <td class="seen">OCT 6-8</td>
           </tr>
         </tbody>
       </table>
@@ -733,7 +742,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Affected individuals (over 500 in California, smaller numbers in Massachusetts and Vermont) should place a credit freeze given the SSN/passport/driver&#x27;s-license/financial exposure; organizations should stress-test their own ability to map stolen file listings to specific affected individuals as part of incident-response planning, since that reconstruction step — not detection or confirmation of theft — was Advantest&#x27;s actual bottleneck; multinational organizations should pre-map jurisdiction-specific notification deadlines before an incident rather than during one.</span>
+      <span>Affected individuals (over 500 in California, smaller numbers in Massachusetts and Vermont) should place a credit freeze given the SSN/passport/driver&#x27;s-license/financial exposure; organizations should stress-test their own ability to map stolen file listings to specific affected individuals as part of incident-response planning, since that reconstruction step — not detection or confirmation of theft — was Advantest&#x27;s actual bottleneck; multinational organizations should pre-map jurisdiction-specific notification deadlines before an incident rather than during one. No ransomware group has publicly claimed this attack and Advantest has not disclosed the ransomware family, initial-access vector, or any technical indicator as of this writing — there is no atomic indicator to publish for this incident.</span>
       <button class="tbtn copy-inc" data-inc="advantest-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -742,12 +751,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Ransomware-related data theft of SSNs, passport numbers, driver&#x27;s license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026">Ransomware-related data theft of SSNs, passport numbers, driver&#x27;s license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026</button></td>
-            <td class="ctx">Scope and timeline of the disclosed breach</td>
-            <td class="seen">OCT 6</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -773,7 +777,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>flydubai should confirm or refute the claim directly given the specificity of the alleged data (Boeing source code is not a typical airline HR-breach claim); if genuine, Boeing should be notified independently of flydubai&#x27;s own response given the potential vendor-software exposure; monitor Everest&#x27;s leak site for proof files that would substantiate either the file count or the Boeing-code claim specifically.</span>
+      <span>flydubai should confirm or refute the claim directly given the specificity of the alleged data (Boeing source code is not a typical airline HR-breach claim); if genuine, Boeing should be notified independently of flydubai&#x27;s own response given the potential vendor-software exposure; monitor Everest&#x27;s leak site for proof files that would substantiate either the file count or the Boeing-code claim specifically. We could not locate Everest&#x27;s current leak-site onion address or any sample-file hash in public reporting as of this writing — Everest&#x27;s prior leak site was defaced and taken offline in April 2025, and its current infrastructure address was not found in available sources, so no atomic indicator is available for this specific claim.</span>
       <button class="tbtn copy-inc" data-inc="flydubai-everest-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -782,12 +786,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Everest (cybercriminal extortion group claiming the flydubai compromise)">Everest (cybercriminal extortion group claiming the flydubai compromise)</button></td>
-            <td class="ctx">Group behind the unverified flydubai data-theft claim</td>
-            <td class="seen">OCT 6</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -813,7 +812,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations running healthcare-professional-facing (HCP) web portals should audit their security investment against that system specifically, not just patient-facing properties, since this breach vector is often comparatively under-resourced; watch for Asahi Kasei Therapeutics&#x27; fuller disclosure of data types and intrusion vector; affected healthcare professionals should monitor for targeted phishing referencing their professional credentials or affiliations.</span>
+      <span>Organizations running healthcare-professional-facing (HCP) web portals should audit their security investment against that system specifically, not just patient-facing properties, since this breach vector is often comparatively under-resourced; watch for Asahi Kasei Therapeutics&#x27; fuller disclosure of data types and intrusion vector; affected healthcare professionals should monitor for targeted phishing referencing their professional credentials or affiliations. No attack vector, malware family, or technical indicator has been publicly disclosed for this breach as of this writing — Japanese-language reporting on the affected &quot;Pharma DIGITAL&quot; portal gives scope and victim counts only.</span>
       <button class="tbtn copy-inc" data-inc="asahi-kasei-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -822,12 +821,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people">Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people</button></td>
-            <td class="ctx">Scope of the disclosed breach pending fuller technical detail</td>
-            <td class="seen">OCT 6</td>
-          </tr>
+
         </tbody>
       </table>
     </div>

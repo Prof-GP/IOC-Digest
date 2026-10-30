@@ -2,35 +2,34 @@
 # CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
 #
 # --- CVE-2026-104286 \u2014 FortiMail path-traversal zero-day exploited in the wild with no patch available, only a workaround  (https://www.rescana.com/post/fortinet-fortimail-cve-2026-104286-actively-exploited-critical-path-traversal-and-null-byte-vulnerability-alert, https://hard2bit.com/en/blog/fortimail-zero-day-cve-2026-104286-patch-iocs/)
-CVE-2026-104286
+79.141.169.187 ; 45.129.0.192
+/data/lib/liblog.so ; /data/bin/webconsole ; /data/bin/mailservice
+/bin/smit ; /data/etc/ld.so.preload ; /data/etc/httpd.conf ; /data/migadmin.tar.gz
+8015f34dc84922b03688399d7f9fe7a00361789f7e420c7e2a2cdb23e75cef84
+7a6cea9f5c9e2e9994d4e3c4da73f86cf5acd05ea5d312c066c9d1dafd69ee38
+4000276a150a165d3c2537d1e19fb393c4de8333076a16655e28059cae82157b
 #
 # --- CVE-2026-76504 \u2014 URI-encoding trick bypasses Cisco Catalyst SD-WAN Manager authentication for full admin API access  (https://thehackernews.com/2026/09/cisco-warns-of-attackers-exploiting.html, https://horizon3.ai/attack-research/vulnerabilities/cve-2026-76504/)
-CVE-2026-76504
-Requests to an encoded variant of the j_security_check path (e.g., /%6a_security_check)
+/%6a_security_check
 #
 # --- CVE-2026-86950 \u2014 Apple CoreGraphics zero-day weaponized against specific individuals via crafted image/document files  (https://www.cisa.gov/news-events/alerts/2026/09/29/cisa-adds-one-known-exploited-vulnerability-catalog, https://thecyberexpress.com/apple-fixes-cve-2026-86950-ios-ipados/)
-CVE-2026-86950
 #
 # --- Pentagon confirms breach of personnel database exposing data on 3 million living and deceased service members  (https://federalnewsnetwork.com/defense-main/2026/09/more-than-3-million-people-affected-by-military-data-breach/, https://techtarget.com/cybersecurity/news/366652020/Pentagon-breach-exposes-failure-to-follow-its-own-standards)
-Unauthorized access to a Defense Manpower Data Center file-sharing system between October 2025 and July 2026
 #
 # --- CVE-2026-88771/88772 \u2014 third NetScaler zero-day pair of the year, exploited with documented IPs, hashes, and web-shell paths  (https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited/, https://www.rapid7.com/blog/post/etr-critical-cisco-catalyst-sd-wan-manager-api-authentication-bypass-exploited-in-the-wild-cve-2026-76504/)
-CVE-2026-88771 / CVE-2026-88772
 77.83.199.39 ; 104.248.244.66 ; 193.149.176.207 ; 162.33.178.9
 /vpn/scripts/linux/nsgclient18.deb ; /var/netscaler/logon/LogonPoint/custom/.ctxs.receiver
 ae22ef2517b5c0fb47f78745b9cb5260acee0e751b89bcd354640ff8bc8d29ec ; 79c65fa04541032e251fa4796b97800374b63c7982593dd1a2e0db605d429186 ; 1bd314b661396c7086f6367fbbb48025e03ca2de69c073d53a8b0a38aa5fbb7d
 #
 # --- ShinyHunters breaches FBI's jobs portal via an unpatched Oracle PeopleSoft flaw a contractor failed to fix, exfiltrates 2-3TB  (https://www.vectra.ai/blog/shinyhunters-breached-the-fbi-by-bypassing-the-fix, https://www.cybersecuritydive.com/news/fbi-hack-shinyhunters-jobs-portal/831175/)
-ShinyHunters (exploited an unpatched Oracle PeopleSoft vulnerability against apply.fbijobs.gov)
+apply.fbijobs.gov
+x.jsp ; u.jsp ; tunnel.jsp ; tunnel.jspx ; Ple64.exe
 #
 # --- ShinyHunters lists O'Reilly Automotive and DexCom on a new leak site, then pulls both listings two days later  (https://cybernews.com/news/shinyhunters-oreilly-auto-dexcom-breach-fbi-hack/, https://hackread.com/shinyhunters-hacker-rey-detained-jordan-fbi/)
-ShinyHunters (listed, then withdrew, claims against O'Reilly Automotive and DexCom)
 #
 # --- Keio Corporation confirms ransomware attack disrupting payment and hotel systems at Tokyo rail operator's hospitality arm  (https://www.bleepingcomputer.com/news/security/japans-keio-confirms-ransomware-attack-disrupted-business-systems/, https://www.cpomagazine.com/cyber-security/data-breach-impacts-times-car-ride-sharing-service-as-ransomware-attack-hits-railway-operator-keio/)
-Ransomware encryption/disruption affecting payment and hospitality booking systems while core rail operations remain isolated and unaffected
 #
 # --- CareSource/Commonwealth Care Alliance discloses medical-records breach affecting 826 Massachusetts residents  (https://www.mass.gov/lists/data-breach-notification-letters-september-2026)
-Unauthorized access to medical records affecting 826 Massachusetts residents
 #
 # --- Wallstreet ransomware claims Illinois nonprofit Gibson Area Hospital, alleges 600GB exfiltrated  (https://www.dexpose.io/wallstreet-ransomware-strikes-gibson-area-hospital-health-services/)
-Wallstreet ransomware
+4dwiv37h7hhuhjpvtn72hme4ylcv3qoe65arfc6mbweal7als6ma7pyd.onion

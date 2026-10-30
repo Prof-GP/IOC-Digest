@@ -2,19 +2,13 @@
 # CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
 #
 # --- CVE-2026-9586 \u2014 unauthenticated SQLi in Sangoma Switchvox VoIP platform exploited to drop reverse shells  (https://www.helpnetsecurity.com/2026/09/02/exploitation-of-sangoma-switchvox-flaw-underway-cve-2026-9586/, https://horizon3.ai/attack-research/disclosures/cve-2026-9586-sangoma-switchvox-rce/)
-CVE-2026-9586
 176.65.148.184
 /var/log/switchvox/db-quirks.log
-Switchvox 8.4.0.2
 #
 # --- CVE-2026-49869 \u2014 Kestra OSS auth-bypass RCE exploited within days of disclosure to deploy crypto miners  (https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html, https://aicybr.com/blog/kestra-cve-2026-49869-kev-rce-remediation)
-CVE-2026-49869
-XMRig cryptocurrency miner
-Unauthenticated requests to any URL path ending in /configs against a Kestra instance
+/api/v1/main/executions/tutorial/configs
 #
 # --- CVE-2026-83548/83549 \u2014 chained SonicWall SMA1000 flaws give unauthenticated attackers root, actively exploited  (https://www.rapid7.com/blog/post/etr-critical-sonicwall-sma1000-vulnerabilities-cve-2026-83548-cve-2026-83549-exploited-in-the-wild/, https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog)
-CVE-2026-83548 / CVE-2026-83549
-SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix
 #
 # --- Invisible Unicode tag characters split keywords to evade filters across a 3-month, multi-million-email phishing wave  (https://thehackernews.com/2026/09/phishing-campaign-sends-millions-of.html, https://www.microsoft.com/en-us/security/blog/2026/08/26/when-ai-infrastructure-becomes-target-securing-gateways-control-points/)
 guardiangrowthfunding.com ; digitalcapitalboost.com ; thebusinessloanexpress.com ; yourlocfunding.com ; advancefundingboost.com
@@ -23,29 +17,29 @@ acemlnd.com ; activehosted.com
 Presence of Unicode Tags-block codepoints (U+E0000-U+E007F) anywhere in message text
 #
 # --- CVE-2026-82329 \u2014 JFrog Artifactory authentication bypass added to KEV, chained for admin token minting  (https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog, https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html)
-CVE-2026-82329
-Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies
 #
 # --- Cyberattack on Luminis Health knocks two Maryland hospitals' systems offline, ambulances reroute  (https://www.wypr.org/wypr-news/2026-09-02/two-maryland-hospitals-hit-by-cyberattack-compromising-systems, https://hoodline.com/2026/09/luminis-health-hospitals-hit-by-cyberattack-portals-down-days-after-bomb-threat/)
-Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion
 #
 # --- Unit 42 documents ransomware attacker using AI agents to run an entire enterprise intrusion in under 10 hours  (https://www.theregister.com/security/2026/09/02/ai-agents-carried-out-every-step-of-this-ransomware-attack-then-left-the-victim-an-80-page-security-audit/5294009, https://unit42.paloaltonetworks.com/ai-assisted-cyber-attack-inside-a-unit-42-investigation/)
-Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks
 #
 # --- SPACEBEARS ransomware posts three new victims across US retail, US legal, and Italian healthcare  (https://securityarsenal.com/blog/spacebears-ransomware-gang-3-fresh-leak-site-victims-usit-sector-pressure-kev-edge-exposure-and-pre-encryption-hunt-rules)
-SPACEBEARS ransomware
+5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid.onion
 #
 # --- Settra ransomware claims Italian biotech DiaSorin, uses vulnerable driver to blind EDR before encryption  (https://malware.news/t/settra-ransomware-attack-on-diasorin-s-p-a/125325, https://www.moxfive.com/blog/settra-ransomware-ttps-victims-and-defense-guide)
-Settra ransomware (double-extortion, active since Jun 2026)
 STProcessMonitor_v114.sys
-edr_blind
+45.13.122.7
+193.5.65.114
 #
-# --- StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads  (https://www.malwarebytes.com/blog/news/2026/09/streamrat-android-malware-spreads-through-meta-and-tiktok-ads)
-Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1
+# --- StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads  (https://threatfabric.com/blogs/from-meta-ads-to-full-device-takeover-uncovering-streamrat, https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html)
+io.base.one887
+io.meat.hint
+e0714788b4e2518b0d9d4cbf18c7217bb97718e01689d77338f1cc4a230fcb6c
+ba83cc3c9535690191018edf73ca5c6001609df9919462796aa2e551f142e4d3
+45.147.28.59
+193.32.2.245
 #
 # --- Black X ransomware claims two South Korean auto-parts manufacturers within days of each other  (https://asec.ahnlab.com/en/95223/, https://www.ransomware.live/id/aXdpbkBCbGFjayBY)
-Black X ransomware (emerging group, active Aug 2026)
-iwin.kr
 #
 # --- ZaWoo data-extortion group adds a German sports-research institute and a New Zealand CRO to its victim list  (https://asec.ahnlab.com/en/95223/, https://www.dexpose.io/zawoo-ransomware-attack-on-german-sports-institute-fes/)
-ZaWoo (double-extortion data-theft group, active since mid-2026)
+fyenuhkq3pfhnbpidj5jm2fl2lryxip4byhg6eozynrnlomu4szf2nyd.onion
+zawooorecover[at]onionmail.org

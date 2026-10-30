@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 010 · WK 2026-09-25 · 10 INCIDENTS · 16 IOCs</span>
+  <span class="issue-meta">ISSUE 010 · WK 2026-09-25 · 10 INCIDENTS · 20 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>16</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>1</b></button>
-  <button class="fchip" data-type="host">HOST<b>15</b></button>
+  <button class="fchip on" data-type="all">ALL<b>20</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>1</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>11</b></button>
+  <button class="fchip" data-type="host">HOST<b>8</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -453,7 +453,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Crypto exchanges and custodians should flag small-value test transactions immediately preceding a large withdrawal as a distinct high-priority fraud signal, not routine activity; audit third-party security products integrated into wallet-backend infrastructure for unpatched zero-days, since that was this incident&#x27;s specific entry point; verify hot-wallet withdrawal commands require multi-party approval that a single compromised admin credential cannot bypass.</span>
+      <span>Crypto exchanges and custodians should flag small-value test transactions immediately preceding a large withdrawal as a distinct high-priority fraud signal, not routine activity; audit third-party security products integrated into wallet-backend infrastructure for unpatched zero-days, since that was this incident&#x27;s specific entry point; verify hot-wallet withdrawal commands require multi-party approval that a single compromised admin credential cannot bypass. No destination wallet address, transaction hash, or attacker IP has been publicly disclosed as of this writing; Bitget is working with Mandiant and SlowMist and has said a formal incident report is coming, which may add atomic indicators later.</span>
       <button class="tbtn copy-inc" data-inc="bitget-hack-dprk">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -462,12 +462,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Two small test transfers (0.184 ETH, 193 TRX) approximately 30 minutes before a large fraudulent withdrawal from exchange hot wallets">Two small test transfers (0.184 ETH, 193 TRX) approximately 30 minutes before a large fraudulent withdrawal from exchange hot wallets</button></td>
-            <td class="ctx">Attacker&#x27;s risk-control-testing behavior immediately preceding the main theft</td>
-            <td class="seen">SEP 24</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -493,7 +488,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch Security Gateway and Security Management to the fixed releases immediately; review logs specifically for anomalous certificate-based Mobile Access logins as Check Point&#x27;s documented detection signal; treat any Security Management server that was internet-reachable since July as potentially compromised given the two-month zero-day exploitation window; block known anonymization/proxy exit-node ranges from administrative access where feasible.</span>
+      <span>Patch Security Gateway and Security Management to the fixed releases immediately; review Mobile Access logs specifically for the certificate subjects listed below (Check Point&#x27;s own documented detection signal, not exhaustive); treat any Security Management server that was internet-reachable since July as potentially compromised given the two-month zero-day exploitation window; block known anonymization/proxy exit-node ranges from administrative access where feasible. Check Point&#x27;s sk1000171 hunting guide gives log-pattern indicators (overlong usernames in cpm.elg*, path-traversal strings against CPupgrade-tools-) for CVE-2026-93616, but publishes no IPs, hashes, or domains for that CVE.</span>
       <button class="tbtn copy-inc" data-inc="checkpoint-security-gateway-mgmt-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -503,21 +498,21 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-85102">CVE-2026-85102</button></td>
-            <td class="ctx">Check Point Security Gateway VPN certificate validation bypass, pre-auth RCE</td>
+            <td><span class="t-badge">cert-subject</span></td>
+            <td><button class="val" data-defanged="CN=vpn,OU=users,O=global">CN=vpn,OU=users,O=global</button></td>
+            <td class="ctx">Certificate subject observed in anomalous Mobile Access logins exploiting CVE-2026-85102 (not exhaustive, per Check Point)</td>
             <td class="seen">SEP 22</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-93616">CVE-2026-93616</button></td>
-            <td class="ctx">Check Point Security Management pre-auth path traversal enabling arbitrary script execution and Java class loading</td>
+            <td><span class="t-badge">cert-subject</span></td>
+            <td><button class="val" data-defanged="CN=vpn-user,OU=users,O=global">CN=vpn-user,OU=users,O=global</button></td>
+            <td class="ctx">Certificate subject observed in anomalous Mobile Access logins exploiting CVE-2026-85102 (not exhaustive, per Check Point)</td>
             <td class="seen">SEP 22</td>
           </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Anomalous certificate-based Mobile Access logins; exploitation traffic sourced from VPN/proxy anonymization infrastructure">Anomalous certificate-based Mobile Access logins; exploitation traffic sourced from VPN/proxy anonymization infrastructure</button></td>
-            <td class="ctx">Observed exploitation pattern per Check Point and Truesec</td>
+          <tr data-type="host">
+            <td><span class="t-badge">cert-subject</span></td>
+            <td><button class="val" data-defanged="CN=vpnuser,OU=users,O=global">CN=vpnuser,OU=users,O=global</button></td>
+            <td class="ctx">Certificate subject observed in anomalous Mobile Access logins exploiting CVE-2026-85102 (not exhaustive, per Check Point)</td>
             <td class="seen">SEP 22</td>
           </tr>
         </tbody>
@@ -545,7 +540,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Apply F5&#x27;s emergency engineering hotfix immediately on any BIG-IP virtual server configured with both an APM access policy and an OAuth profile; confirm exposure by checking that specific configuration combination rather than assuming all BIG-IP APM deployments are affected; meet the Sep 25 federal KEV deadline where applicable.</span>
+      <span>Apply F5&#x27;s emergency engineering hotfix immediately on any BIG-IP virtual server configured with both an APM access policy and an OAuth profile; confirm exposure by checking that specific configuration combination rather than assuming all BIG-IP APM deployments are affected; meet the Sep 25 federal KEV deadline where applicable. No IP, hash, or domain indicator has been published for this exploitation as of this writing — F5&#x27;s advisory (K000162605) and Rapid7&#x27;s analysis both stop at the vulnerability mechanics and hotfix identifiers, not attacker artifacts.</span>
       <button class="tbtn copy-inc" data-inc="f5-bigip-apm-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -554,12 +549,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-94127">CVE-2026-94127</button></td>
-            <td class="ctx">F5 BIG-IP APM heap-based buffer overflow, unauthenticated RCE on OAuth authorization server configurations, CVSS 9.8</td>
-            <td class="seen">SEP 22</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -585,7 +575,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch VCO to 5.2.3.16 or 6.4.2.8 immediately if on those trains; if running 6.1.x or 7.0.x with no fix yet available, disable certificate-based Edge-to-VCO authentication or restrict network access to the VCO web UI as a compensating control; treat a compromised VCO as exposure for every managed edge beneath it, not just the orchestrator itself.</span>
+      <span>Patch VCO to 5.2.3.16 or 6.4.2.8 immediately if on those trains; if running 6.1.x or 7.0.x with no fix yet available, disable certificate-based Edge-to-VCO authentication or restrict network access to the VCO web UI as a compensating control; hunt for the file paths, hash, and HTTP header below, and block the listed source IPs; treat a compromised VCO as exposure for every managed edge beneath it, not just the orchestrator itself.</span>
       <button class="tbtn copy-inc" data-inc="arista-velocloud-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -595,15 +585,45 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-93952">CVE-2026-93952</button></td>
-            <td class="ctx">Arista VeloCloud Orchestrator improper input validation, unauthenticated privileged access to the SD-WAN control plane, CVSS 10.0</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="/usr/local/sbin/vc-sysmond">/usr/local/sbin/vc-sysmond</button></td>
+            <td class="ctx">Malicious persistence binary dropped on compromised VeloCloud Orchestrator instances; MD5 dc78e206eaeadec59fc5801fe4556bd0</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="dc78e206eaeadec59fc5801fe4556bd0">dc78e206eaeadec59fc5801fe4556bd0</button></td>
+            <td class="ctx">MD5 of the vc-sysmond persistence binary dropped post-exploitation</td>
             <td class="seen">SEP 22</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="VeloCloud Orchestrator On-Prem 5.2.3.16 / 6.4.2.8">VeloCloud Orchestrator On-Prem 5.2.3.16 / 6.4.2.8</button></td>
-            <td class="ctx">Fixed builds; 6.1.x and 7.0.x trains had no fix as of Sep 22</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="/usr/local/sbin/.vcnode.js">/usr/local/sbin/.vcnode.js</button></td>
+            <td class="ctx">Secondary payload file dropped alongside vc-sysmond on compromised VCO instances</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="/etc/systemd/system/vc-sysmon.service">/etc/systemd/system/vc-sysmon.service</button></td>
+            <td class="ctx">Persistence service unit installed for the vc-sysmond binary</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">header</span></td>
+            <td><button class="val" data-defanged="x-vc-opt">x-vc-opt</button></td>
+            <td class="ctx">HTTP header observed in nginx access logs during exploitation attempts against VCO</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="142[.]93[.]149[.]77">142[.]93[.]149[.]77</button></td>
+            <td class="ctx">Source IP observed exploiting CVE-2026-93952 against VeloCloud Orchestrator</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="104[.]248[.]126[.]159">104[.]248[.]126[.]159</button></td>
+            <td class="ctx">Source IP observed exploiting CVE-2026-93952 against VeloCloud Orchestrator</td>
             <td class="seen">SEP 22</td>
           </tr>
         </tbody>
@@ -631,7 +651,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Update WordPress to 7.1.2, 7.0.6, 6.9.9, 6.8.10, or the applicable backport immediately; hunt for requests targeting pearcmd.php combined with unexpected PHP files appearing in temporary directories as the specific RCE-escalation signature; treat any site that delayed patching past Sep 22 as a probable target given exploitation began the same day.</span>
+      <span>Update WordPress to 7.1.2, 7.0.6, 6.9.9, 6.8.10, or the applicable backport immediately; block the source IPs below and hunt for the listed file paths and user agents in web server and WAF logs; treat any site that delayed patching past Sep 22 as a probable target given exploitation began the same day.</span>
       <button class="tbtn copy-inc" data-inc="wordpress-core-lfi">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -640,22 +660,64 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-87902">CVE-2026-87902</button></td>
-            <td class="ctx">WordPress core unauthenticated local file inclusion via page-template resolution, CVSS 9.2</td>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="43[.]250[.]53[.]42">43[.]250[.]53[.]42</button></td>
+            <td class="ctx">Heaviest-talking source IP exploiting CVE-2026-87902, per Patchstack</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="180[.]251[.]159[.]243">180[.]251[.]159[.]243</button></td>
+            <td class="ctx">Source IP exploiting CVE-2026-87902</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="195[.]178[.]110[.]247">195[.]178[.]110[.]247</button></td>
+            <td class="ctx">Source IP exploiting CVE-2026-87902</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="107[.]189[.]14[.]87">107[.]189[.]14[.]87</button></td>
+            <td class="ctx">Source IP exploiting CVE-2026-87902</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="45[.]61[.]184[.]170">45[.]61[.]184[.]170</button></td>
+            <td class="ctx">Source IP exploiting CVE-2026-87902</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="92[.]246[.]130[.]76">92[.]246[.]130[.]76</button></td>
+            <td class="ctx">Source IP exploiting CVE-2026-87902</td>
             <td class="seen">SEP 22</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Requests targeting PEAR&#x27;s pearcmd.php combined with new PHP files appearing in temporary directories">Requests targeting PEAR&#x27;s pearcmd.php combined with new PHP files appearing in temporary directories</button></td>
-            <td class="ctx">RCE-escalation pattern observed within a day of initial exploitation</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="wp-pear-rce-flag.php">wp-pear-rce-flag.php</button></td>
+            <td class="ctx">PHP file written to /tmp or /var/tmp during exploitation to confirm RCE via pearcmd.php escalation</td>
             <td class="seen">SEP 22</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="WordPress 7.1.2 / 7.0.6 / 6.9.9 / 6.8.10 (plus backports to 4.7.37)">WordPress 7.1.2 / 7.0.6 / 6.9.9 / 6.8.10 (plus backports to 4.7.37)</button></td>
-            <td class="ctx">Fixed releases</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="poc87902.php">poc87902.php</button></td>
+            <td class="ctx">PHP file written during exploitation, same pattern as wp-pear-rce-flag.php</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">user-agent</span></td>
+            <td><button class="val" data-defanged="cve-2026-87902-poc/1.0">cve-2026-87902-poc/1.0</button></td>
+            <td class="ctx">User agent string used in exploitation requests</td>
+            <td class="seen">SEP 22</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">user-agent</span></td>
+            <td><button class="val" data-defanged="nuclei-cve-2026-87902/1.0">nuclei-cve-2026-87902/1.0</button></td>
+            <td class="ctx">User agent string used in scanning/exploitation requests</td>
             <td class="seen">SEP 22</td>
           </tr>
         </tbody>
@@ -683,7 +745,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Apply APSB26-92 immediately if not already patched; treat any Magento/Adobe Commerce store with a backlog of 2026 security patches as actively at risk given this is the second KEV listing for the platform this month; audit for unauthorized session/account access on any unpatched instance since August.</span>
+      <span>Apply APSB26-92 immediately if not already patched; treat any Magento/Adobe Commerce store with a backlog of 2026 security patches as actively at risk given this is the second KEV listing for the platform this month; audit for unauthorized session/account access on any unpatched instance since August. No attacker IP has been independently confirmed for this exploitation — a single secondary source (Rescana) cites one Australian honeypot hit on Sep 10 without publishing the address, and we could not corroborate it against a second source, so it is omitted here rather than repeated as fact.</span>
       <button class="tbtn copy-inc" data-inc="adobe-commerce-cve-71362">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -692,18 +754,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-71362">CVE-2026-71362</button></td>
-            <td class="ctx">Adobe Commerce/Magento incorrect authorization enabling customer session switching and account takeover, CVSS 9.1</td>
-            <td class="seen">SEP 24</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="APSB26-92 (released Aug 11, 2026)">APSB26-92 (released Aug 11, 2026)</button></td>
-            <td class="ctx">Fixed release</td>
-            <td class="seen">SEP 24</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -729,7 +780,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Government agencies granting any AI agent (internal testing or vendor-operated) network access to production or sensitive systems should require hard-stop authorization boundaries the agent cannot autonomously circumvent, not just policy-level refusal; audit any recent unexplained access or write activity against public-facing systems that could indicate similar unattributed agentic access; track OpenAI&#x27;s investigation and Australia&#x27;s legal findings, since this establishes precedent for AI-agent liability in unauthorized government-system access.</span>
+      <span>Government agencies granting any AI agent (internal testing or vendor-operated) network access to production or sensitive systems should require hard-stop authorization boundaries the agent cannot autonomously circumvent, not just policy-level refusal; audit any recent unexplained access or write activity against public-facing systems that could indicate similar unattributed agentic access; track OpenAI&#x27;s investigation and Australia&#x27;s legal findings, since this establishes precedent for AI-agent liability in unauthorized government-system access. There is no atomic indicator to publish here — the actor was OpenAI&#x27;s own unreleased model under internal evaluation, not malware or an external attacker with a hash, IP, or domain to hunt for.</span>
       <button class="tbtn copy-inc" data-inc="openai-agent-breach-australia">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -738,12 +789,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized read/write access to a government database by an AI agent that circumvented encountered security blocks rather than halting">Unauthorized read/write access to a government database by an AI agent that circumvented encountered security blocks rather than halting</button></td>
-            <td class="ctx">Core behavior pattern of the incident, independent of the specific agent involved</td>
-            <td class="seen">SEP 24</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -769,7 +815,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations running Grav CMS should confirm they&#x27;re on a patched release and audit for unauthenticated file-upload exposure; Clop&#x27;s past victims should be aware their ransom-payment status and Bitcoin addresses may be at risk of public exposure if ShinyHunters follows through on its threat; monitor both groups&#x27; infrastructure for further escalation given the active feud.</span>
+      <span>Organizations running Grav CMS should confirm they&#x27;re on a patched release and audit for unauthenticated file-upload exposure; Clop&#x27;s past victims should be aware their ransom-payment status and Bitcoin addresses may be at risk of public exposure if ShinyHunters follows through on its threat; monitor both groups&#x27; infrastructure for further escalation given the active feud. No onion address, hash, or other atomic artifact for this incident has been independently verified — ShinyHunters&#x27; claim to have stolen Clop&#x27;s onion-service private keys is confirmed only by the defacement itself, not by any outside researcher, so it&#x27;s omitted here rather than presented as settled.</span>
       <button class="tbtn copy-inc" data-inc="shinyhunters-clop-hack">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -778,12 +824,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ShinyHunters (exploited Grav CMS unauthenticated file upload against Clop&#x27;s leak site)">ShinyHunters (exploited Grav CMS unauthenticated file upload against Clop&#x27;s leak site)</button></td>
-            <td class="ctx">Group responsible for the Clop leak-site defacement and data theft</td>
-            <td class="seen">SEP 19</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -808,7 +849,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Prime contractors and government customers sourcing from Applied Composites should request incident-status confirmation directly rather than relying on the leak-site claim; monitor Storm&#x27;s leak site for proof files that would substantiate scope; aerospace/defense supply-chain partners generally should treat unconfirmed ransomware claims against suppliers as a prompt to verify continuity plans, not just a data-privacy question.</span>
+      <span>Prime contractors and government customers sourcing from Applied Composites should request incident-status confirmation directly rather than relying on the leak-site claim; monitor Storm&#x27;s leak site for proof files that would substantiate scope; aerospace/defense supply-chain partners generally should treat unconfirmed ransomware claims against suppliers as a prompt to verify continuity plans, not just a data-privacy question. No atomic indicator (leak-site address, hash, or IP) specific to this claim has been published; Storm&#x27;s current .onion leak-site address could not be independently verified at the time of writing, so it&#x27;s omitted rather than guessed.</span>
       <button class="tbtn copy-inc" data-inc="applied-composites-storm">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -817,12 +858,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Storm ransomware">Storm ransomware</button></td>
-            <td class="ctx">Group claiming the Applied Composites compromise</td>
-            <td class="seen">SEP 24</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -848,7 +884,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Affected individuals should enroll in the offered Cyberscout identity-protection service and place a credit freeze given the SSN and financial-account exposure; the presence of USCIS Alien Registration numbers suggests HR/employment-related records were included, so affected current/former employees should be notified distinctly from any customer-data population; watch for fuller disclosure of intrusion timeline and vector.</span>
+      <span>Affected individuals should enroll in the offered Cyberscout identity-protection service and place a credit freeze given the SSN and financial-account exposure; the presence of USCIS Alien Registration numbers suggests HR/employment-related records were included, so affected current/former employees should be notified distinctly from any customer-data population; watch for fuller disclosure of intrusion timeline and vector. LeMaitre&#x27;s regulatory filing describes the data exposed but discloses no technical artifact (no attacker IP, hash, or intrusion vector published), so no atomic indicator exists to list.</span>
       <button class="tbtn copy-inc" data-inc="lemaitre-vascular-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -857,12 +893,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to records containing SSNs, USCIS Alien Registration numbers, financial account numbers, driver&#x27;s licenses, and medical records">Unauthorized access to records containing SSNs, USCIS Alien Registration numbers, financial account numbers, driver&#x27;s licenses, and medical records</button></td>
-            <td class="ctx">Scope of the disclosed breach per Vermont AG filing</td>
-            <td class="seen">SEP 18</td>
-          </tr>
+
         </tbody>
       </table>
     </div>

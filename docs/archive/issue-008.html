@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 008 · WK 2026-09-11 · 13 INCIDENTS · 22 IOCs</span>
+  <span class="issue-meta">ISSUE 008 · WK 2026-09-11 · 13 INCIDENTS · 15 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>22</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>2</b></button>
-  <button class="fchip" data-type="host">HOST<b>20</b></button>
+  <button class="fchip on" data-type="all">ALL<b>15</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>2</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>9</b></button>
+  <button class="fchip" data-type="host">HOST<b>4</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -453,7 +453,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch self-managed GitLab to 19.1.8, 19.2.6, or 19.3.2 immediately per CISA&#x27;s emergency directive; rotate any secrets, SSH keys, or credentials that were readable via the filesystem on an affected instance prior to patching; audit commits-API access logs for anomalous file-path requests.</span>
+      <span>Patch self-managed GitLab to 19.1.8, 19.2.6, or 19.3.2 immediately per CISA&#x27;s emergency directive; rotate any secrets, SSH keys, or credentials that were readable via the filesystem on an affected instance prior to patching; audit commits-API access logs for HTTP POST requests to /api/v4/projects/{id}/repository/commits/ carrying suspicious file-path parameters unrelated to the repository being accessed — researchers (SOC Prime) explicitly note no campaign-specific attacker IPs, domains, or hashes have been published for this flaw as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="gitlab-path-traversal-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -462,16 +462,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-85706">CVE-2026-85706</button></td>
-            <td class="ctx">GitLab repository commits API path traversal enabling unauthenticated arbitrary file read, CVSS 10.0</td>
-            <td class="seen">SEP 11</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="GitLab 19.1.8 / 19.2.6 / 19.3.2">GitLab 19.1.8 / 19.2.6 / 19.3.2</button></td>
-            <td class="ctx">Fixed releases for self-managed instances</td>
+          <tr data-type="net">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/api/v4/projects/{id}/repository/commits/">/api/v4/projects/{id}/repository/commits/</button></td>
+            <td class="ctx">GitLab commits API endpoint targeted by CVE-2026-85706 path-traversal exploitation; hunt for POST requests here with suspicious file-path parameters</td>
             <td class="seen">SEP 11</td>
           </tr>
         </tbody>
@@ -499,7 +493,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch Secure Firewall Management Center to the fixed release immediately; inspect the Tomcat webroot for unexpected .jsp files and adjacent JAR files; review audit logs for authentication events tied to the related static-credential issue (CVE-2026-20316); rotate any credentials that may have transited a compromised FMC instance.</span>
+      <span>Patch Secure Firewall Management Center to the fixed release immediately; inspect the Tomcat webroot for a file named cmd.jar and for any JSP decoding a parameter named F6C1F0E7; review audit logs for authentication events tied to the related static-credential issue (CVE-2026-20316); rotate any credentials that may have transited a compromised FMC instance.</span>
       <button class="tbtn copy-inc" data-inc="cisco-fmc-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -509,16 +503,16 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-20079">CVE-2026-20079</button></td>
-            <td class="ctx">Cisco Secure FMC web-interface authentication bypass enabling unauthenticated root command execution, CVSS 10.0</td>
-            <td class="seen">SEP 10</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="cmd.jar">cmd.jar</button></td>
+            <td class="ctx">Malicious JAR-based command executor dropped into the FMC Tomcat webroot by UAT-12197 post-exploitation, per Cisco Talos</td>
+            <td class="seen">SEP 9</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor">Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor</button></td>
-            <td class="ctx">UAT-12197 post-exploitation artifact per Cisco Talos</td>
-            <td class="seen">SEP 10</td>
+            <td><span class="t-badge">parameter</span></td>
+            <td><button class="val" data-defanged="F6C1F0E7">F6C1F0E7</button></td>
+            <td class="ctx">Base64-decoded parameter name used by the UAT-12197 JSP web shell to load a Java class into the running FMC process</td>
+            <td class="seen">SEP 9</td>
           </tr>
         </tbody>
       </table>
@@ -545,7 +539,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch NetScaler ADC/Gateway to the fixed release addressing CVE-2026-19490 immediately; treat any appliance that was unpatched between disclosure and patch application as a probable target given the honeypot attempt volume; review AAA/Gateway authentication logs for anomalies since Sep 3.</span>
+      <span>Patch NetScaler ADC/Gateway to the fixed release addressing CVE-2026-19490 immediately; treat any appliance that was unpatched between disclosure and patch application as a probable target given the honeypot attempt volume; review AAA/Gateway authentication logs for anomalies since Sep 3. No individual attacker IP addresses, domains, or file hashes have been published for this campaign as of this writing — honeypot reporting (Previdian, cited by multiple outlets) gives only aggregate attempt/source counts, not a usable blocklist.</span>
       <button class="tbtn copy-inc" data-inc="citrix-netscaler-19490-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -554,18 +548,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-19490">CVE-2026-19490</button></td>
-            <td class="ctx">Citrix NetScaler ADC/Gateway AAA/Gateway authentication bypass, CVSS 9.3</td>
-            <td class="seen">SEP 10</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)">Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)</button></td>
-            <td class="ctx">Observed exploitation intensity pattern</td>
-            <td class="seen">SEP 8</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -591,7 +574,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch FortiOS/FortiSwitchManager/FortiSASE to the fixed release for CVE-2025-25249 immediately; hunt for unfamiliar single-line Node.js processes on Fortinet appliances as PivotC2&#x27;s reverse-shell mechanism; treat any device that was internet-facing and unpatched since July 2026 as potentially already infected regardless of current patch status.</span>
+      <span>Patch FortiOS/FortiSwitchManager/FortiSASE to the fixed release for CVE-2025-25249 immediately; block/hunt for traffic to the two C2 IPs and Tor bridge endpoints below using `diagnose sys session filter daddr` on FortiOS; search for the listed file hashes and the /tmp/.i.js drop path; treat any device that was internet-facing and unpatched since July 2026 as potentially already infected regardless of current patch status. Note: these indicators are sourced from SOCRadar and Triskele Labs threat-intel writeups (which corroborate each other on the two C2 IPs), not a primary Fortinet advisory — treat as high-confidence but not vendor-confirmed.</span>
       <button class="tbtn copy-inc" data-inc="fortinet-pivotc2">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -600,22 +583,46 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2025-25249">CVE-2025-25249</button></td>
-            <td class="ctx">FortiOS/FortiSwitchManager/FortiSASE heap-based buffer overflow enabling RCE, CVSS 7.3</td>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="46[.]151[.]29[.]58">46[.]151[.]29[.]58</button></td>
+            <td class="ctx">PivotC2 C2 node</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="146[.]103[.]99[.]177">146[.]103[.]99[.]177</button></td>
+            <td class="ctx">PivotC2 C2 node</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="45[.]138[.]16[.]182:9130">45[.]138[.]16[.]182:9130</button></td>
+            <td class="ctx">obfs4proxy Tor bridge used by PivotC2 infrastructure</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="89[.]217[.]174[.]207:9001">89[.]217[.]174[.]207:9001</button></td>
+            <td class="ctx">obfs4proxy Tor bridge used by PivotC2 infrastructure</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="2d338ffc8cc80293575c6800c059e33eb41e967907c20ba7687b2231c50837db">2d338ffc8cc80293575c6800c059e33eb41e967907c20ba7687b2231c50837db</button></td>
+            <td class="ctx">SHA-256 of fortirun.bin, the exploit binary dropped post-exploitation</td>
+            <td class="seen">SEP 10</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="c25a27b506fbae62010caf2abff699df5c94d29f056fa7ccfb5f3170d917c8cb">c25a27b506fbae62010caf2abff699df5c94d29f056fa7ccfb5f3170d917c8cb</button></td>
+            <td class="ctx">SHA-256 of run.ps1 stager script</td>
             <td class="seen">SEP 10</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="PivotC2 RAT">PivotC2 RAT</button></td>
-            <td class="ctx">Remote-access trojan delivered via exploitation of CVE-2025-25249</td>
-            <td class="seen">JUL 2026</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Reverse shell established via a single-line Node.js command on a Fortinet appliance">Reverse shell established via a single-line Node.js command on a Fortinet appliance</button></td>
-            <td class="ctx">PivotC2 post-exploitation mechanism</td>
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/tmp/.i.js">/tmp/.i.js</button></td>
+            <td class="ctx">PivotC2 dropped payload path on compromised FortiOS devices</td>
             <td class="seen">SEP 10</td>
           </tr>
         </tbody>
@@ -643,7 +650,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Apply hotfix VULN-39341 immediately, then scan the store for backdoors planted during the Sep 4-7 pre-patch exploitation window rather than assuming the hotfix alone resolves prior compromise; review email-template configuration for unauthorized modifications; block or heighten monitoring on IPs previously seen probing SessionReaper (CVE-2025-54236) given the documented actor overlap.</span>
+      <span>Apply hotfix VULN-39341 immediately, then scan the store for backdoors planted during the Sep 4-7 pre-patch exploitation window rather than assuming the hotfix alone resolves prior compromise; review email-template configuration for unauthorized modifications. CrowdSec&#x27;s public reporting gives aggregate attempt counts (500 unique source IPs since Sep 9, peaking at 193 distinct sources/1,303 signals on Sep 11) but no individual IP addresses or hashes — no usable blocklist has been published as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="adobe-commerce-stylesmuggler">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -652,24 +659,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-75650">CVE-2026-75650</button></td>
-            <td class="ctx">Adobe Commerce/Magento email-template engine injection, unauthenticated RCE, CVSS 10.0</td>
-            <td class="seen">SEP 9</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="Hotfix VULN-39341">Hotfix VULN-39341</button></td>
-            <td class="ctx">Out-of-band fix released Sep 7, 2026</td>
-            <td class="seen">SEP 9</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)">Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)</button></td>
-            <td class="ctx">CrowdSec-tracked exploitation telemetry</td>
-            <td class="seen">SEP 9</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -695,7 +685,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Air Canada customers/partners should watch for official confirmation before treating the 51,409-file claim as verified; airlines and other high-profile targets should assume opportunistic ransomware groups will claim attacks regardless of actual access depth, and should have a rapid-verification process to confirm or refute leak-site claims quickly; monitor TheGentlemen&#x27;s leak site for any proof files substantiating this listing.</span>
+      <span>Air Canada customers/partners should watch for official confirmation before treating the 51,409-file claim as verified; airlines and other high-profile targets should assume opportunistic ransomware groups will claim attacks regardless of actual access depth, and should have a rapid-verification process to confirm or refute leak-site claims quickly. Note: at least one outlet (The Cyber Express) attributed this specific claim to BianLian rather than The Gentlemen — that attribution conflict is itself unresolved, and no technical intrusion artifact has been published under either attribution.</span>
       <button class="tbtn copy-inc" data-inc="air-canada-gentlemen">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -704,10 +694,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="TheGentlemen ransomware (double extortion, ransomware-as-a-service)">TheGentlemen ransomware (double extortion, ransomware-as-a-service)</button></td>
-            <td class="ctx">Group claiming both the Air Canada and Veradigm incidents within the same week</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad[.]onion">tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad[.]onion</button></td>
+            <td class="ctx">The Gentlemen ransomware group&#x27;s Tor leak site, cited by most outlets as the posting location for this claim</td>
             <td class="seen">SEP 9</td>
           </tr>
         </tbody>
@@ -735,7 +725,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch N-central to 2026.3 Hotfix 4 or later immediately; MSPs should audit for unauthorized admin accounts created via the CVE-2026-86206/86207 chain and treat any client endpoint managed through an unpatched instance as potentially exposed; review N-central access logs for crafted requests predating the patch.</span>
+      <span>Patch N-central to 2026.3 Hotfix 4 or later immediately; MSPs should audit for unauthorized admin accounts created via the CVE-2026-86206/86207 chain and treat any client endpoint managed through an unpatched instance as potentially exposed; review N-central access logs for requests to the endpoint below with unexpected appliance IDs, per Huntress&#x27;s advisory. Note: whether this flaw was actually exploited in the wild is itself disputed — Huntress reported no new compromises attributable to it in its own telemetry as of its Sep 6 update, while CISA&#x27;s KEV listing and Singapore&#x27;s CSA describe it as actively exploited.</span>
       <button class="tbtn copy-inc" data-inc="nable-ncentral-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -744,17 +734,11 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-86218">CVE-2026-86218</button></td>
-            <td class="ctx">N-able N-central static code injection, unauthenticated pre-auth RCE as root, CVSS 10.0</td>
-            <td class="seen">SEP 8</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="N-central 2026.3 Hotfix 4 (released Sep 5, 2026)">N-central 2026.3 Hotfix 4 (released Sep 5, 2026)</button></td>
-            <td class="ctx">Fixed release</td>
-            <td class="seen">SEP 5</td>
+          <tr data-type="net">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/remoteControlAction.do?method=getPierDetails">/remoteControlAction.do?method=getPierDetails</button></td>
+            <td class="ctx">N-central endpoint probed in exploitation attempts against CVE-2026-86218, per Huntress</td>
+            <td class="seen">SEP 6</td>
           </tr>
         </tbody>
       </table>
@@ -781,7 +765,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Apply September 2026 Windows cumulative updates immediately to close both elevation-of-privilege zero-days; since both require existing local access, prioritize investigating how attackers are gaining initial footholds (phishing, exposed RDP, etc.) rather than treating the patch alone as sufficient; meet the Sep 22 federal KEV remediation deadline where applicable.</span>
+      <span>Apply September 2026 Windows cumulative updates immediately to close both elevation-of-privilege zero-days; since both require existing local access, prioritize investigating how attackers are gaining initial footholds (phishing, exposed RDP, etc.) rather than treating the patch alone as sufficient; meet the Sep 22 federal KEV remediation deadline where applicable. No public samples, attacker groups, or technical indicators have been disclosed for either zero-day as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="windows-patch-tuesday-zerodays">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -790,12 +774,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-81963 / CVE-2026-85880">CVE-2026-81963 / CVE-2026-85880</button></td>
-            <td class="ctx">Windows Update Stack link-following and Windows ALPC heap overflow, both local privilege escalation to SYSTEM, CVSS 7.8</td>
-            <td class="seen">SEP 8</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -821,7 +800,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>CenterPoint Energy customers should monitor for phishing using the leaked billing/account details and consider a credit freeze given the partial-SSN exposure; utilities and billers offering an unauthenticated guest bill-pay flow should audit that path&#x27;s access controls and rate limiting specifically, since it&#x27;s the suspected entry point here; watch for the company&#x27;s own confirmation to establish verified scope.</span>
+      <span>CenterPoint Energy customers should monitor for phishing using the leaked billing/account details and consider a credit freeze given the partial-SSN exposure; utilities and billers offering an unauthenticated guest bill-pay flow should audit that path&#x27;s access controls and rate limiting specifically, since it&#x27;s the suspected entry point here; watch for the company&#x27;s own confirmation to establish verified scope. No technical intrusion artifact (IP, malware, exploited CVE) has been publicly disclosed — the only identifier tied to this claim is the forum-post alias below, which is an attribution handle, not a blockable technical indicator.</span>
       <button class="tbtn copy-inc" data-inc="centerpoint-energy-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -831,16 +810,10 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Threat actor alias &#x27;4d722e4d656f77&#x27;">Threat actor alias &#x27;4d722e4d656f77&#x27;</button></td>
-            <td class="ctx">Individual who posted the claimed CenterPoint Energy database for sale on an open forum</td>
+            <td><span class="t-badge">alias</span></td>
+            <td><button class="val" data-defanged="4d722e4d656f77">4d722e4d656f77</button></td>
+            <td class="ctx">Forum handle used by the individual who posted the claimed CenterPoint Energy database for sale; attribution identifier only, not a technical artifact</td>
             <td class="seen">SEP 1</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)">Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)</button></td>
-            <td class="ctx">Suspected entry point for the claimed breach</td>
-            <td class="seen">SEP 8</td>
           </tr>
         </tbody>
       </table>
@@ -867,7 +840,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Veradigm-affiliated customers and patients should watch for identity-theft/phishing risk given the SSN exposure for a subset of records; organizations exposing vendor-facing APIs should scope and monitor those endpoints as tightly as customer-facing ones, since narrow API access was sufficient here to reach millions of records; require MFA on all vendor-facing service accounts, not just customer-facing logins.</span>
+      <span>Veradigm-affiliated customers and patients should watch for identity-theft/phishing risk given the SSN exposure for a subset of records; organizations exposing vendor-facing APIs should scope and monitor those endpoints as tightly as customer-facing ones, since narrow API access was sufficient here to reach millions of records; require MFA on all vendor-facing service accounts, not just customer-facing logins. No vendor/credential-specific technical indicator (compromised account, IP, malware sample) has been publicly disclosed; the indicator below is The Gentlemen&#x27;s known leak-site address where the claim was posted.</span>
       <button class="tbtn copy-inc" data-inc="veradigm-gentlemen">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -876,10 +849,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="The Gentlemen (ransomware-as-a-service, double extortion)">The Gentlemen (ransomware-as-a-service, double extortion)</button></td>
-            <td class="ctx">Group claiming the Veradigm patient-data theft via a compromised third-party vendor</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad[.]onion">tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad[.]onion</button></td>
+            <td class="ctx">The Gentlemen ransomware group&#x27;s Tor leak site where the Veradigm claim was posted Sep 5</td>
             <td class="seen">SEP 5</td>
           </tr>
         </tbody>
@@ -907,7 +880,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations in South Korea, Germany, and Argentina across any sector should treat AUDIT TEAM as an active, geographically opportunistic extortion group and review common ransomware entry points; monitor AUDIT TEAM&#x27;s leak site for proof files that would substantiate any of the four claims before treating them as confirmed.</span>
+      <span>Organizations in South Korea, Germany, and Argentina across any sector should treat AUDIT TEAM as an active, geographically opportunistic extortion group and review common ransomware entry points; monitor the leak-site address below for proof files that would substantiate any of the four claims before treating them as confirmed. No initial-access vector or malware indicator has been disclosed for any of the four victims.</span>
       <button class="tbtn copy-inc" data-inc="audit-team-extortion">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -916,10 +889,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="AUDIT TEAM (data-extortion group, newly active Sep 2026)">AUDIT TEAM (data-extortion group, newly active Sep 2026)</button></td>
-            <td class="ctx">Group claiming four victims across South Korea, Germany, and Argentina</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad[.]onion">6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad[.]onion</button></td>
+            <td class="ctx">AuditTeam&#x27;s Tor data-extortion leak site (&quot;/// DATA EXPOSURE TERMINAL ///&quot;)</td>
             <td class="seen">SEP 11</td>
           </tr>
         </tbody>
@@ -947,7 +920,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Re-verify help-desk and IT-support identity-verification procedures against social-engineering/vishing pretexts, LAPSUS$&#x27;s historical primary technique; move privileged accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; monitor for the group&#x27;s promised victim disclosure to confirm scope and technique once named.</span>
+      <span>Re-verify help-desk and IT-support identity-verification procedures against social-engineering/vishing pretexts, LAPSUS$&#x27;s historical primary technique; move privileged accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; monitor for the group&#x27;s promised victim disclosure to confirm scope and technique once named. No victim, technique, or technical indicator has been attached to this specific tease as of this writing — there is genuinely nothing atomic to report yet.</span>
       <button class="tbtn copy-inc" data-inc="lapsus-resumed">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -956,12 +929,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)">LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)</button></td>
-            <td class="ctx">Group teasing a new, unnamed victim disclosure</td>
-            <td class="seen">SEP 11</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -987,7 +955,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Affected current/former Elixir Medical employees and dependents should place a credit freeze given the SSN, driver&#x27;s license, and bank-account exposure; organizations should audit how long it takes to fully scope data accessed after an intrusion is detected, since the gap between access and understanding impact was the operative failure here, not just the initial access itself.</span>
+      <span>Affected current/former Elixir Medical employees and dependents should place a credit freeze given the SSN, driver&#x27;s license, and bank-account exposure; organizations should audit how long it takes to fully scope data accessed after an intrusion is detected, since the gap between access and understanding impact was the operative failure here, not just the initial access itself. No intrusion-vector technical details (exploited vulnerability, malware, attacker IP) have been publicly disclosed.</span>
       <button class="tbtn copy-inc" data-inc="elixir-medical-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -996,12 +964,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized network access to HR/finance file stores containing SSNs, driver&#x27;s license numbers, payment card, and direct-deposit bank data">Unauthorized network access to HR/finance file stores containing SSNs, driver&#x27;s license numbers, payment card, and direct-deposit bank data</button></td>
-            <td class="ctx">Scope of the confirmed breach</td>
-            <td class="seen">SEP 9</td>
-          </tr>
+
         </tbody>
       </table>
     </div>

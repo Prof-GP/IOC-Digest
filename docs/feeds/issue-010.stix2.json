@@ -1,5 +1,126 @@
 {
   "type": "bundle",
   "id": "bundle--f42f6b14-1f8a-5412-82c7-52197f05a423",
-  "objects": []
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--76b1c927-4828-512e-a2a3-40ed19e0854b",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-93952 \u2014 max-severity flaw lets attackers hit Arista VeloCloud Orchestrator's SD-WAN control plane without credentials: Source IP observed exploiting CVE-2026-93952 against VeloCloud Orchestrator",
+      "description": "Source: https://www.rescana.com/post/arista-velocloud-cve-2026-93952-kev; https://layerlogix.com/blog/cve-2026-93952-arista-velocloud-orchestrator",
+      "pattern": "[ipv4-addr:value = '142.93.149.77']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--cdcbd04e-ede6-5e0f-b894-24f40cda810b",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-93952 \u2014 max-severity flaw lets attackers hit Arista VeloCloud Orchestrator's SD-WAN control plane without credentials: Source IP observed exploiting CVE-2026-93952 against VeloCloud Orchestrator",
+      "description": "Source: https://www.rescana.com/post/arista-velocloud-cve-2026-93952-kev; https://layerlogix.com/blog/cve-2026-93952-arista-velocloud-orchestrator",
+      "pattern": "[ipv4-addr:value = '104.248.126.159']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--8f56c2b9-c442-5d2f-be94-24e287c95ed3",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php: Heaviest-talking source IP exploiting CVE-2026-87902, per Patchstack",
+      "description": "Source: https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/; https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited",
+      "pattern": "[ipv4-addr:value = '43.250.53.42']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--a7ebbca7-b0ff-5d18-acd8-75c6a30de855",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php: Source IP exploiting CVE-2026-87902",
+      "description": "Source: https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/; https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited",
+      "pattern": "[ipv4-addr:value = '180.251.159.243']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--bc926831-4721-55b4-b217-1efa8b1952d5",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php: Source IP exploiting CVE-2026-87902",
+      "description": "Source: https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/; https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited",
+      "pattern": "[ipv4-addr:value = '195.178.110.247']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--2e54bbea-f5c7-51ea-9df3-fa79af125b86",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php: Source IP exploiting CVE-2026-87902",
+      "description": "Source: https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/; https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited",
+      "pattern": "[ipv4-addr:value = '107.189.14.87']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--304327d2-faf9-518a-9035-573a1c838dc7",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php: Source IP exploiting CVE-2026-87902",
+      "description": "Source: https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/; https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited",
+      "pattern": "[ipv4-addr:value = '45.61.184.170']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f8270534-b984-532a-b796-0f97a83af9b4",
+      "created": "2026-09-25T00:00:00.000Z",
+      "modified": "2026-09-25T00:00:00.000Z",
+      "name": "CVE-2026-87902 \u2014 unauthenticated WordPress core LFI exploited within hours of the patch, escalated to RCE via pearcmd.php: Source IP exploiting CVE-2026-87902",
+      "description": "Source: https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/; https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited",
+      "pattern": "[ipv4-addr:value = '92.246.130.76']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-25T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
 }

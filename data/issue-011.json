@@ -20,7 +20,6 @@
       ],
       "action": "Isolate and patch NetScaler ADC/Gateway per Citrix bulletin CTX697096 immediately; check for the published web-shell paths (/vpn/scripts/linux/nsgclient18.deb and /var/netscaler/logon/LogonPoint/custom/.ctxs.receiver) and hash matches on any internet-facing appliance; block the listed attacker IPs at the perimeter; review User-Agent header logs for Base64-encoded dropper patterns as the CVE-2026-88771 entry signature.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-88771 / CVE-2026-88772", "context": "NetScaler ADC/Gateway command injection (User-Agent dropper → log poisoning → Perl-launched PHP web shell) and DTLS memory overflow (.deb web shell), both CVSS v4.0 9.5", "seen": "SEP 27" },
         { "type": "ip", "category": "net", "value": "77[.]83[.]199[.]39 ; 104[.]248[.]244[.]66 ; 193[.]149[.]176[.]207 ; 162[.]33[.]178[.]9", "context": "Attacker infrastructure IPs observed exploiting the NetScaler zero-days (plus six additional unlisted IPs)", "seen": "SEP 27" },
         { "type": "filename", "category": "host", "value": "/vpn/scripts/linux/nsgclient18.deb ; /var/netscaler/logon/LogonPoint/custom/.ctxs.receiver", "context": "Web shell file paths dropped post-exploitation", "seen": "SEP 27" },
         { "type": "hash", "category": "hash", "value": "ae22ef2517b5c0fb47f78745b9cb5260acee0e751b89bcd354640ff8bc8d29ec ; 79c65fa04541032e251fa4796b97800374b63c7982593dd1a2e0db605d429186 ; 1bd314b661396c7086f6367fbbb48025e03ca2de69c073d53a8b0a38aa5fbb7d", "context": "SHA-256 hashes of web shell/implant files (nsg64.deb and related)", "seen": "SEP 27" }
@@ -43,8 +42,7 @@
       ],
       "action": "Patch Cisco Catalyst SD-WAN Manager to the fixed release for your branch (e.g., 20.9.10.1, 20.12.8.2, 20.15.6.1, 20.18.4.1, 26.1.2.1, 26.2.1) immediately, since no workaround exists; audit for admin-level API actions that don't correspond to a known authenticated session; if a WAF or reverse proxy sits in front of SD-WAN Manager, confirm it normalizes URI encoding before path matching as a compensating control.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-76504", "context": "Cisco Catalyst SD-WAN Manager authentication bypass via unnormalized URI encoding on a protected API path, CVSS 9.8", "seen": "SEP 30" },
-        { "type": "detection", "category": "net", "value": "Requests to an encoded variant of the j_security_check path (e.g., /%6a_security_check)", "context": "Exact exploitation technique for this authentication bypass", "seen": "SEP 30" }
+        { "type": "path", "category": "net", "value": "/%6a_security_check", "context": "Literal encoded request path attackers use to bypass authentication on the protected j_security_check API endpoint; a direct grep target in web/access logs", "seen": "SEP 30" }
       ]
     },
     {
@@ -62,9 +60,14 @@
         { "label": "Rescana", "url": "https://www.rescana.com/post/fortinet-fortimail-cve-2026-104286-actively-exploited-critical-path-traversal-and-null-byte-vulnerability-alert" },
         { "label": "Hard2bit", "url": "https://hard2bit.com/en/blog/fortimail-zero-day-cve-2026-104286-patch-iocs/" }
       ],
-      "action": "Apply Fortinet's workaround immediately per FG-IR-26-175: disable IBE and/or remove internet exposure of the FortiMail management interface; do not wait for a patch given confirmed active exploitation; monitor for unexpected file writes outside expected FortiMail directories as a sign of exploitation; apply the eventual patch as soon as Fortinet ships one.",
+      "action": "Apply Fortinet's workaround immediately per FG-IR-26-175: disable IBE and/or remove internet exposure of the FortiMail management interface; do not wait for a patch given confirmed active exploitation; check for the listed file paths/hashes and attacker IPs on any internet-facing FortiMail instance, including a CLI-added archive account named archive234 pointing to 79[.]141[.]169[.]187; apply the eventual patch as soon as Fortinet ships one (7.4.9, 7.6.7, 8.0.2 expected).",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-104286", "context": "FortiMail unauthenticated path traversal/NULL-byte handling enabling arbitrary file write, CVSS 9.8, no patch available", "seen": "OCT 1" }
+        { "type": "ip", "category": "net", "value": "79[.]141[.]169[.]187 ; 45[.]129[.]0[.]192", "context": "Attacker-controlled infrastructure; 79.141.169.187 used as the remote server for an unauthorized archive234 exfiltration account", "seen": "OCT 1" },
+        { "type": "filename", "category": "host", "value": "/data/lib/liblog.so ; /data/bin/webconsole ; /data/bin/mailservice", "context": "Files added to FortiMail filesystem post-exploitation", "seen": "OCT 1" },
+        { "type": "filename", "category": "host", "value": "/bin/smit ; /data/etc/ld.so.preload ; /data/etc/httpd.conf ; /data/migadmin.tar.gz", "context": "Existing files modified during exploitation (ld.so.preload enables persistence via forced library loading)", "seen": "OCT 1" },
+        { "type": "hash", "category": "hash", "value": "8015f34dc84922b03688399d7f9fe7a00361789f7e420c7e2a2cdb23e75cef84", "context": "SHA-256 of malicious liblog.so", "seen": "OCT 1" },
+        { "type": "hash", "category": "hash", "value": "7a6cea9f5c9e2e9994d4e3c4da73f86cf5acd05ea5d312c066c9d1dafd69ee38", "context": "SHA-256 of malicious webconsole binary", "seen": "OCT 1" },
+        { "type": "hash", "category": "hash", "value": "4000276a150a165d3c2537d1e19fb393c4de8333076a16655e28059cae82157b", "context": "SHA-256 of malicious mailservice binary", "seen": "OCT 1" }
       ]
     },
     {
@@ -82,10 +85,8 @@
         { "label": "CISA KEV (Sep 29)", "url": "https://www.cisa.gov/news-events/alerts/2026/09/29/cisa-adds-one-known-exploited-vulnerability-catalog" },
         { "label": "The Cyber Express", "url": "https://thecyberexpress.com/apple-fixes-cve-2026-86950-ios-ipados/" }
       ],
-      "action": "Install iOS 26.7.1/iPadOS 26.7.1/macOS 26.7.1/macOS Sequoia 15.8.1 immediately; high-risk individuals should prioritize this update given the confirmed spyware-consistent targeted-attack pattern; enable Lockdown Mode on devices belonging to likely-targeted individuals (journalists, activists, dissidents, executives) as an additional layer pending full patch rollout.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-86950", "context": "Apple CoreGraphics out-of-bounds write via crafted image/document, exploited against specific targeted individuals", "seen": "SEP 29" }
-      ]
+      "action": "Install iOS 26.7.1/iPadOS 26.7.1/macOS 26.7.1/macOS Sequoia 15.8.1 immediately; high-risk individuals should prioritize this update given the confirmed spyware-consistent targeted-attack pattern; enable Lockdown Mode on devices belonging to likely-targeted individuals (journalists, activists, dissidents, executives) as an additional layer pending full patch rollout. No public atomic indicator (malicious file hash, delivery domain, C2 infrastructure) has been disclosed for this exploit as of this writing — neither Apple nor Meta published forensic artifacts, consistent with typical spyware-vendor operational security.",
+      "iocs": []
     },
     {
       "id": "pentagon-dmdc-breach",
@@ -102,10 +103,8 @@
         { "label": "Federal News Network (Sep 29)", "url": "https://federalnewsnetwork.com/defense-main/2026/09/more-than-3-million-people-affected-by-military-data-breach/" },
         { "label": "TechTarget", "url": "https://techtarget.com/cybersecurity/news/366652020/Pentagon-breach-exposes-failure-to-follow-its-own-standards" }
       ],
-      "action": "Affected current/former service members, civilians, contractors, veterans, and family members should enroll in the offered identity protection and credit monitoring; organizations holding large personnel/HR databases should audit file-sharing systems specifically for the detection-latency gap this incident exposed, since the vulnerability existed for roughly nine months before discovery despite being readily patchable once found; treat this as a reminder that database size alone (60M+ records here) raises the stakes of any single file-sharing misconfiguration.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized access to a Defense Manpower Data Center file-sharing system between October 2025 and July 2026", "context": "Root cause and intrusion window of the confirmed breach", "seen": "SEP 29" }
-      ]
+      "action": "Affected current/former service members, civilians, contractors, veterans, and family members should enroll in the offered identity protection and credit monitoring; organizations holding large personnel/HR databases should audit file-sharing systems specifically for the detection-latency gap this incident exposed, since the vulnerability existed for roughly nine months before discovery despite being readily patchable once found; treat this as a reminder that database size alone (60M+ records here) raises the stakes of any single file-sharing misconfiguration. No public atomic indicator (specific CVE, attacker IP, malware hash) has been disclosed for this breach as of this writing — DoD has described root cause only as \"a vulnerability in a file-sharing system,\" without technical specifics.",
+      "iocs": []
     },
     {
       "id": "fbi-jobs-shinyhunters",
@@ -122,9 +121,10 @@
         { "label": "Vectra AI", "url": "https://www.vectra.ai/blog/shinyhunters-breached-the-fbi-by-bypassing-the-fix" },
         { "label": "Cybersecurity Dive", "url": "https://www.cybersecuritydive.com/news/fbi-hack-shinyhunters-jobs-portal/831175/" }
       ],
-      "action": "Organizations that rely on third-party contractors to maintain any platform should independently verify patch application rather than trusting contractor sign-off, since an unapplied-but-issued patch is exactly how this breach happened; audit AWS GovCloud or equivalent cloud environments for lateral-movement paths from a public-facing application tier; affected FBI personnel/applicants should expect targeted phishing or physical-security risk given the home-address and family-member exposure, not just identity theft.",
+      "action": "Organizations that rely on third-party contractors to maintain any platform should independently verify patch application rather than trusting contractor sign-off, since an unapplied-but-issued patch is exactly how this breach happened; audit AWS GovCloud or equivalent cloud environments for lateral-movement paths from a public-facing application tier; affected FBI personnel/applicants should expect targeted phishing or physical-security risk given the home-address and family-member exposure, not just identity theft. Organizations running Oracle PeopleSoft with the Environment Management Hub (PSEMHUB) exposed should hunt for the listed web-shell filenames in the PSEMHUB.war directory, though these come from a single secondary source and are not confirmed against a primary Oracle/Mandiant advisory.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "ShinyHunters (exploited an unpatched Oracle PeopleSoft vulnerability against apply[.]fbijobs[.]gov)", "context": "Group responsible for the FBI jobs portal breach and subsequent AWS GovCloud lateral movement", "seen": "SEP 22" }
+        { "type": "host-name", "category": "host", "value": "apply[.]fbijobs[.]gov", "context": "The breached FBI jobs-portal domain exploited via the unpatched Oracle PeopleSoft flaw", "seen": "SEP 21" },
+        { "type": "filename", "category": "host", "value": "x.jsp ; u.jsp ; tunnel.jsp ; tunnel.jspx ; Ple64.exe", "context": "Reported web-shell/tunneling filenames within the PeopleSoft PSEMHUB.war directory from this campaign family; unconfirmed against a primary vendor advisory, treat as low-confidence", "seen": "UNCONFIRMED" }
       ]
     },
     {
@@ -142,10 +142,8 @@
         { "label": "BleepingComputer (Sep 28)", "url": "https://www.bleepingcomputer.com/news/security/japans-keio-confirms-ransomware-attack-disrupted-business-systems/" },
         { "label": "CPO Magazine", "url": "https://www.cpomagazine.com/cyber-security/data-breach-impacts-times-car-ride-sharing-service-as-ransomware-attack-hits-railway-operator-keio/" }
       ],
-      "action": "Operators mixing safety-critical infrastructure (trains) with customer-facing business systems (hospitality, payments) should verify network segmentation actually isolates the two, as Keio's case suggests theirs did; monitor for a ransomware group claim that would clarify scope and likely data exposure; customers of Keio-affiliated hotels and the Times Car ride-sharing service should watch for breach notification regarding payment or personal data.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Ransomware encryption/disruption affecting payment and hospitality booking systems while core rail operations remain isolated and unaffected", "context": "Observed segmentation outcome in this incident", "seen": "SEP 28" }
-      ]
+      "action": "Operators mixing safety-critical infrastructure (trains) with customer-facing business systems (hospitality, payments) should verify network segmentation actually isolates the two, as Keio's case suggests theirs did; monitor for a ransomware group claim that would clarify scope and likely data exposure; customers of Keio-affiliated hotels and the Times Car ride-sharing service should watch for breach notification regarding payment or personal data. No ransomware group has claimed the attack and no malware sample, hash, or attacker infrastructure has been publicly disclosed as of this writing.",
+      "iocs": []
     },
     {
       "id": "shinyhunters-oreilly-dexcom",
@@ -162,10 +160,8 @@
         { "label": "Cybernews (Oct 1)", "url": "https://cybernews.com/news/shinyhunters-oreilly-auto-dexcom-breach-fbi-hack/" },
         { "label": "HackRead", "url": "https://hackread.com/shinyhunters-hacker-rey-detained-jordan-fbi/" }
       ],
-      "action": "O'Reilly Automotive and DexCom should investigate independently rather than relying on the listing's removal as evidence of resolution, given the unexplained pull; organizations named by ShinyHunters during this period of apparent internal law-enforcement pressure should expect unusually volatile, possibly uncoordinated claims rather than the group's typical consistent extortion pattern; monitor for the listings' reappearance given multiple actors evidently retain infrastructure access.",
-      "iocs": [
-        { "type": "tool", "category": "host", "value": "ShinyHunters (listed, then withdrew, claims against O'Reilly Automotive and DexCom)", "context": "Group behind the short-lived Oct 1-3 extortion listing", "seen": "OCT 1" }
-      ]
+      "action": "O'Reilly Automotive and DexCom should investigate independently rather than relying on the listing's removal as evidence of resolution, given the unexplained pull; organizations named by ShinyHunters during this period of apparent internal law-enforcement pressure should expect unusually volatile, possibly uncoordinated claims rather than the group's typical consistent extortion pattern; monitor for the listings' reappearance given multiple actors evidently retain infrastructure access. We could not confirm the specific domain of the newly stood-up leak site, nor any sample file hash from the alleged O'Reilly/DexCom data, so no atomic indicator is included here.",
+      "iocs": []
     },
     {
       "id": "gibson-hospital-wallstreet",
@@ -183,7 +179,7 @@
       ],
       "action": "Gibson Area Hospital patients, staff, and affiliated physicians should monitor for official breach notification rather than waiting on the leak-site claim; the hospital should prioritize scoping and disclosure given the claimed data volume; watch Wallstreet's leak site for proof files that would substantiate the 600GB figure.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "Wallstreet ransomware", "context": "Group claiming the Gibson Area Hospital & Health Services compromise", "seen": "SEP 29" }
+        { "type": "url", "category": "net", "value": "4dwiv37h7hhuhjpvtn72hme4ylcv3qoe65arfc6mbweal7als6ma7pyd[.]onion", "context": "Wallstreet ransomware group's Tor leak/extortion site, per third-party threat-intel trackers (WatchGuard, BreachSense); not law-enforcement confirmed", "seen": "SEP 29" }
       ]
     },
     {
@@ -200,10 +196,8 @@
       "sources": [
         { "label": "Mass.gov Data Breach Notification Letters, September 2026", "url": "https://www.mass.gov/lists/data-breach-notification-letters-september-2026" }
       ],
-      "action": "Affected Massachusetts residents should request specifics on intrusion timeline and full data scope directly from CareSource/Commonwealth Care Alliance given the minimal public filing detail; healthcare organizations should treat a filing this sparse as a floor, not a model, for their own breach-notification practices.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized access to medical records affecting 826 Massachusetts residents", "context": "Scope of the disclosed breach per Massachusetts filing", "seen": "SEP 30" }
-      ]
+      "action": "Affected Massachusetts residents should request specifics on intrusion timeline and full data scope directly from CareSource/Commonwealth Care Alliance given the minimal public filing detail; healthcare organizations should treat a filing this sparse as a floor, not a model, for their own breach-notification practices. No technical indicator of any kind (vector, malware, attacker infrastructure) is included in the public filing, and none has surfaced elsewhere as of this writing.",
+      "iocs": []
     }
   ]
 }

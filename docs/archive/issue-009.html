@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 009 · WK 2026-09-18 · 11 INCIDENTS · 14 IOCs</span>
+  <span class="issue-meta">ISSUE 009 · WK 2026-09-18 · 11 INCIDENTS · 18 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>14</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>0</b></button>
-  <button class="fchip" data-type="host">HOST<b>14</b></button>
+  <button class="fchip on" data-type="all">ALL<b>18</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>5</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>9</b></button>
+  <button class="fchip" data-type="host">HOST<b>4</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -453,7 +453,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch to WSO2 API Manager 4.1.0.257, 4.2.0.197, 4.3.0.108, 4.4.0.72, 4.5.0.57, or 4.6.0.21 (or the corresponding Control Plane/Traffic Manager/Universal Gateway fixed builds) immediately; explicitly allowlist accepted JWT signing algorithms rather than relying on implicit validation; audit for unexpected admin accounts or configuration changes made via forged tokens since Sep 16.</span>
+      <span>Patch to WSO2 API Manager 4.1.0.257, 4.2.0.197, 4.3.0.108, 4.4.0.72, 4.5.0.57, or 4.6.0.21 (or the corresponding Control Plane/Traffic Manager/Universal Gateway fixed builds) immediately; explicitly allowlist accepted JWT signing algorithms rather than relying on implicit validation; audit for unexpected admin accounts or configuration changes made via forged tokens since Sep 16. No attacker IP, hash, or other atomic indicator has been publicly disclosed for this campaign as of this writing — hunting is limited to the behavioral signal (HTTP 200s on /api/am/admin/, /api/am/publisher/, /api/am/devportal/ in repository/logs/http_access_*.log, and JWTs validated with an unexpected signing algorithm).</span>
       <button class="tbtn copy-inc" data-inc="wso2-api-manager-jwt-bypass">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -462,18 +462,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-5430">CVE-2026-5430</button></td>
-            <td class="ctx">WSO2 API Manager JWT algorithm-mismatch authentication bypass leading to account takeover, CVSS 9.8</td>
-            <td class="seen">SEP 16</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="JWT tokens signed with an algorithm outside the deployment&#x27;s explicitly configured set, followed by administrative actions">JWT tokens signed with an algorithm outside the deployment&#x27;s explicitly configured set, followed by administrative actions</button></td>
-            <td class="ctx">Exploitation pattern observed in honeypot telemetry</td>
-            <td class="seen">SEP 16</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -499,7 +488,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Update ScreenConnect to 26.6.5 or later immediately; audit remote-session logs for unauthorized file transfers or VBScript execution since Aug 20; treat any endpoint reachable through a compromised ScreenConnect instance as potentially exposed to lateral spread via rogue clients, not just the ScreenConnect server itself.</span>
+      <span>Update ScreenConnect to 26.6.5 or later immediately; audit remote-session logs for unauthorized file transfers or VBScript execution since Aug 20; hunt for a Run-key entry named WindowsServiceHost and for ScreenConnect audit-log entries named RunFiles/RanFiles tied to a guest process; treat any endpoint reachable through a compromised ScreenConnect instance as potentially exposed to lateral spread via rogue clients, not just the ScreenConnect server itself. No file hash has been published by Huntress or ConnectWise as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="connectwise-screenconnect-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -509,21 +498,15 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-84869">CVE-2026-84869</button></td>
-            <td class="ctx">ConnectWise ScreenConnect improper privilege management/missing authorization, unauthorized file transfer and execution via active remote session, CVSS 9.9</td>
-            <td class="seen">SEP 11</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="1.vbs ; 2.vbs ; 3.vbs ; 4.vbs">1.vbs ; 2.vbs ; 3.vbs ; 4.vbs</button></td>
+            <td class="ctx">VBScript payloads run via wscript.exe by rogue ScreenConnect clients to spread laterally</td>
+            <td class="seen">AUG 20</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="ScreenConnect 26.6.5">ScreenConnect 26.6.5</button></td>
-            <td class="ctx">Fixed release, shipped Sep 8, 2026</td>
-            <td class="seen">SEP 11</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Rogue ScreenConnect client installation paired with VBScript payload execution spreading between connected endpoints">Rogue ScreenConnect client installation paired with VBScript payload execution spreading between connected endpoints</button></td>
-            <td class="ctx">Observed post-exploitation lateral-movement pattern</td>
+            <td><span class="t-badge">registry</span></td>
+            <td><button class="val" data-defanged="HKCU\...\Run\WindowsServiceHost">HKCU\...\Run\WindowsServiceHost</button></td>
+            <td class="ctx">Persistence Run-key entry pointing to the matching VBScript in the affected user&#x27;s AppData directory</td>
             <td class="seen">AUG 20</td>
           </tr>
         </tbody>
@@ -551,7 +534,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Block installation from unknown sources by policy on managed Android fleets and disable Wireless Debugging by default; warn users that SMS links or ads promoting app installs outside official stores are the primary lure; monitor for unexpected Wireless Debugging activation or a banking app&#x27;s hidden background service persisting after apparent uninstall.</span>
+      <span>Block installation from unknown sources by policy on managed Android fleets and disable Wireless Debugging by default; warn users that SMS links or ads promoting app installs outside official stores are the primary lure; block the C2 domain and download URL below at DNS/web gateway; monitor for unexpected Wireless Debugging activation or a banking app&#x27;s hidden background service persisting after apparent uninstall.</span>
       <button class="tbtn copy-inc" data-inc="rathat-android-ai-trojan">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -560,11 +543,23 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="RatHat (AI-driven Android banking trojan)">RatHat (AI-driven Android banking trojan)</button></td>
-            <td class="ctx">Uses a live AI assistant against the accessibility tree; escalates via ADB Wireless Debugging; self-reinstalls via hidden background service</td>
-            <td class="seen">SEP 18</td>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="admin[.]chunhuating[.]best">admin[.]chunhuating[.]best</button></td>
+            <td class="ctx">C2 domain for the &quot;Panda Workshop V6&quot; RatHat console build, per Cleafy</td>
+            <td class="seen">SEP 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="hxxps[://]dramaspoolcoa[.]com/en[.]html">hxxps[://]dramaspoolcoa[.]com/en[.]html</button></td>
+            <td class="ctx">Download URL distributing the Sept 2026 RatHat sample</td>
+            <td class="seen">SEP 2026</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="116346cace7f00ba557034b534d40791">116346cace7f00ba557034b534d40791</button></td>
+            <td class="ctx">MD5 of a Sept 2026 RatHat APK sample, per Cleafy</td>
+            <td class="seen">SEP 2026</td>
           </tr>
         </tbody>
       </table>
@@ -591,7 +586,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Latin American government agencies should prioritize patching and reducing exposure of public-facing Microsoft Exchange servers given this actor&#x27;s documented entry vector; hunt for modular C++ backdoor activity with runtime code-patching and anti-analysis behavior on Exchange-adjacent hosts; treat FamousSparrow as an active, region-focused threat rather than a historical APT.</span>
+      <span>Latin American government agencies should prioritize patching and reducing exposure of public-facing Microsoft Exchange servers given this actor&#x27;s documented entry vector; hunt for the file hashes and outbound connections to the IP addresses below on Exchange-adjacent hosts; treat FamousSparrow as an active, region-focused threat rather than a historical APT.</span>
       <button class="tbtn copy-inc" data-inc="famoussparrow-sparrowocky">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -600,10 +595,34 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="SparroWocky backdoor (modular C++, FamousSparrow)">SparroWocky backdoor (modular C++, FamousSparrow)</button></td>
-            <td class="ctx">Previously unreported backdoor deployed against Latin American government targets via compromised Exchange servers</td>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="3209689E509205CCDB7E49062B7B407DDC23CAC1">3209689E509205CCDB7E49062B7B407DDC23CAC1</button></td>
+            <td class="ctx">SHA-1 of winfsp-x64.dll, SparroWocky loader</td>
+            <td class="seen">SEP 17</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="52C6646759CF6037BB17466203631C4BD794532F">52C6646759CF6037BB17466203631C4BD794532F</button></td>
+            <td class="ctx">SHA-1 of a second winfsp-x64.dll variant, SparroWocky loader</td>
+            <td class="seen">SEP 17</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="E7070B5AF24A0FE1E6FEBE5954B03CB385E91F">E7070B5AF24A0FE1E6FEBE5954B03CB385E91F</button></td>
+            <td class="ctx">SHA-1 of DukeQt.dll, SparroWocky loader</td>
+            <td class="seen">SEP 17</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="44F0A22B143B79FA760BF31E14C8FFF714C8A2A1">44F0A22B143B79FA760BF31E14C8FFF714C8A2A1</button></td>
+            <td class="ctx">SHA-1 of an in-memory SparroWocky backdoor sample</td>
+            <td class="seen">SEP 17</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="38[.]54[.]57[.]17 ; 38[.]60[.]197[.]55 ; 38[.]60[.]209[.]106 ; 38[.]60[.]224[.]51 ; 38[.]60[.]224[.]235 ; 38[.]60[.]241[.]65 ; 38[.]60[.]241[.]127 ; 38[.]60[.]241[.]193 ; 77[.]111[.]101[.]40 ; 91[.]148[.]134[.]115 ; 130[.]94[.]101[.]82 ; 140[.]99[.]164[.]199 ; 149[.]104[.]87[.]228 ; 149[.]104[.]90[.]203 ; 216[.]238[.]92[.]2 ; 216[.]238[.]105[.]53 ; 216[.]238[.]110[.]120 ; 216[.]238[.]121[.]164">38[.]54[.]57[.]17 ; 38[.]60[.]197[.]55 ; 38[.]60[.]209[.]106 ; 38[.]60[.]224[.]51 ; 38[.]60[.]224[.]235 ; 38[.]60[.]241[.]65 ; 38[.]60[.]241[.]127 ; 38[.]60[.]241[.]193 ; 77[.]111[.]101[.]40 ; 91[.]148[.]134[.]115 ; 130[.]94[.]101[.]82 ; 140[.]99[.]164[.]199 ; 149[.]104[.]87[.]228 ; 149[.]104[.]90[.]203 ; 216[.]238[.]92[.]2 ; 216[.]238[.]105[.]53 ; 216[.]238[.]110[.]120 ; 216[.]238[.]121[.]164</button></td>
+            <td class="ctx">SparroWocky C2 IP addresses per ESET Research</td>
             <td class="seen">SEP 17</td>
           </tr>
         </tbody>
@@ -671,7 +690,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Install the September 2026 Pixel security update immediately (Settings &gt; Security &amp; privacy &gt; System &amp; updates &gt; Security update); high-risk individuals (journalists, activists, executives, government officials) should treat this as a priority patch given the spyware-consistent targeting pattern; meet the Sep 19 federal KEV remediation deadline where applicable.</span>
+      <span>Install the September 2026 Pixel security update immediately (Settings &gt; Security &amp; privacy &gt; System &amp; updates &gt; Security update); high-risk individuals (journalists, activists, executives, government officials) should treat this as a priority patch given the spyware-consistent targeting pattern; meet the Sep 19 federal KEV remediation deadline where applicable. No sample hash, C2 infrastructure, or other atomic indicator has been publicly disclosed — consistent with the limited, targeted nature typical of spyware-linked zero-click exploitation, where samples are rarely recovered from the small number of affected devices.</span>
       <button class="tbtn copy-inc" data-inc="pixel-modem-zeroday">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -680,12 +699,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-58704">CVE-2026-58704</button></td>
-            <td class="ctx">Pixel cellular modem permission-bypass logic error enabling zero-click remote privilege escalation, CVSS 8.0</td>
-            <td class="seen">SEP 16</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -711,7 +725,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Train staff and personal-device users to verify any inbound &#x27;IT help desk&#x27; call through an out-of-band channel before making authentication-method changes; alert on unusual sign-ins immediately followed by newly added authentication methods; monitor for high-volume Microsoft Graph API activity or bulk SharePoint/OneDrive downloads shortly after any authentication-method change, since that combination is this campaign&#x27;s specific automated-collection signature.</span>
+      <span>Train staff and personal-device users to verify any inbound &#x27;IT help desk&#x27; call through an out-of-band channel before making authentication-method changes; block or flag the lure domains below at the mail/web gateway; alert on unusual sign-ins immediately followed by newly added authentication methods; monitor for high-volume Microsoft Graph API activity or bulk SharePoint/OneDrive downloads shortly after any authentication-method change, since that combination is this campaign&#x27;s specific automated-collection signature.</span>
       <button class="tbtn copy-inc" data-inc="microsoft-passkey-phishing">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -720,11 +734,11 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unusual sign-in followed by attacker-added authentication method, then high-volume Microsoft Graph API activity, SharePoint/OneDrive downloads, and email collection via REST APIs">Unusual sign-in followed by attacker-added authentication method, then high-volume Microsoft Graph API activity, SharePoint/OneDrive downloads, and email collection via REST APIs</button></td>
-            <td class="ctx">Automated post-compromise collection pattern per Microsoft</td>
-            <td class="seen">SEP 13</td>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="passkeyhelpdesk[.]com ; secure-passkey[.]com ; setupmypasskey[.]com ; add-passkey[.]com ; integratedsso[.]com ; oktasession[.]com ; keysyncos[.]com ; oskeysync[.]com ; oskeysetup[.]com ; oskeyregister[.]com ; syncmykey[.]com ; myconnectkey[.]com ; oskeyconnect[.]com ; validationsetupac[.]com ; portalsetuphub[.]com">passkeyhelpdesk[.]com ; secure-passkey[.]com ; setupmypasskey[.]com ; add-passkey[.]com ; integratedsso[.]com ; oktasession[.]com ; keysyncos[.]com ; oskeysync[.]com ; oskeysetup[.]com ; oskeyregister[.]com ; syncmykey[.]com ; myconnectkey[.]com ; oskeyconnect[.]com ; validationsetupac[.]com ; portalsetuphub[.]com</button></td>
+            <td class="ctx">Lure domains used for fake IT help-desk passkey/MFA/SSO enrollment pages; organizations are typically targeted via a company-name subdomain (e.g. contoso[.]add-passkey[.]com)</td>
+            <td class="seen">MICROSOFT, SEP 13</td>
           </tr>
         </tbody>
       </table>
@@ -750,7 +764,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Helpfeel customers should request specifics on data types affected before assuming exposure or non-exposure; use Helpfeel&#x27;s fast disclosure timeline as a benchmark when evaluating your own incident-response plan&#x27;s discovery-to-notification speed; watch for a fuller technical disclosure as details become available.</span>
+      <span>Helpfeel customers should request specifics on data types affected before assuming exposure or non-exposure; use Helpfeel&#x27;s fast disclosure timeline as a benchmark when evaluating your own incident-response plan&#x27;s discovery-to-notification speed; watch for a fuller technical disclosure as details become available. No technical indicator has been publicly disclosed as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="helpfeel-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -759,12 +773,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Confirmed data exposure at a SaaS provider, scope not yet fully detailed publicly">Confirmed data exposure at a SaaS provider, scope not yet fully detailed publicly</button></td>
-            <td class="ctx">Reported incident pending fuller technical disclosure</td>
-            <td class="seen">SEP 16</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -790,7 +799,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations using Edenred Pay/GlobalvCard for vendor or employee payments should request confirmation of whether their own data was affected; affected individuals should place a credit freeze given the SSN exposure; watch for the company&#x27;s fuller disclosure to establish verified scope and cause.</span>
+      <span>Organizations using Edenred Pay/GlobalvCard for vendor or employee payments should request confirmation of whether their own data was affected; affected individuals should place a credit freeze given the SSN exposure; watch for the company&#x27;s fuller disclosure to establish verified scope and cause. No technical indicator (intrusion vector, attacker infrastructure, or sample) has been publicly disclosed — the regulatory filing covers only the data categories exposed.</span>
       <button class="tbtn copy-inc" data-inc="edenred-pay-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -799,12 +808,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to accounts-payable/payment-processing data including names, addresses, and SSNs">Unauthorized access to accounts-payable/payment-processing data including names, addresses, and SSNs</button></td>
-            <td class="ctx">Scope of the disclosed breach per regulatory filing</td>
-            <td class="seen">SEP 15</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -830,7 +834,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Uninstall &#x27;Twitch Enhanced Viewer | JeetBot&#x27; if installed, and revoke/regenerate Twitch OAuth tokens and sessions for any account that had it installed; review browser extensions requesting broad host permissions for streaming or social platforms before installing regardless of stated feature set; if updated, confirm the extension version no longer forwards tokens before trusting the fix.</span>
+      <span>Uninstall the extension (Chrome ID below) if installed, and revoke/regenerate Twitch OAuth tokens and sessions for any account that had it installed; block the proxy domains below at the web gateway; review browser extensions requesting broad host permissions for streaming or social platforms before installing regardless of stated feature set.</span>
       <button class="tbtn copy-inc" data-inc="twitch-extension-oauth-leak">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -840,9 +844,15 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Twitch Enhanced Viewer | JeetBot (malicious browser extension)">Twitch Enhanced Viewer | JeetBot (malicious browser extension)</button></td>
-            <td class="ctx">Forwarded live Twitch OAuth session tokens to JeetBot proxy infrastructure</td>
+            <td><span class="t-badge">other</span></td>
+            <td><button class="val" data-defanged="pnhhdhhcadcjfckjhpmjneldiegbojfb">pnhhdhhcadcjfckjhpmjneldiegbojfb</button></td>
+            <td class="ctx">Chrome extension ID for &quot;Twitch Enhanced Viewer | JeetBot&quot;</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="enhanced[.]jeetbot[.]cc ; ext-styles[.]jeetbot[.]cc ; proxy[.]morphilina[.]me">enhanced[.]jeetbot[.]cc ; ext-styles[.]jeetbot[.]cc ; proxy[.]morphilina[.]me</button></td>
+            <td class="ctx">Proxy/infrastructure domains the extension forwarded OAuth tokens to</td>
             <td class="seen">SEP 13</td>
           </tr>
         </tbody>
@@ -870,7 +880,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Train accounts-payable staff to verify any subscription-renewal or vendor invoice through a known contact channel independent of the email itself, especially when it names a real vendor and invokes CEO authority; add DMARC/SPF/DKIM enforcement and flag messages that reference third-party delivery infrastructure inconsistent with the organization&#x27;s known vendor communications; require dual approval for ACH transfers above a defined threshold.</span>
+      <span>Train accounts-payable staff to verify any subscription-renewal or vendor invoice through a known contact channel independent of the email itself, especially when it names a real vendor and invokes CEO authority; block the lookalike domains below at the mail gateway; add DMARC/SPF/DKIM enforcement and flag messages that reference third-party delivery infrastructure inconsistent with the organization&#x27;s known vendor communications; require dual approval for ACH transfers above a defined threshold.</span>
       <button class="tbtn copy-inc" data-inc="ceo-impersonation-servicenow-scam">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -879,10 +889,28 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="CEO-impersonation email directing accounts-payable staff to pay a ServiceNow subscription renewal via ACH transfer">CEO-impersonation email directing accounts-payable staff to pay a ServiceNow subscription renewal via ACH transfer</button></td>
-            <td class="ctx">Core pretext used across the 1M+-email campaign, Aug 3-5 2026</td>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="service-nowinc[.]com">service-nowinc[.]com</button></td>
+            <td class="ctx">Lookalike ServiceNow domain registered Jul 31, 2026, used for the spoofed ServiceNow executive address and invoice contact</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="domainlify[.]net">domainlify[.]net</button></td>
+            <td class="ctx">Newly registered domain used in the campaign&#x27;s Reply-To address</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">email</span></td>
+            <td><button class="val" data-defanged="gomez[at]service-nowinc[.]com">gomez[at]service-nowinc[.]com</button></td>
+            <td class="ctx">Email address associated with the fraudulent bank account in the fake ServiceNow invoice</td>
+            <td class="seen">SEP 13</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">email</span></td>
+            <td><button class="val" data-defanged="notifications[at]uinsure[.]co[.]uk ; info[at]tivityhealth[.]com ; no-reply[at]lumalisboa[.]com ; noreply[at]mctci[.]com ; info[at]nuf[.]co[.]jp">notifications[at]uinsure[.]co[.]uk ; info[at]tivityhealth[.]com ; no-reply[at]lumalisboa[.]com ; noreply[at]mctci[.]com ; info[at]nuf[.]co[.]jp</button></td>
+            <td class="ctx">Compromised/abused third-party sender addresses used to deliver the campaign at scale</td>
             <td class="seen">SEP 13</td>
           </tr>
         </tbody>

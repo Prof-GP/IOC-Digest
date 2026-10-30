@@ -18,11 +18,8 @@
         { "label": "Rapid7 (Sep 1)", "url": "https://www.rapid7.com/blog/post/etr-critical-sonicwall-sma1000-vulnerabilities-cve-2026-83548-cve-2026-83549-exploited-in-the-wild/" },
         { "label": "CISA KEV Catalog (Sep 2)", "url": "https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog" }
       ],
-      "action": "Patch SMA1000 appliances (models 6210, 7210, 8200v) to 12.4.3-03526 platform-hotfix or 12.5.0-02952 platform-hotfix immediately; treat any internet-facing Workplace interface or Appliance Management Console as a probable target regardless of whether an IOC has surfaced yet; review appliance logs for anomalous Workplace-interface requests or unexpected command execution since Sep 1.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-83548 / CVE-2026-83549", "context": "SonicWall SMA1000 pre-auth SSRF chained to OS command injection, CVSS 10.0", "seen": "SEP 1" },
-        { "type": "patch", "category": "host", "value": "SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix", "context": "Fixed releases", "seen": "SEP 1" }
-      ]
+      "action": "Patch SMA1000 appliances (models 6210, 7210, 8200v) to 12.4.3-03526 platform-hotfix or 12.5.0-02952 platform-hotfix immediately; treat any internet-facing Workplace interface or Appliance Management Console as a probable target regardless of whether an IOC has surfaced yet; review appliance logs for anomalous Workplace-interface requests or unexpected command execution since Sep 1. No atomic indicator (attacker IP, hash, or malware sample) has been publicly released for this exploitation as of this writing — CVE numbers and patch versions are not indicators of compromise, so none are listed below.",
+      "iocs": []
     },
     {
       "id": "sangoma-switchvox-kev",
@@ -41,10 +38,8 @@
       ],
       "action": "Upgrade Switchvox to 8.4.0.2 or later immediately; check /var/log/switchvox/db-quirks.log for suspicious statements and review network logs for connections to 176[.]65[.]148[.]184, particularly on port 39323; audit user records and privilege levels within Switchvox for unauthorized modification since Aug 30.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-9586", "context": "Sangoma Switchvox unauth SQL injection via /pa endpoint, CVSS 9.3", "seen": "SEP 2" },
         { "type": "ip", "category": "net", "value": "176[.]65[.]148[.]184", "context": "Observed attacker IP exploiting Switchvox, connecting on port 39323", "seen": "AUG 30" },
-        { "type": "filename", "category": "host", "value": "/var/log/switchvox/db-quirks.log", "context": "Log file containing suspicious statements left by exploitation attempts", "seen": "AUG 30" },
-        { "type": "patch", "category": "host", "value": "Switchvox 8.4.0.2", "context": "Fixed release", "seen": "SEP 2" }
+        { "type": "filename", "category": "host", "value": "/var/log/switchvox/db-quirks.log", "context": "Log file containing suspicious statements left by exploitation attempts", "seen": "AUG 30" }
       ]
     },
     {
@@ -62,11 +57,9 @@
         { "label": "The Hacker News (Sep 3)", "url": "https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html" },
         { "label": "AiCybr", "url": "https://aicybr.com/blog/kestra-cve-2026-49869-kev-rce-remediation" }
       ],
-      "action": "Patch Kestra OSS to the fixed release immediately; block or restrict any request path ending in /configs at the reverse proxy/WAF layer as a compensating control; hunt for unexpected workflow creation, Docker socket access, or XMRig-pattern CPU spikes on any internet-reachable Kestra host, especially since possible exploitation predates public disclosure by months.",
+      "action": "Patch Kestra OSS to 1.0.45 / 1.3.21 immediately; block or restrict any request path ending in /configs at the reverse proxy/WAF layer as a compensating control (the known exploit path is a POST to /api/v1/main/executions/tutorial/configs); hunt for unexpected workflow creation, Docker socket access, or XMRig-pattern CPU spikes on any internet-reachable Kestra host, especially since possible exploitation predates public disclosure by months. Microsoft and WatchTowr have not published attacker IPs, sample hashes, or C2 infrastructure for this specific campaign as of this writing — XMRig is a widely-reused public miner binary, not a unique sample, so we're not listing a generic hash as if it were specific to this incident.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-49869", "context": "Kestra OSS unauthenticated command injection RCE via AuthenticationFilter suffix-match bypass, CVSS 10.0", "seen": "SEP 2" },
-        { "type": "tool", "category": "host", "value": "XMRig cryptocurrency miner", "context": "Payload deployed post-exploitation per Microsoft reporting", "seen": "JUN 2026" },
-        { "type": "detection", "category": "net", "value": "Unauthenticated requests to any URL path ending in /configs against a Kestra instance", "context": "Exact exploitation pattern for the AuthenticationFilter bypass", "seen": "SEP 1" }
+        { "type": "path", "category": "host", "value": "/api/v1/main/executions/tutorial/configs", "context": "Specific exploit request path observed abusing the AuthenticationFilter suffix-match bypass (any path ending in /configs is exploitable; this is the documented example)", "seen": "SEP 1" }
       ]
     },
     {
@@ -84,11 +77,8 @@
         { "label": "CISA KEV Catalog (Sep 2)", "url": "https://www.cisa.gov/news-events/alerts/2026/09/02/cisa-adds-seven-known-exploited-vulnerabilities-catalog" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/09/cisa-adds-seven-exploited-flaws-as.html" }
       ],
-      "action": "Patch JFrog Artifactory to the fixed release immediately; audit admin token creation events and federated-identity provider logs for unexpected enumeration activity since disclosure; treat Artifactory as a CI/CD credential store during incident response, not just an artifact cache, and rotate any secrets it held if compromise is suspected.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-82329", "context": "JFrog Artifactory improper authentication bypassing default access controls, CVSS 9.8", "seen": "SEP 2" },
-        { "type": "detection", "category": "host", "value": "Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies", "context": "Attacker activity pattern per CISA advisory", "seen": "SEP 2" }
-      ]
+      "action": "Patch JFrog Artifactory to the fixed release immediately; audit admin token creation events and federated-identity provider logs for unexpected enumeration activity since disclosure; treat Artifactory as a CI/CD credential store during incident response, not just an artifact cache, and rotate any secrets it held if compromise is suspected. Neither CISA nor the researchers who reported this have published an atomic indicator (IP, hash, domain) tied to Artifactory exploitation specifically as of this writing.",
+      "iocs": []
     },
     {
       "id": "luminis-health-maryland",
@@ -105,10 +95,8 @@
         { "label": "WYPR (Sep 2)", "url": "https://www.wypr.org/wypr-news/2026-09-02/two-maryland-hospitals-hit-by-cyberattack-compromising-systems" },
         { "label": "Hoodline", "url": "https://hoodline.com/2026/09/luminis-health-hospitals-hit-by-cyberattack-portals-down-days-after-bomb-threat/" }
       ],
-      "action": "Healthcare systems should maintain a pre-agreed ambulance-diversion protocol with regional EMS for cyber-driven outages, not just natural-disaster scenarios; verify offline/downtime procedures for patient registration and records access are rehearsed, not theoretical; monitor for a ransomware leak-site claim or data-breach notification as the incident develops.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion", "context": "Reported operational impact pattern", "seen": "SEP 2" }
-      ]
+      "action": "Healthcare systems should maintain a pre-agreed ambulance-diversion protocol with regional EMS for cyber-driven outages, not just natural-disaster scenarios; verify offline/downtime procedures for patient registration and records access are rehearsed, not theoretical; monitor for a ransomware leak-site claim or data-breach notification as the incident develops. No attacker, malware family, or technical indicator has been publicly disclosed for this incident as of this writing.",
+      "iocs": []
     },
     {
       "id": "ai-agent-ransomware-unit42",
@@ -125,10 +113,8 @@
         { "label": "The Register (Sep 2)", "url": "https://www.theregister.com/security/2026/09/02/ai-agents-carried-out-every-step-of-this-ransomware-attack-then-left-the-victim-an-80-page-security-audit/5294009" },
         { "label": "Unit 42", "url": "https://unit42.paloaltonetworks.com/ai-assisted-cyber-attack-inside-a-unit-42-investigation/" }
       ],
-      "action": "Assume attacker dwell time can now compress to hours rather than weeks when planning detection and response SLAs; harden public API endpoints as a primary initial-access path, since that's how this intrusion began; restrict CI/CD pipeline access to cloud credentials and monitor for anomalous, rapid-fire actions across identity, CI/CD, container, and SaaS environments in sequence, which is the behavioral signature of an agent-driven attack chain rather than a human operator.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks", "context": "Behavioral signature of the agentic attack chain per Unit 42", "seen": "SEP 2" }
-      ]
+      "action": "Assume attacker dwell time can now compress to hours rather than weeks when planning detection and response SLAs; harden public API endpoints as a primary initial-access path, since that's how this intrusion began; restrict CI/CD pipeline access to cloud credentials and monitor for anomalous, rapid-fire actions across identity, CI/CD, container, and SaaS environments in sequence, which is the behavioral signature of an agent-driven attack chain rather than a human operator. Unit 42 did not name the victim, the AI framework/model used, or publish any technical indicator (IP, hash, domain) tied to this intrusion — there is nothing atomic to list.",
+      "iocs": []
     },
     {
       "id": "settra-diasorin",
@@ -145,11 +131,11 @@
         { "label": "Malware News (Sep 4)", "url": "https://malware.news/t/settra-ransomware-attack-on-diasorin-s-p-a/125325" },
         { "label": "MoxFive", "url": "https://www.moxfive.com/blog/settra-ransomware-ttps-victims-and-defense-guide" }
       ],
-      "action": "Blocklist the STProcessMonitor_v114.sys driver hash/name via Microsoft's vulnerable-driver blocklist or WDAC; alert on any new kernel driver installation outside change-managed maintenance windows; monitor for mass Windows event-log clearing as a late-stage precursor to encryption; DiaSorin partners/customers should watch the group's leak site for confirmation before treating any data claim as verified.",
+      "action": "Blocklist the STProcessMonitor_v114.sys driver hash/name via Microsoft's vulnerable-driver blocklist or WDAC; alert on any new kernel driver installation outside change-managed maintenance windows; monitor for mass Windows event-log clearing as a late-stage precursor to encryption; DiaSorin partners/customers should watch the group's leak site for confirmation before treating any data claim as verified. No hash for the edr_blind tool itself has been published; the two C2 IPs below are documented Settra infrastructure from the group's broader July/September campaigns, not confirmed specific to the DiaSorin intrusion.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "Settra ransomware (double-extortion, active since Jun 2026)", "context": "Group claiming the DiaSorin S.p.A. compromise", "seen": "SEP 3" },
         { "type": "filename", "category": "host", "value": "STProcessMonitor_v114.sys", "context": "Vulnerable Safetica driver (CVE-2025-70795) abused via BYOVD to kill EDR/AV from kernel context", "seen": "SEP 3" },
-        { "type": "tool", "category": "host", "value": "edr_blind", "context": "Companion tool used alongside the vulnerable driver to disable endpoint detection", "seen": "SEP 3" }
+        { "type": "ip", "category": "net", "value": "45[.]13[.]122[.]7", "context": "Settra-linked MeshAgent C2 IP observed in the group's July 2026 campaign (family-level indicator, not confirmed specific to DiaSorin)", "seen": "JUL 2026" },
+        { "type": "ip", "category": "net", "value": "193[.]5[.]65[.]114", "context": "Settra-linked MeshAgent C2 IP observed in the group's September 2026 campaign (family-level indicator, not confirmed specific to DiaSorin)", "seen": "SEP 2026" }
       ]
     },
     {
@@ -167,11 +153,8 @@
         { "label": "ASEC (Sep 1)", "url": "https://asec.ahnlab.com/en/95223/" },
         { "label": "Ransomware.live", "url": "https://www.ransomware.live/id/aXdpbkBCbGFjayBY" }
       ],
-      "action": "South Korean automotive supply-chain manufacturers should treat Black X as an actively targeting group and review perimeter/remote-access exposure now rather than after a listing; monitor Black X's leak site for proof files that would substantiate the claims against i-one and iwin; downstream OEMs sourcing from either supplier should ask about incident status before assuming supply continuity.",
-      "iocs": [
-        { "type": "tool", "category": "host", "value": "Black X ransomware (emerging group, active Aug 2026)", "context": "Group claiming both i-one and iwin compromises", "seen": "SEP 1" },
-        { "type": "host-name", "category": "net", "value": "iwin[.]kr", "context": "Second claimed South Korean auto-parts victim's domain", "seen": "SEP 1" }
-      ]
+      "action": "South Korean automotive supply-chain manufacturers should treat Black X as an actively targeting group and review perimeter/remote-access exposure now rather than after a listing; monitor Black X's leak site for proof files that would substantiate the claims against i-one and iwin; downstream OEMs sourcing from either supplier should ask about incident status before assuming supply continuity. No initial-access vector, malware sample, or attacker infrastructure has been publicly disclosed for either claim as of this writing; the victims' own domains are not attacker indicators and are not listed here.",
+      "iocs": []
     },
     {
       "id": "zawoo-extortion",
@@ -188,9 +171,10 @@
         { "label": "ASEC (Sep 1)", "url": "https://asec.ahnlab.com/en/95223/" },
         { "label": "DeXpose", "url": "https://www.dexpose.io/zawoo-ransomware-attack-on-german-sports-institute-fes/" }
       ],
-      "action": "Organizations in technology, manufacturing, and research sectors should treat ZaWoo as an active threat and review mailbox/data-loss-prevention controls given its customer-notification-as-pressure tactic; if compromised, prepare proactive customer communication rather than waiting for the group to contact them directly; monitor ZaWoo's leak site for confirmation of scope for both named victims.",
+      "action": "Organizations in technology, manufacturing, and research sectors should treat ZaWoo as an active threat and review mailbox/data-loss-prevention controls given its customer-notification-as-pressure tactic; if compromised, prepare proactive customer communication rather than waiting for the group to contact them directly; monitor ZaWoo's leak site for confirmation of scope for both named victims using the indicators below.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "ZaWoo (double-extortion data-theft group, active since mid-2026)", "context": "Group claiming FES (Germany) and Zenith Technology (New Zealand) as victims", "seen": "SEP 1" }
+        { "type": "url", "category": "net", "value": "fyenuhkq3pfhnbpidj5jm2fl2lryxip4byhg6eozynrnlomu4szf2nyd[.]onion", "context": "ZaWoo's Tor data-leak site where victim claims are posted", "seen": "SEP 1" },
+        { "type": "email", "category": "net", "value": "zawooorecover[at]onionmail[.]org", "context": "ZaWoo's contact email for extortion negotiation", "seen": "SEP 1" }
       ]
     },
     {
@@ -207,9 +191,9 @@
       "sources": [
         { "label": "Security Arsenal (Sep 4)", "url": "https://securityarsenal.com/blog/spacebears-ransomware-gang-3-fresh-leak-site-victims-usit-sector-pressure-kev-edge-exposure-and-pre-encryption-hunt-rules" }
       ],
-      "action": "Organizations resembling any of the three victim profiles should verify common ransomware entry points are closed (exposed RDP, unpatched edge/VPN devices, phishing-resistant MFA on remote access); monitor SPACEBEARS' leak site for proof files that would substantiate scope for any of the three listed victims; treat the group's opportunistic, cross-sector pattern as a reason not to assume industry-specific exemption.",
+      "action": "Organizations resembling any of the three victim profiles should verify common ransomware entry points are closed (exposed RDP, unpatched edge/VPN devices, phishing-resistant MFA on remote access); monitor SPACEBEARS' leak site using the indicator below for proof files that would substantiate scope for any of the three listed victims; treat the group's opportunistic, cross-sector pattern as a reason not to assume industry-specific exemption.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "SPACEBEARS ransomware", "context": "Group behind all three listings (Sports Endeavors, SGLA, Studio Oculistico Ciraci)", "seen": "SEP 3-4" }
+        { "type": "url", "category": "net", "value": "5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid[.]onion", "context": "SPACEBEARS' Tor data-leak site where all three victim listings were posted (believed linked to Phobos RaaS infrastructure)", "seen": "SEP 3-4" }
       ]
     },
     {
@@ -218,17 +202,23 @@
       "wide": false,
       "kind": "MOBILE MALWARE · MALVERTISING · BANKING TROJAN",
       "title": "StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads",
-      "summary": "Malwarebytes disclosed StreamRat, an Android banking trojan and infostealer distributed through Meta ads for a fake free streaming service running Jun 11-Jul 3, 2026, with the same promotional banners simultaneously pushed on TikTok; the campaign exposed an estimated 570,000 people, overwhelmingly Spanish-speaking users located in Spain. Victims received social-engineering instructions tailored to their entry point (Instagram, TikTok, Facebook, or a plain browser) that coached them past Android's unknown-sources installation warnings; once installed, StreamRat can monitor the screen, capture keystrokes, overlay fake login screens to steal credentials, and grant attackers remote device control. Malwarebytes detects the payload under three signatures but did not publish package names, APK hashes, or C2 infrastructure. <b>Durable catch: any Android install flow that walks a user step-by-step through disabling the unknown-sources warning, tailored to the specific app/ad the victim just clicked, is StreamRat's exact delivery mechanism — the coaching itself is the tell, regardless of which streaming brand is being impersonated this month.</b>",
+      "summary": "ThreatFabric disclosed StreamRat, an Android banking trojan and infostealer distributed through Meta ads for a fake free streaming service running Jun 11-Jul 3, 2026, with the same promotional banners simultaneously pushed on TikTok; the campaign exposed an estimated 570,000 people, overwhelmingly Spanish-speaking users located in Spain. Victims received social-engineering instructions tailored to their entry point (Instagram, TikTok, Facebook, or a plain browser) that coached them past Android's unknown-sources installation warnings; once installed, StreamRat can monitor the screen, capture keystrokes, overlay fake login screens to steal credentials, and grant attackers remote device control. The payload communicates over WebSockets and is dropped into the public Downloads directory as update_{timestamp}.apk before being installed via Android's session-based installer. <b>Durable catch: any Android install flow that walks a user step-by-step through disabling the unknown-sources warning, tailored to the specific app/ad the victim just clicked, is StreamRat's exact delivery mechanism — the coaching itself is the tell, regardless of which streaming brand is being impersonated this month.</b>",
       "reported": "2026-09-03",
       "first_seen": "2026-06-11",
-      "facts": ["~570,000 USERS EXPOSED VIA META + TIKTOK ADS, JUN 11-JUL 3 2026", "TARGETS SPANISH-SPEAKING USERS, PREDOMINANTLY IN SPAIN", "PACKAGE NAMES/APK HASHES/C2 NOT DISCLOSED BY MALWAREBYTES"],
+      "facts": ["~570,000 USERS EXPOSED VIA META + TIKTOK ADS, JUN 11-JUL 3 2026", "TARGETS SPANISH-SPEAKING USERS, PREDOMINANTLY IN SPAIN", "THREATFABRIC PUBLISHED PACKAGE NAMES, SHA-256 HASHES, AND C2 IPs"],
       "attack": ["T1204.002", "T1417"],
       "sources": [
-        { "label": "Malwarebytes (Sep 3)", "url": "https://www.malwarebytes.com/blog/news/2026/09/streamrat-android-malware-spreads-through-meta-and-tiktok-ads" }
+        { "label": "ThreatFabric", "url": "https://threatfabric.com/blogs/from-meta-ads-to-full-device-takeover-uncovering-streamrat" },
+        { "label": "The Hacker News (Sep 3)", "url": "https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html" }
       ],
-      "action": "Block installation from unknown sources by policy on managed Android fleets; warn Spanish-speaking user populations specifically about free-streaming-service ads on Meta/TikTok that walk them through enabling sideloading; flag Malwarebytes detections Android/Trojan.Agent.ACRAEEF8A36H36, Android/Trojan.Agent.ACR02DB0614H7, and Android/Trojan.Dropper.ACR9B7ECE83D1 in mobile threat-defense tooling.",
+      "action": "Block installation from unknown sources by policy on managed Android fleets; warn Spanish-speaking user populations specifically about free-streaming-service ads on Meta/TikTok that walk them through enabling sideloading; block the listed package names and C2 IPs in mobile threat-defense/MDM tooling and hunt for the listed hashes.",
       "iocs": [
-        { "type": "detection", "category": "host", "value": "Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1", "context": "Malwarebytes detection signatures for the StreamRat payload", "seen": "SEP 3" }
+        { "type": "package", "category": "host", "value": "io.base.one887", "context": "StreamRat-bearing app package name, distributed as \"StrεαmTV Pro\"", "seen": "JUN-JUL 2026" },
+        { "type": "package", "category": "host", "value": "io.meat.hint", "context": "StreamRat-bearing app package name, distributed as \"Sistema de vídeo\"", "seen": "JUN-JUL 2026" },
+        { "type": "hash", "category": "hash", "value": "e0714788b4e2518b0d9d4cbf18c7217bb97718e01689d77338f1cc4a230fcb6c", "context": "SHA-256 of a StreamRat APK sample", "seen": "JUN-JUL 2026" },
+        { "type": "hash", "category": "hash", "value": "ba83cc3c9535690191018edf73ca5c6001609df9919462796aa2e551f142e4d3", "context": "SHA-256 of a second StreamRat APK sample", "seen": "JUN-JUL 2026" },
+        { "type": "ip", "category": "net", "value": "45[.]147[.]28[.]59", "context": "StreamRat C2 IP", "seen": "JUN-JUL 2026" },
+        { "type": "ip", "category": "net", "value": "193[.]32[.]2[.]245", "context": "StreamRat C2 IP", "seen": "JUN-JUL 2026" }
       ]
     },
     {

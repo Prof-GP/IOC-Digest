@@ -18,11 +18,8 @@
         { "label": "The Hacker News (Sep 16)", "url": "https://thehackernews.com/2026/09/active-exploitation-attempts-target.html" },
         { "label": "Aviatrix Threat Research", "url": "https://aviatrix.ai/threat-research-center/wso2-api-manager-jwt-bypass-cve-2026-5430-active-exploitation/" }
       ],
-      "action": "Patch to WSO2 API Manager 4.1.0.257, 4.2.0.197, 4.3.0.108, 4.4.0.72, 4.5.0.57, or 4.6.0.21 (or the corresponding Control Plane/Traffic Manager/Universal Gateway fixed builds) immediately; explicitly allowlist accepted JWT signing algorithms rather than relying on implicit validation; audit for unexpected admin accounts or configuration changes made via forged tokens since Sep 16.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-5430", "context": "WSO2 API Manager JWT algorithm-mismatch authentication bypass leading to account takeover, CVSS 9.8", "seen": "SEP 16" },
-        { "type": "detection", "category": "host", "value": "JWT tokens signed with an algorithm outside the deployment's explicitly configured set, followed by administrative actions", "context": "Exploitation pattern observed in honeypot telemetry", "seen": "SEP 16" }
-      ]
+      "action": "Patch to WSO2 API Manager 4.1.0.257, 4.2.0.197, 4.3.0.108, 4.4.0.72, 4.5.0.57, or 4.6.0.21 (or the corresponding Control Plane/Traffic Manager/Universal Gateway fixed builds) immediately; explicitly allowlist accepted JWT signing algorithms rather than relying on implicit validation; audit for unexpected admin accounts or configuration changes made via forged tokens since Sep 16. No attacker IP, hash, or other atomic indicator has been publicly disclosed for this campaign as of this writing — hunting is limited to the behavioral signal (HTTP 200s on /api/am/admin/, /api/am/publisher/, /api/am/devportal/ in repository/logs/http_access_*.log, and JWTs validated with an unexpected signing algorithm).",
+      "iocs": []
     },
     {
       "id": "connectwise-screenconnect-kev",
@@ -39,11 +36,10 @@
         { "label": "Arctic Wolf", "url": "https://arcticwolf.com/resources/blog/cve-2026-84869/" },
         { "label": "SC Media", "url": "https://www.scworld.com/news/connectwise-screenconnect-bug-exploited-in-the-wild-cisa-says" }
       ],
-      "action": "Update ScreenConnect to 26.6.5 or later immediately; audit remote-session logs for unauthorized file transfers or VBScript execution since Aug 20; treat any endpoint reachable through a compromised ScreenConnect instance as potentially exposed to lateral spread via rogue clients, not just the ScreenConnect server itself.",
+      "action": "Update ScreenConnect to 26.6.5 or later immediately; audit remote-session logs for unauthorized file transfers or VBScript execution since Aug 20; hunt for a Run-key entry named WindowsServiceHost and for ScreenConnect audit-log entries named RunFiles/RanFiles tied to a guest process; treat any endpoint reachable through a compromised ScreenConnect instance as potentially exposed to lateral spread via rogue clients, not just the ScreenConnect server itself. No file hash has been published by Huntress or ConnectWise as of this writing.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-84869", "context": "ConnectWise ScreenConnect improper privilege management/missing authorization, unauthorized file transfer and execution via active remote session, CVSS 9.9", "seen": "SEP 11" },
-        { "type": "patch", "category": "host", "value": "ScreenConnect 26.6.5", "context": "Fixed release, shipped Sep 8, 2026", "seen": "SEP 11" },
-        { "type": "detection", "category": "host", "value": "Rogue ScreenConnect client installation paired with VBScript payload execution spreading between connected endpoints", "context": "Observed post-exploitation lateral-movement pattern", "seen": "AUG 20" }
+        { "type": "file", "category": "host", "value": "1.vbs ; 2.vbs ; 3.vbs ; 4.vbs", "context": "VBScript payloads run via wscript.exe by rogue ScreenConnect clients to spread laterally", "seen": "AUG 20" },
+        { "type": "registry", "category": "host", "value": "HKCU\\...\\Run\\WindowsServiceHost", "context": "Persistence Run-key entry pointing to the matching VBScript in the affected user's AppData directory", "seen": "AUG 20" }
       ]
     },
     {
@@ -61,10 +57,8 @@
         { "label": "The Hacker News (Sep 16)", "url": "https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html" },
         { "label": "9to5Google", "url": "https://9to5google.com/2026/09/16/google-pixel-targeted-zero-day-modem-attack/" }
       ],
-      "action": "Install the September 2026 Pixel security update immediately (Settings > Security & privacy > System & updates > Security update); high-risk individuals (journalists, activists, executives, government officials) should treat this as a priority patch given the spyware-consistent targeting pattern; meet the Sep 19 federal KEV remediation deadline where applicable.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-58704", "context": "Pixel cellular modem permission-bypass logic error enabling zero-click remote privilege escalation, CVSS 8.0", "seen": "SEP 16" }
-      ]
+      "action": "Install the September 2026 Pixel security update immediately (Settings > Security & privacy > System & updates > Security update); high-risk individuals (journalists, activists, executives, government officials) should treat this as a priority patch given the spyware-consistent targeting pattern; meet the Sep 19 federal KEV remediation deadline where applicable. No sample hash, C2 infrastructure, or other atomic indicator has been publicly disclosed — consistent with the limited, targeted nature typical of spyware-linked zero-click exploitation, where samples are rarely recovered from the small number of affected devices.",
+      "iocs": []
     },
     {
       "id": "microsoft-passkey-phishing",
@@ -81,9 +75,9 @@
         { "label": "Microsoft Security Blog (Sep 13)", "url": "https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/09/attackers-use-passkey-phishing-to.html" }
       ],
-      "action": "Train staff and personal-device users to verify any inbound 'IT help desk' call through an out-of-band channel before making authentication-method changes; alert on unusual sign-ins immediately followed by newly added authentication methods; monitor for high-volume Microsoft Graph API activity or bulk SharePoint/OneDrive downloads shortly after any authentication-method change, since that combination is this campaign's specific automated-collection signature.",
+      "action": "Train staff and personal-device users to verify any inbound 'IT help desk' call through an out-of-band channel before making authentication-method changes; block or flag the lure domains below at the mail/web gateway; alert on unusual sign-ins immediately followed by newly added authentication methods; monitor for high-volume Microsoft Graph API activity or bulk SharePoint/OneDrive downloads shortly after any authentication-method change, since that combination is this campaign's specific automated-collection signature.",
       "iocs": [
-        { "type": "detection", "category": "host", "value": "Unusual sign-in followed by attacker-added authentication method, then high-volume Microsoft Graph API activity, SharePoint/OneDrive downloads, and email collection via REST APIs", "context": "Automated post-compromise collection pattern per Microsoft", "seen": "SEP 13" }
+        { "type": "domain", "category": "net", "value": "passkeyhelpdesk[.]com ; secure-passkey[.]com ; setupmypasskey[.]com ; add-passkey[.]com ; integratedsso[.]com ; oktasession[.]com ; keysyncos[.]com ; oskeysync[.]com ; oskeysetup[.]com ; oskeyregister[.]com ; syncmykey[.]com ; myconnectkey[.]com ; oskeyconnect[.]com ; validationsetupac[.]com ; portalsetuphub[.]com", "context": "Lure domains used for fake IT help-desk passkey/MFA/SSO enrollment pages; organizations are typically targeted via a company-name subdomain (e.g. contoso[.]add-passkey[.]com)", "seen": "MICROSOFT, SEP 13" }
       ]
     },
     {
@@ -101,9 +95,13 @@
         { "label": "The Hacker News (Sep 17)", "url": "https://thehackernews.com/2026/09/china-aligned-famoussparrow-deploys.html" },
         { "label": "The Record", "url": "https://therecord.media/china-hackers-latin-america-espionage" }
       ],
-      "action": "Latin American government agencies should prioritize patching and reducing exposure of public-facing Microsoft Exchange servers given this actor's documented entry vector; hunt for modular C++ backdoor activity with runtime code-patching and anti-analysis behavior on Exchange-adjacent hosts; treat FamousSparrow as an active, region-focused threat rather than a historical APT.",
+      "action": "Latin American government agencies should prioritize patching and reducing exposure of public-facing Microsoft Exchange servers given this actor's documented entry vector; hunt for the file hashes and outbound connections to the IP addresses below on Exchange-adjacent hosts; treat FamousSparrow as an active, region-focused threat rather than a historical APT.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "SparroWocky backdoor (modular C++, FamousSparrow)", "context": "Previously unreported backdoor deployed against Latin American government targets via compromised Exchange servers", "seen": "SEP 17" }
+        { "type": "hash", "category": "hash", "value": "3209689E509205CCDB7E49062B7B407DDC23CAC1", "context": "SHA-1 of winfsp-x64.dll, SparroWocky loader", "seen": "SEP 17" },
+        { "type": "hash", "category": "hash", "value": "52C6646759CF6037BB17466203631C4BD794532F", "context": "SHA-1 of a second winfsp-x64.dll variant, SparroWocky loader", "seen": "SEP 17" },
+        { "type": "hash", "category": "hash", "value": "E7070B5AF24A0FE1E6FEBE5954B03CB385E91F", "context": "SHA-1 of DukeQt.dll, SparroWocky loader", "seen": "SEP 17" },
+        { "type": "hash", "category": "hash", "value": "44F0A22B143B79FA760BF31E14C8FFF714C8A2A1", "context": "SHA-1 of an in-memory SparroWocky backdoor sample", "seen": "SEP 17" },
+        { "type": "ip", "category": "net", "value": "38[.]54[.]57[.]17 ; 38[.]60[.]197[.]55 ; 38[.]60[.]209[.]106 ; 38[.]60[.]224[.]51 ; 38[.]60[.]224[.]235 ; 38[.]60[.]241[.]65 ; 38[.]60[.]241[.]127 ; 38[.]60[.]241[.]193 ; 77[.]111[.]101[.]40 ; 91[.]148[.]134[.]115 ; 130[.]94[.]101[.]82 ; 140[.]99[.]164[.]199 ; 149[.]104[.]87[.]228 ; 149[.]104[.]90[.]203 ; 216[.]238[.]92[.]2 ; 216[.]238[.]105[.]53 ; 216[.]238[.]110[.]120 ; 216[.]238[.]121[.]164", "context": "SparroWocky C2 IP addresses per ESET Research", "seen": "SEP 17" }
       ]
     },
     {
@@ -140,9 +138,11 @@
         { "label": "Malwarebytes (Sep 18)", "url": "https://www.malwarebytes.com/blog/news/2026/09/new-android-malware-uses-ai-to-steal-bank-logins-and-pins" },
         { "label": "GBHackers", "url": "https://gbhackers.com/ai-powered-rathat-android-trojan-steals-bank-credentials/" }
       ],
-      "action": "Block installation from unknown sources by policy on managed Android fleets and disable Wireless Debugging by default; warn users that SMS links or ads promoting app installs outside official stores are the primary lure; monitor for unexpected Wireless Debugging activation or a banking app's hidden background service persisting after apparent uninstall.",
+      "action": "Block installation from unknown sources by policy on managed Android fleets and disable Wireless Debugging by default; warn users that SMS links or ads promoting app installs outside official stores are the primary lure; block the C2 domain and download URL below at DNS/web gateway; monitor for unexpected Wireless Debugging activation or a banking app's hidden background service persisting after apparent uninstall.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "RatHat (AI-driven Android banking trojan)", "context": "Uses a live AI assistant against the accessibility tree; escalates via ADB Wireless Debugging; self-reinstalls via hidden background service", "seen": "SEP 18" }
+        { "type": "domain", "category": "net", "value": "admin[.]chunhuating[.]best", "context": "C2 domain for the \"Panda Workshop V6\" RatHat console build, per Cleafy", "seen": "SEP 2026" },
+        { "type": "url", "category": "net", "value": "hxxps[://]dramaspoolcoa[.]com/en[.]html", "context": "Download URL distributing the Sept 2026 RatHat sample", "seen": "SEP 2026" },
+        { "type": "hash", "category": "hash", "value": "116346cace7f00ba557034b534d40791", "context": "MD5 of a Sept 2026 RatHat APK sample, per Cleafy", "seen": "SEP 2026" }
       ]
     },
     {
@@ -160,9 +160,10 @@
         { "label": "Socket (Sep 13)", "url": "https://socket.dev/blog/malicious-twitch-browser-extension" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/09/malicious-twitch-browser-extension.html" }
       ],
-      "action": "Uninstall 'Twitch Enhanced Viewer | JeetBot' if installed, and revoke/regenerate Twitch OAuth tokens and sessions for any account that had it installed; review browser extensions requesting broad host permissions for streaming or social platforms before installing regardless of stated feature set; if updated, confirm the extension version no longer forwards tokens before trusting the fix.",
+      "action": "Uninstall the extension (Chrome ID below) if installed, and revoke/regenerate Twitch OAuth tokens and sessions for any account that had it installed; block the proxy domains below at the web gateway; review browser extensions requesting broad host permissions for streaming or social platforms before installing regardless of stated feature set.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "Twitch Enhanced Viewer | JeetBot (malicious browser extension)", "context": "Forwarded live Twitch OAuth session tokens to JeetBot proxy infrastructure", "seen": "SEP 13" }
+        { "type": "other", "category": "host", "value": "pnhhdhhcadcjfckjhpmjneldiegbojfb", "context": "Chrome extension ID for \"Twitch Enhanced Viewer | JeetBot\"", "seen": "SEP 13" },
+        { "type": "domain", "category": "net", "value": "enhanced[.]jeetbot[.]cc ; ext-styles[.]jeetbot[.]cc ; proxy[.]morphilina[.]me", "context": "Proxy/infrastructure domains the extension forwarded OAuth tokens to", "seen": "SEP 13" }
       ]
     },
     {
@@ -179,9 +180,12 @@
       "sources": [
         { "label": "Microsoft Security Blog (Sep 13)", "url": "https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/" }
       ],
-      "action": "Train accounts-payable staff to verify any subscription-renewal or vendor invoice through a known contact channel independent of the email itself, especially when it names a real vendor and invokes CEO authority; add DMARC/SPF/DKIM enforcement and flag messages that reference third-party delivery infrastructure inconsistent with the organization's known vendor communications; require dual approval for ACH transfers above a defined threshold.",
+      "action": "Train accounts-payable staff to verify any subscription-renewal or vendor invoice through a known contact channel independent of the email itself, especially when it names a real vendor and invokes CEO authority; block the lookalike domains below at the mail gateway; add DMARC/SPF/DKIM enforcement and flag messages that reference third-party delivery infrastructure inconsistent with the organization's known vendor communications; require dual approval for ACH transfers above a defined threshold.",
       "iocs": [
-        { "type": "detection", "category": "host", "value": "CEO-impersonation email directing accounts-payable staff to pay a ServiceNow subscription renewal via ACH transfer", "context": "Core pretext used across the 1M+-email campaign, Aug 3-5 2026", "seen": "SEP 13" }
+        { "type": "domain", "category": "net", "value": "service-nowinc[.]com", "context": "Lookalike ServiceNow domain registered Jul 31, 2026, used for the spoofed ServiceNow executive address and invoice contact", "seen": "SEP 13" },
+        { "type": "domain", "category": "net", "value": "domainlify[.]net", "context": "Newly registered domain used in the campaign's Reply-To address", "seen": "SEP 13" },
+        { "type": "email", "category": "net", "value": "gomez[at]service-nowinc[.]com", "context": "Email address associated with the fraudulent bank account in the fake ServiceNow invoice", "seen": "SEP 13" },
+        { "type": "email", "category": "net", "value": "notifications[at]uinsure[.]co[.]uk ; info[at]tivityhealth[.]com ; no-reply[at]lumalisboa[.]com ; noreply[at]mctci[.]com ; info[at]nuf[.]co[.]jp", "context": "Compromised/abused third-party sender addresses used to deliver the campaign at scale", "seen": "SEP 13" }
       ]
     },
     {
@@ -198,10 +202,8 @@
       "sources": [
         { "label": "ForThePeople Data Breach Brief (Sep 18)", "url": "https://www.forthepeople.com/blog/data-breach-brief-week-september-16th-2026/" }
       ],
-      "action": "Organizations using Edenred Pay/GlobalvCard for vendor or employee payments should request confirmation of whether their own data was affected; affected individuals should place a credit freeze given the SSN exposure; watch for the company's fuller disclosure to establish verified scope and cause.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized access to accounts-payable/payment-processing data including names, addresses, and SSNs", "context": "Scope of the disclosed breach per regulatory filing", "seen": "SEP 15" }
-      ]
+      "action": "Organizations using Edenred Pay/GlobalvCard for vendor or employee payments should request confirmation of whether their own data was affected; affected individuals should place a credit freeze given the SSN exposure; watch for the company's fuller disclosure to establish verified scope and cause. No technical indicator (intrusion vector, attacker infrastructure, or sample) has been publicly disclosed — the regulatory filing covers only the data categories exposed.",
+      "iocs": []
     },
     {
       "id": "helpfeel-breach",
@@ -217,10 +219,8 @@
       "sources": [
         { "label": "ForThePeople Data Breach Brief (Sep 18)", "url": "https://www.forthepeople.com/blog/data-breach-brief-week-september-16th-2026/" }
       ],
-      "action": "Helpfeel customers should request specifics on data types affected before assuming exposure or non-exposure; use Helpfeel's fast disclosure timeline as a benchmark when evaluating your own incident-response plan's discovery-to-notification speed; watch for a fuller technical disclosure as details become available.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Confirmed data exposure at a SaaS provider, scope not yet fully detailed publicly", "context": "Reported incident pending fuller technical disclosure", "seen": "SEP 16" }
-      ]
+      "action": "Helpfeel customers should request specifics on data types affected before assuming exposure or non-exposure; use Helpfeel's fast disclosure timeline as a benchmark when evaluating your own incident-response plan's discovery-to-notification speed; watch for a fuller technical disclosure as details become available. No technical indicator has been publicly disclosed as of this writing.",
+      "iocs": []
     }
   ]
 }

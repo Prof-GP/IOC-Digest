@@ -1,5 +1,66 @@
 {
   "type": "bundle",
   "id": "bundle--0079f244-76e0-5d32-bcc1-b4a15ded0416",
-  "objects": []
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e8fd1e36-81e6-5fb5-918e-aaadf8b336a1",
+      "created": "2026-10-16T00:00:00.000Z",
+      "modified": "2026-10-16T00:00:00.000Z",
+      "name": "AhsayCBS backup console flaws chained for unauthenticated root execution, deploying web shells and XMRig miners through three incomplete patch attempts: Mining pool IP:port (8029) the deployed XMRig miner connects to",
+      "description": "Source: https://www.huntress.com/blog/ahsaycbs-flaws-exploit; https://thehackernews.com/2026/10/ahsaycbs-flaws-exploited-to-deploy-web.html",
+      "pattern": "[ipv4-addr:value = '51.195.127.124']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-16T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--502aa032-c0a7-5674-9f16-872cf36c5b62",
+      "created": "2026-10-16T00:00:00.000Z",
+      "modified": "2026-10-16T00:00:00.000Z",
+      "name": "CVE-2026-0322 \u2014 authenticated code-injection flaw in PAN-OS management interface grants root, exploited in limited attacks: One of three attacker IP addresses Palo Alto Networks shared as exploiting CVE-2026-0322",
+      "description": "Source: https://thehackernews.com/2026/10/palo-alto-networks-patches-pan-os.html; https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/",
+      "pattern": "[ipv4-addr:value = '66.42.72.14']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-16T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--3b53f8be-b0e5-57a9-b161-6c37c9c20395",
+      "created": "2026-10-16T00:00:00.000Z",
+      "modified": "2026-10-16T00:00:00.000Z",
+      "name": "CVE-2026-0322 \u2014 authenticated code-injection flaw in PAN-OS management interface grants root, exploited in limited attacks: Attacker IP address exploiting CVE-2026-0322, per Palo Alto Networks",
+      "description": "Source: https://thehackernews.com/2026/10/palo-alto-networks-patches-pan-os.html; https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/",
+      "pattern": "[ipv4-addr:value = '208.83.239.114']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-16T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--72e2fc50-9de8-5c55-a908-999a37941bc0",
+      "created": "2026-10-16T00:00:00.000Z",
+      "modified": "2026-10-16T00:00:00.000Z",
+      "name": "CVE-2026-0322 \u2014 authenticated code-injection flaw in PAN-OS management interface grants root, exploited in limited attacks: Attacker IP address exploiting CVE-2026-0322, per Palo Alto Networks",
+      "description": "Source: https://thehackernews.com/2026/10/palo-alto-networks-patches-pan-os.html; https://www.bleepingcomputer.com/news/security/palo-alto-networks-warns-of-pan-os-rce-flaw-exploited-in-attacks/",
+      "pattern": "[ipv4-addr:value = '149.248.47.234']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-16T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
 }

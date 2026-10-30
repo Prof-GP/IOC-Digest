@@ -18,10 +18,10 @@
         { "label": "The Hacker News (Sep 10)", "url": "https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" },
         { "label": "Cisco Talos", "url": "https://blog.talosintelligence.com/fmc-ongoing-exploitation/" }
       ],
-      "action": "Patch Secure Firewall Management Center to the fixed release immediately; inspect the Tomcat webroot for unexpected .jsp files and adjacent JAR files; review audit logs for authentication events tied to the related static-credential issue (CVE-2026-20316); rotate any credentials that may have transited a compromised FMC instance.",
+      "action": "Patch Secure Firewall Management Center to the fixed release immediately; inspect the Tomcat webroot for a file named cmd.jar and for any JSP decoding a parameter named F6C1F0E7; review audit logs for authentication events tied to the related static-credential issue (CVE-2026-20316); rotate any credentials that may have transited a compromised FMC instance.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-20079", "context": "Cisco Secure FMC web-interface authentication bypass enabling unauthenticated root command execution, CVSS 10.0", "seen": "SEP 10" },
-        { "type": "detection", "category": "host", "value": "Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor", "context": "UAT-12197 post-exploitation artifact per Cisco Talos", "seen": "SEP 10" }
+        { "type": "file", "category": "host", "value": "cmd.jar", "context": "Malicious JAR-based command executor dropped into the FMC Tomcat webroot by UAT-12197 post-exploitation, per Cisco Talos", "seen": "SEP 9" },
+        { "type": "parameter", "category": "host", "value": "F6C1F0E7", "context": "Base64-decoded parameter name used by the UAT-12197 JSP web shell to load a Java class into the running FMC process", "seen": "SEP 9" }
       ]
     },
     {
@@ -38,11 +38,8 @@
       "sources": [
         { "label": "The Hacker News (Sep 10)", "url": "https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" }
       ],
-      "action": "Patch NetScaler ADC/Gateway to the fixed release addressing CVE-2026-19490 immediately; treat any appliance that was unpatched between disclosure and patch application as a probable target given the honeypot attempt volume; review AAA/Gateway authentication logs for anomalies since Sep 3.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-19490", "context": "Citrix NetScaler ADC/Gateway AAA/Gateway authentication bypass, CVSS 9.3", "seen": "SEP 10" },
-        { "type": "detection", "category": "net", "value": "Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)", "context": "Observed exploitation intensity pattern", "seen": "SEP 8" }
-      ]
+      "action": "Patch NetScaler ADC/Gateway to the fixed release addressing CVE-2026-19490 immediately; treat any appliance that was unpatched between disclosure and patch application as a probable target given the honeypot attempt volume; review AAA/Gateway authentication logs for anomalies since Sep 3. No individual attacker IP addresses, domains, or file hashes have been published for this campaign as of this writing — honeypot reporting (Previdian, cited by multiple outlets) gives only aggregate attempt/source counts, not a usable blocklist.",
+      "iocs": []
     },
     {
       "id": "fortinet-pivotc2",
@@ -58,11 +55,15 @@
       "sources": [
         { "label": "The Hacker News (Sep 10)", "url": "https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html" }
       ],
-      "action": "Patch FortiOS/FortiSwitchManager/FortiSASE to the fixed release for CVE-2025-25249 immediately; hunt for unfamiliar single-line Node.js processes on Fortinet appliances as PivotC2's reverse-shell mechanism; treat any device that was internet-facing and unpatched since July 2026 as potentially already infected regardless of current patch status.",
+      "action": "Patch FortiOS/FortiSwitchManager/FortiSASE to the fixed release for CVE-2025-25249 immediately; block/hunt for traffic to the two C2 IPs and Tor bridge endpoints below using `diagnose sys session filter daddr` on FortiOS; search for the listed file hashes and the /tmp/.i.js drop path; treat any device that was internet-facing and unpatched since July 2026 as potentially already infected regardless of current patch status. Note: these indicators are sourced from SOCRadar and Triskele Labs threat-intel writeups (which corroborate each other on the two C2 IPs), not a primary Fortinet advisory — treat as high-confidence but not vendor-confirmed.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2025-25249", "context": "FortiOS/FortiSwitchManager/FortiSASE heap-based buffer overflow enabling RCE, CVSS 7.3", "seen": "SEP 10" },
-        { "type": "tool", "category": "host", "value": "PivotC2 RAT", "context": "Remote-access trojan delivered via exploitation of CVE-2025-25249", "seen": "JUL 2026" },
-        { "type": "detection", "category": "host", "value": "Reverse shell established via a single-line Node.js command on a Fortinet appliance", "context": "PivotC2 post-exploitation mechanism", "seen": "SEP 10" }
+        { "type": "ip", "category": "net", "value": "46[.]151[.]29[.]58", "context": "PivotC2 C2 node", "seen": "SEP 10" },
+        { "type": "ip", "category": "net", "value": "146[.]103[.]99[.]177", "context": "PivotC2 C2 node", "seen": "SEP 10" },
+        { "type": "ip", "category": "net", "value": "45[.]138[.]16[.]182:9130", "context": "obfs4proxy Tor bridge used by PivotC2 infrastructure", "seen": "SEP 10" },
+        { "type": "ip", "category": "net", "value": "89[.]217[.]174[.]207:9001", "context": "obfs4proxy Tor bridge used by PivotC2 infrastructure", "seen": "SEP 10" },
+        { "type": "hash", "category": "hash", "value": "2d338ffc8cc80293575c6800c059e33eb41e967907c20ba7687b2231c50837db", "context": "SHA-256 of fortirun.bin, the exploit binary dropped post-exploitation", "seen": "SEP 10" },
+        { "type": "hash", "category": "hash", "value": "c25a27b506fbae62010caf2abff699df5c94d29f056fa7ccfb5f3170d917c8cb", "context": "SHA-256 of run.ps1 stager script", "seen": "SEP 10" },
+        { "type": "path", "category": "host", "value": "/tmp/.i.js", "context": "PivotC2 dropped payload path on compromised FortiOS devices", "seen": "SEP 10" }
       ]
     },
     {
@@ -80,12 +81,8 @@
         { "label": "Sansec", "url": "https://sansec.io/research/stylesmuggler-0day" },
         { "label": "CrowdSec", "url": "https://www.crowdsec.net/vulntracking-report/cve-2026-75650-stylesmuggler-rce-adobe-commerce-magento" }
       ],
-      "action": "Apply hotfix VULN-39341 immediately, then scan the store for backdoors planted during the Sep 4-7 pre-patch exploitation window rather than assuming the hotfix alone resolves prior compromise; review email-template configuration for unauthorized modifications; block or heighten monitoring on IPs previously seen probing SessionReaper (CVE-2025-54236) given the documented actor overlap.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-75650", "context": "Adobe Commerce/Magento email-template engine injection, unauthenticated RCE, CVSS 10.0", "seen": "SEP 9" },
-        { "type": "patch", "category": "host", "value": "Hotfix VULN-39341", "context": "Out-of-band fix released Sep 7, 2026", "seen": "SEP 9" },
-        { "type": "detection", "category": "net", "value": "Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)", "context": "CrowdSec-tracked exploitation telemetry", "seen": "SEP 9" }
-      ]
+      "action": "Apply hotfix VULN-39341 immediately, then scan the store for backdoors planted during the Sep 4-7 pre-patch exploitation window rather than assuming the hotfix alone resolves prior compromise; review email-template configuration for unauthorized modifications. CrowdSec's public reporting gives aggregate attempt counts (500 unique source IPs since Sep 9, peaking at 193 distinct sources/1,303 signals on Sep 11) but no individual IP addresses or hashes — no usable blocklist has been published as of this writing.",
+      "iocs": []
     },
     {
       "id": "gitlab-path-traversal-kev",
@@ -101,10 +98,9 @@
       "sources": [
         { "label": "Rapid7 (Sep 14)", "url": "https://www.rapid7.com/blog/post/etr-cve-2026-85706-critical-gitlab-path-traversal-exploited-in-the-wild/" }
       ],
-      "action": "Patch self-managed GitLab to 19.1.8, 19.2.6, or 19.3.2 immediately per CISA's emergency directive; rotate any secrets, SSH keys, or credentials that were readable via the filesystem on an affected instance prior to patching; audit commits-API access logs for anomalous file-path requests.",
+      "action": "Patch self-managed GitLab to 19.1.8, 19.2.6, or 19.3.2 immediately per CISA's emergency directive; rotate any secrets, SSH keys, or credentials that were readable via the filesystem on an affected instance prior to patching; audit commits-API access logs for HTTP POST requests to /api/v4/projects/{id}/repository/commits/ carrying suspicious file-path parameters unrelated to the repository being accessed — researchers (SOC Prime) explicitly note no campaign-specific attacker IPs, domains, or hashes have been published for this flaw as of this writing.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-85706", "context": "GitLab repository commits API path traversal enabling unauthenticated arbitrary file read, CVSS 10.0", "seen": "SEP 11" },
-        { "type": "patch", "category": "host", "value": "GitLab 19.1.8 / 19.2.6 / 19.3.2", "context": "Fixed releases for self-managed instances", "seen": "SEP 11" }
+        { "type": "path", "category": "net", "value": "/api/v4/projects/{id}/repository/commits/", "context": "GitLab commits API endpoint targeted by CVE-2026-85706 path-traversal exploitation; hunt for POST requests here with suspicious file-path parameters", "seen": "SEP 11" }
       ]
     },
     {
@@ -122,10 +118,9 @@
         { "label": "The Hacker News (Sep 8)", "url": "https://thehackernews.com/2026/09/n-able-n-central-pre-auth-rce-flaw.html" },
         { "label": "Arctic Wolf", "url": "https://arcticwolf.com/resources/blog/cve-2026-86218/" }
       ],
-      "action": "Patch N-central to 2026.3 Hotfix 4 or later immediately; MSPs should audit for unauthorized admin accounts created via the CVE-2026-86206/86207 chain and treat any client endpoint managed through an unpatched instance as potentially exposed; review N-central access logs for crafted requests predating the patch.",
+      "action": "Patch N-central to 2026.3 Hotfix 4 or later immediately; MSPs should audit for unauthorized admin accounts created via the CVE-2026-86206/86207 chain and treat any client endpoint managed through an unpatched instance as potentially exposed; review N-central access logs for requests to the endpoint below with unexpected appliance IDs, per Huntress's advisory. Note: whether this flaw was actually exploited in the wild is itself disputed — Huntress reported no new compromises attributable to it in its own telemetry as of its Sep 6 update, while CISA's KEV listing and Singapore's CSA describe it as actively exploited.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-86218", "context": "N-able N-central static code injection, unauthenticated pre-auth RCE as root, CVSS 10.0", "seen": "SEP 8" },
-        { "type": "patch", "category": "host", "value": "N-central 2026.3 Hotfix 4 (released Sep 5, 2026)", "context": "Fixed release", "seen": "SEP 5" }
+        { "type": "path", "category": "net", "value": "/remoteControlAction.do?method=getPierDetails", "context": "N-central endpoint probed in exploitation attempts against CVE-2026-86218, per Huntress", "seen": "SEP 6" }
       ]
     },
     {
@@ -143,10 +138,8 @@
         { "label": "BleepingComputer (Sep 8)", "url": "https://www.bleepingcomputer.com/news/microsoft/microsoft-september-2026-patch-tuesday-fixes-966-flaws-2-zero-days/" },
         { "label": "SecurityWeek", "url": "https://www.securityweek.com/microsoft-patches-record-974-vulnerabilities-including-two-exploited-zero-days/" }
       ],
-      "action": "Apply September 2026 Windows cumulative updates immediately to close both elevation-of-privilege zero-days; since both require existing local access, prioritize investigating how attackers are gaining initial footholds (phishing, exposed RDP, etc.) rather than treating the patch alone as sufficient; meet the Sep 22 federal KEV remediation deadline where applicable.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-81963 / CVE-2026-85880", "context": "Windows Update Stack link-following and Windows ALPC heap overflow, both local privilege escalation to SYSTEM, CVSS 7.8", "seen": "SEP 8" }
-      ]
+      "action": "Apply September 2026 Windows cumulative updates immediately to close both elevation-of-privilege zero-days; since both require existing local access, prioritize investigating how attackers are gaining initial footholds (phishing, exposed RDP, etc.) rather than treating the patch alone as sufficient; meet the Sep 22 federal KEV remediation deadline where applicable. No public samples, attacker groups, or technical indicators have been disclosed for either zero-day as of this writing.",
+      "iocs": []
     },
     {
       "id": "centerpoint-energy-breach",
@@ -163,10 +156,9 @@
         { "label": "The Record", "url": "https://therecord.media/texas-utility-firm-investigating-potential-data-leak-moveit-breach" },
         { "label": "Yahoo News", "url": "https://www.yahoo.com/news/us/articles/centerpoint-energy-hit-multiple-proposed-235213317.html" }
       ],
-      "action": "CenterPoint Energy customers should monitor for phishing using the leaked billing/account details and consider a credit freeze given the partial-SSN exposure; utilities and billers offering an unauthenticated guest bill-pay flow should audit that path's access controls and rate limiting specifically, since it's the suspected entry point here; watch for the company's own confirmation to establish verified scope.",
+      "action": "CenterPoint Energy customers should monitor for phishing using the leaked billing/account details and consider a credit freeze given the partial-SSN exposure; utilities and billers offering an unauthenticated guest bill-pay flow should audit that path's access controls and rate limiting specifically, since it's the suspected entry point here; watch for the company's own confirmation to establish verified scope. No technical intrusion artifact (IP, malware, exploited CVE) has been publicly disclosed — the only identifier tied to this claim is the forum-post alias below, which is an attribution handle, not a blockable technical indicator.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "Threat actor alias '4d722e4d656f77'", "context": "Individual who posted the claimed CenterPoint Energy database for sale on an open forum", "seen": "SEP 1" },
-        { "type": "detection", "category": "host", "value": "Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)", "context": "Suspected entry point for the claimed breach", "seen": "SEP 8" }
+        { "type": "alias", "category": "host", "value": "4d722e4d656f77", "context": "Forum handle used by the individual who posted the claimed CenterPoint Energy database for sale; attribution identifier only, not a technical artifact", "seen": "SEP 1" }
       ]
     },
     {
@@ -184,9 +176,9 @@
         { "label": "BleepingComputer", "url": "https://www.bleepingcomputer.com/news/security/veradigm-discloses-patient-data-breach-after-gentlemen-gang-claims-attack/" },
         { "label": "HIPAA Journal", "url": "https://www.hipaajournal.com/veradigm-data-breach-2026/" }
       ],
-      "action": "Veradigm-affiliated customers and patients should watch for identity-theft/phishing risk given the SSN exposure for a subset of records; organizations exposing vendor-facing APIs should scope and monitor those endpoints as tightly as customer-facing ones, since narrow API access was sufficient here to reach millions of records; require MFA on all vendor-facing service accounts, not just customer-facing logins.",
+      "action": "Veradigm-affiliated customers and patients should watch for identity-theft/phishing risk given the SSN exposure for a subset of records; organizations exposing vendor-facing APIs should scope and monitor those endpoints as tightly as customer-facing ones, since narrow API access was sufficient here to reach millions of records; require MFA on all vendor-facing service accounts, not just customer-facing logins. No vendor/credential-specific technical indicator (compromised account, IP, malware sample) has been publicly disclosed; the indicator below is The Gentlemen's known leak-site address where the claim was posted.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "The Gentlemen (ransomware-as-a-service, double extortion)", "context": "Group claiming the Veradigm patient-data theft via a compromised third-party vendor", "seen": "SEP 5" }
+        { "type": "url", "category": "net", "value": "tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad[.]onion", "context": "The Gentlemen ransomware group's Tor leak site where the Veradigm claim was posted Sep 5", "seen": "SEP 5" }
       ]
     },
     {
@@ -204,9 +196,9 @@
         { "label": "SOCRadar", "url": "https://socradar.io/free-tools/ransomware-intelligence/victims/air-canada-thegentlemen-6edb45b0" },
         { "label": "The Cyber Express", "url": "https://thecyberexpress.com/cyberattack-on-air-canada-bianlian-data-risk/" }
       ],
-      "action": "Air Canada customers/partners should watch for official confirmation before treating the 51,409-file claim as verified; airlines and other high-profile targets should assume opportunistic ransomware groups will claim attacks regardless of actual access depth, and should have a rapid-verification process to confirm or refute leak-site claims quickly; monitor TheGentlemen's leak site for any proof files substantiating this listing.",
+      "action": "Air Canada customers/partners should watch for official confirmation before treating the 51,409-file claim as verified; airlines and other high-profile targets should assume opportunistic ransomware groups will claim attacks regardless of actual access depth, and should have a rapid-verification process to confirm or refute leak-site claims quickly. Note: at least one outlet (The Cyber Express) attributed this specific claim to BianLian rather than The Gentlemen — that attribution conflict is itself unresolved, and no technical intrusion artifact has been published under either attribution.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "TheGentlemen ransomware (double extortion, ransomware-as-a-service)", "context": "Group claiming both the Air Canada and Veradigm incidents within the same week", "seen": "SEP 9" }
+        { "type": "url", "category": "net", "value": "tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad[.]onion", "context": "The Gentlemen ransomware group's Tor leak site, cited by most outlets as the posting location for this claim", "seen": "SEP 9" }
       ]
     },
     {
@@ -223,9 +215,9 @@
       "sources": [
         { "label": "ASEC — Ransom & Dark Web Issues, Week 2 September 2026", "url": "https://asec.ahnlab.com/en/95338/" }
       ],
-      "action": "Organizations in South Korea, Germany, and Argentina across any sector should treat AUDIT TEAM as an active, geographically opportunistic extortion group and review common ransomware entry points; monitor AUDIT TEAM's leak site for proof files that would substantiate any of the four claims before treating them as confirmed.",
+      "action": "Organizations in South Korea, Germany, and Argentina across any sector should treat AUDIT TEAM as an active, geographically opportunistic extortion group and review common ransomware entry points; monitor the leak-site address below for proof files that would substantiate any of the four claims before treating them as confirmed. No initial-access vector or malware indicator has been disclosed for any of the four victims.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "AUDIT TEAM (data-extortion group, newly active Sep 2026)", "context": "Group claiming four victims across South Korea, Germany, and Argentina", "seen": "SEP 11" }
+        { "type": "url", "category": "net", "value": "6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad[.]onion", "context": "AuditTeam's Tor data-extortion leak site (\"/// DATA EXPOSURE TERMINAL ///\")", "seen": "SEP 11" }
       ]
     },
     {
@@ -242,10 +234,8 @@
       "sources": [
         { "label": "ASEC — Ransom & Dark Web Issues, Week 2 September 2026", "url": "https://asec.ahnlab.com/en/95338/" }
       ],
-      "action": "Re-verify help-desk and IT-support identity-verification procedures against social-engineering/vishing pretexts, LAPSUS$'s historical primary technique; move privileged accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; monitor for the group's promised victim disclosure to confirm scope and technique once named.",
-      "iocs": [
-        { "type": "tool", "category": "host", "value": "LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)", "context": "Group teasing a new, unnamed victim disclosure", "seen": "SEP 11" }
-      ]
+      "action": "Re-verify help-desk and IT-support identity-verification procedures against social-engineering/vishing pretexts, LAPSUS$'s historical primary technique; move privileged accounts to phishing-resistant MFA (FIDO2/WebAuthn) rather than push-based approval; monitor for the group's promised victim disclosure to confirm scope and technique once named. No victim, technique, or technical indicator has been attached to this specific tease as of this writing — there is genuinely nothing atomic to report yet.",
+      "iocs": []
     },
     {
       "id": "elixir-medical-breach",
@@ -261,10 +251,8 @@
       "sources": [
         { "label": "GlobeNewswire (Sep 9)", "url": "https://www.globenewswire.com/news-release/2026/09/09/3359120/0/en/elixir-medical-corporation-data-breach-exposes-personal-information-murphy-law-firm-investigates-legal-claims.html" }
       ],
-      "action": "Affected current/former Elixir Medical employees and dependents should place a credit freeze given the SSN, driver's license, and bank-account exposure; organizations should audit how long it takes to fully scope data accessed after an intrusion is detected, since the gap between access and understanding impact was the operative failure here, not just the initial access itself.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized network access to HR/finance file stores containing SSNs, driver's license numbers, payment card, and direct-deposit bank data", "context": "Scope of the confirmed breach", "seen": "SEP 9" }
-      ]
+      "action": "Affected current/former Elixir Medical employees and dependents should place a credit freeze given the SSN, driver's license, and bank-account exposure; organizations should audit how long it takes to fully scope data accessed after an intrusion is detected, since the gap between access and understanding impact was the operative failure here, not just the initial access itself. No intrusion-vector technical details (exploited vulnerability, malware, attacker IP) have been publicly disclosed.",
+      "iocs": []
     }
   ]
 }

@@ -20,9 +20,13 @@
       ],
       "action": "Apply BT26-05-RS immediately on any self-hosted BeyondTrust Remote Support appliance (SaaS already patched automatically); hunt for Sawfly web shell and Bareclaw tunneler artifacts and secrets-vault access events dating back to Aug 29; treat any credentials retrieved via the appliance's secrets vault as compromised and rotate them; review Remote Support session logs for sessions opened against internal endpoints that weren't part of a legitimate support ticket.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-102764", "context": "BeyondTrust Remote Support improper origin validation in internal messaging, enabling authentication bypass by spoofing, CVSS 9.3", "seen": "OCT 15" },
-        { "type": "tool", "category": "host", "value": "Sawfly (web shell) ; Bareclaw (tunneler)", "context": "Post-exploitation tools deployed by ARMORY CASTLE for persistence", "seen": "AUG 29" },
-        { "type": "tool", "category": "host", "value": "ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)", "context": "Threat group responsible for the exploitation", "seen": "OCT 15" }
+        { "type": "hash", "category": "hash", "value": "dc14e215269a93fdbc4c1a80b984c23faf7af0911c6dbb85309796a6f2ae95fb", "context": "SHA-256 of mangoapi.php, the Sawfly web shell dropped into the appliance's Laravel public web root", "seen": "AUG 29" },
+        { "type": "hash", "category": "hash", "value": "1f19b9a27d79c11bda00a1e8faf74a7fdd683d38ccef1b60df2fd0307e3aa462", "context": "SHA-256 of ingredi_ws, the Bareclaw tunneler binary", "seen": "AUG 29" },
+        { "type": "file", "category": "host", "value": "mangoapi.php", "context": "Sawfly web shell filename; dropped at /%SITE_SERVICE_ACCOUNT%/ingredi/app/laravel/public/", "seen": "AUG 29" },
+        { "type": "file", "category": "host", "value": "ingredi_ws", "context": "Bareclaw tunneler binary, executed from /tmp/ingredi_ws", "seen": "AUG 29" },
+        { "type": "file", "category": "host", "value": "/usr/bin/dbus-authd", "context": "SUID-enabled copy of /bin/sh planted for root persistence", "seen": "AUG 29" },
+        { "type": "file", "category": "host", "value": "/home/bomgar/sbin/post_boot.d/zz-root-persist", "context": "Persistence script placed in the startup-script directory", "seen": "AUG 29" },
+        { "type": "port", "category": "net", "value": "TCP 19800", "context": "Bareclaw tunneler's localhost listener port, reached through modified HAProxy config (/ns/config/haproxy.conf)", "seen": "AUG 29" }
       ]
     },
     {
@@ -42,7 +46,9 @@
       ],
       "action": "Patch PAN-OS branches 10.2, 11.1, 11.2, 12.1, and 12.2 to the fixed build immediately; restrict management-interface access to trusted internal addresses only, ideally through a dedicated jump box, since no other workaround exists; audit for authenticated sessions against the management interface from unexpected source addresses given the exploitation requires valid authentication.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-0322", "context": "PAN-OS authenticated code injection via management interface, root privilege execution, CVSS v4.0 8.6", "seen": "OCT 14" }
+        { "type": "ip", "category": "net", "value": "66[.]42[.]72[.]14", "context": "One of three attacker IP addresses Palo Alto Networks shared as exploiting CVE-2026-0322", "seen": "OCT 14" },
+        { "type": "ip", "category": "net", "value": "208[.]83[.]239[.]114", "context": "Attacker IP address exploiting CVE-2026-0322, per Palo Alto Networks", "seen": "OCT 14" },
+        { "type": "ip", "category": "net", "value": "149[.]248[.]47[.]234", "context": "Attacker IP address exploiting CVE-2026-0322, per Palo Alto Networks", "seen": "OCT 14" }
       ]
     },
     {
@@ -62,9 +68,14 @@
       ],
       "action": "Apply Ahsay's most current hotfix (verify directly against Ahsay's advisory, not just a version number, given the history of incomplete patches) immediately; restrict network access to the AhsayCBS console; check hosts for suspicious child processes of cbssvcX64.exe, unexpected JSP web shells, and an Edge-disguised executable consistent with XMRig; given AhsayCBS is backup infrastructure, treat any confirmed compromise as a threat to backup integrity, not just the console itself.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-105133 / CVE-2026-105134", "context": "AhsayCBS authentication bypass (checkSysPwd) chained with command injection (Replication Receiver /rps/api/json/UpdateReceivers.do), unauthenticated SYSTEM code execution", "seen": "OCT 15" },
-        { "type": "tool", "category": "host", "value": "XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)", "context": "Payload deployed post-exploitation", "seen": "OCT 7" },
-        { "type": "detection", "category": "host", "value": "Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host", "context": "Exploitation indicators per Huntress", "seen": "OCT 7" }
+        { "type": "hash", "category": "hash", "value": "4dcb0202fe8b2d4d7b183764e38184cd6ed50132786cc7e7d1f7f4bce1dd6f3d", "context": "SHA-256 of edge.exe, the XMRig cryptominer disguised as Microsoft Edge", "seen": "OCT 7" },
+        { "type": "hash", "category": "hash", "value": "05f69ae6b2b89c1c4dcf836bff032232f11bf0109f2b498e2345045d06139034", "context": "SHA-256 of msedge.exe, a modified NSSM utility used to run the miner as a Windows service", "seen": "OCT 7" },
+        { "type": "hash", "category": "hash", "value": "481728a7c9c4c02be07051d9c1958d902ea6397ebb8952ab83944818e3d25d21", "context": "SHA-256 of Taskgmr.ps1, the PowerShell script that hides the miner from Task Manager", "seen": "OCT 7" },
+        { "type": "file", "category": "host", "value": "edge.exe ; msedge.exe ; Taskgmr.ps1 ; WinRing0x64.sys", "context": "Malicious files dropped to %TEMP%; WinRing0x64.sys is the vulnerable kernel driver abused for Task Manager concealment", "seen": "OCT 7" },
+        { "type": "net", "category": "net", "value": "imagefiles-backup[.]oss-ap-southeast-7[.]aliyuncs[.]com", "context": "Hosting domain for the miner payload, PowerShell script, and config.json used in this campaign", "seen": "OCT 7" },
+        { "type": "net", "category": "net", "value": "xmr[.]kryptex[.]network", "context": "XMRig mining pool domain used by the deployed miner", "seen": "OCT 7" },
+        { "type": "ip", "category": "net", "value": "51.195.127[.]124", "context": "Mining pool IP:port (8029) the deployed XMRig miner connects to", "seen": "OCT 7" },
+        { "type": "service", "category": "host", "value": "MicrosoftEdgeUpdateSvc", "context": "Malicious Windows service name designed to resemble the legitimate edgeupdate service", "seen": "OCT 7" }
       ]
     },
     {
@@ -82,11 +93,8 @@
         { "label": "SecurityWeek", "url": "https://www.securityweek.com/cisco-warns-of-exploited-secure-email-gateway-vulnerability/" },
         { "label": "CyberExperts (Oct 15)", "url": "https://cyberexperts.com/2026-10-15-cisco-email-gateway/" }
       ],
-      "action": "Confirm Secure Email Gateway is on 15.5.5-014, 16.5.0-780, or later, and that Content Scanner Tools is updated past 25.3.0.5525 — if File Reputation is enabled on an older Content Scanner Tools version, treat the gateway as exposed regardless of overall AsyncOS patch level; since Cisco contacted some Secure Email Cloud customers directly about confirmed malicious activity, verify with Cisco whether your deployment was among those notified; given this is the second exploited flaw in this product line within a month, schedule a full review of Secure Email Gateway's patch history rather than tracking CVEs individually.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-76519", "context": "Cisco Secure Email Gateway arbitrary file write via crafted email attachment in Advanced Malware Protection, root RCE, CVSS 9.8", "seen": "OCT 14" },
-        { "type": "patch", "category": "host", "value": "Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)", "context": "Fixed releases", "seen": "OCT 14" }
-      ]
+      "action": "Confirm Secure Email Gateway is on 15.5.5-014, 16.5.0-780, or later, and that Content Scanner Tools is updated past 25.3.0.5525 — if File Reputation is enabled on an older Content Scanner Tools version, treat the gateway as exposed regardless of overall AsyncOS patch level; since Cisco contacted some Secure Email Cloud customers directly about confirmed malicious activity, verify with Cisco whether your deployment was among those notified; given this is the second exploited flaw in this product line within a month, schedule a full review of Secure Email Gateway's patch history rather than tracking CVEs individually. No public atomic indicator (attacker IP, domain, or file hash) has been published for this exploitation as of this writing; Cisco's advisory points only to generic system-log compromise-scan messages (grep \"System Security\" system_logs) rather than a specific artifact.",
+      "iocs": []
     },
     {
       "id": "atlassian-cve-21589",
@@ -103,9 +111,10 @@
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/10/atlassian-data-center-flaw-draws.html" },
         { "label": "Rapid7", "url": "https://www.rapid7.com/blog/post/etr-cve-2026-21589-critical-unauthenticated-arbitrary-file-access-in-atlassian-products/" }
       ],
-      "action": "Patch self-hosted Atlassian Data Center products immediately (e.g., Bitbucket 9.4.26/10.2.8/10.5.1, Confluence 9.2.26/10.2.19 — confirm the fixed version for each affected product against Atlassian's advisory); review web-server access logs for requests to known sensitive file paths (configuration files, credential stores) since Oct 6, since public PoC scripts exist; given the two-hour exploitation window observed here, prioritize automated patch deployment for any internet-facing Data Center instance.",
+      "action": "Patch self-hosted Atlassian Data Center products immediately (e.g., Bitbucket 9.4.26/10.2.8/10.5.1, Confluence 9.2.26/10.2.19 — confirm the fixed version for each affected product against Atlassian's advisory); review web-server access logs since Oct 6 for requests targeting WEB-INF/classes/crowd.properties and for double-URL-decoded path-traversal sequences; given the two-hour exploitation window observed here, prioritize automated patch deployment for any internet-facing Data Center instance. No attacker IP or file hash has been publicly disclosed for this exploitation; the indicators below are the request pattern/target path watchTowr documented, not a specific attacker artifact.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-21589", "context": "Atlassian Data Center unauthenticated arbitrary file access from the web root (no directory listing), affecting Jira/Confluence/Bitbucket/Bamboo/Crowd/Crucible/Fisheye, CVSS v4.0 9.3", "seen": "OCT 15" }
+        { "type": "file", "category": "host", "value": "WEB-INF/classes/crowd.properties", "context": "File watchTowr demonstrated reading via CVE-2026-21589, exposing Crowd credentials; requests for this path in access logs are a strong exploitation signal", "seen": "OCT 6" },
+        { "type": "pattern", "category": "net", "value": "(?is).*(?:/|\\\\|::|%(?:25)*(?:2f|5c)|(?::|%(?:25)*3a){2})(?:\\.|%(?:25)*2e){2}", "context": "Vendor-supplied regex for detecting double-URL-decoded path-traversal sequences in raw access logs", "seen": "OCT 6" }
       ]
     },
     {
@@ -122,10 +131,8 @@
       "sources": [
         { "label": "ScWorld tracker references (Oct 14 update)", "url": "https://konbriefing.com/en-topics/cyber-attacks.html" }
       ],
-      "action": "IDCF Cloud customers should treat 'no evidence data was taken' as provisional, not a clearance, and continue their own independent assessment of potential exposure; do not rely on the attacker's 225-database/3.6PB figure as verified scope either; organizations evaluating cloud-provider incident communications generally should distinguish 'no evidence of X' from 'X did not happen' as a matter of course.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted", "context": "Status update to the IDCF Cloud incident originally reported in Issue 012", "seen": "OCT 14" }
-      ]
+      "action": "IDCF Cloud customers should treat 'no evidence data was taken' as provisional, not a clearance, and continue their own independent assessment of potential exposure; do not rely on the attacker's 225-database/3.6PB figure as verified scope either; organizations evaluating cloud-provider incident communications generally should distinguish 'no evidence of X' from 'X did not happen' as a matter of course. No technical atomic indicator (ransomware family artifact, attacker IP, or file hash) has been publicly disclosed for this incident as of this writing — see Issue 012 for the original report.",
+      "iocs": []
     },
     {
       "id": "nikkei-breach",
@@ -141,10 +148,8 @@
       "sources": [
         { "label": "Rescana", "url": "https://www.rescana.com/post/nikkei-inc-cloud-data-breach-analysis-credential-compromise-exposes-1-83-million-records-in-october-2026" }
       ],
-      "action": "Nikkei should investigate whether its three breaches within one month share a common root cause (credential management, cloud access controls, or detection gap) rather than treating each as isolated; affected individuals should monitor for misuse of exposed data despite the company's current 'no evidence' assessment; organizations generally should rotate and audit cloud-development credentials on a schedule independent of any single incident, given credential theft was the entry point here.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized access to a cloud development environment via stolen credentials", "context": "Entry vector for the disclosed breach", "seen": "OCT 16" }
-      ]
+      "action": "Nikkei should investigate whether its three breaches within one month share a common root cause (credential management, cloud access controls, or detection gap) rather than treating each as isolated; affected individuals should monitor for misuse of exposed data despite the company's current 'no evidence' assessment; organizations generally should rotate and audit cloud-development credentials on a schedule independent of any single incident, given credential theft was the entry point here. No attacker IP, domain, or credential-theft-malware hash has been publicly disclosed for this incident as of this writing.",
+      "iocs": []
     },
     {
       "id": "ampath-labs-bytetobreach",
@@ -161,10 +166,9 @@
         { "label": "BankInfoSecurity", "url": "https://www.bankinfosecurity.com/pathology-lab-confirms-hack-but-disputes-data-theft-claims-a-33106" },
         { "label": "mybroadband.co.za", "url": "https://mybroadband.co.za/news/security/672153-attackers-claim-to-have-stolen-80-million-south-african-patient-records-in-massive-ampath-laboratories-data-breach.html" }
       ],
-      "action": "Do not download or open any files presented as proof/sample data from this claim, given confirmed malware in at least one sample; Ampath patients should monitor for fraudulent communication referencing personal/medical-aid details per the company's own notice, independent of the disputed record count; researchers and journalists verifying this claim should request verification through safe, sandboxed channels rather than direct download.",
+      "action": "Do not download or open any files presented as proof/sample data from this claim, given confirmed malware in at least one sample; Ampath patients should monitor for fraudulent communication referencing personal/medical-aid details per the company's own notice, independent of the disputed record count; researchers and journalists verifying this claim should request verification through safe, sandboxed channels rather than direct download. No hash of the malware-laden sample file has been published; MyBroadband's scan confirmed backdoor/trojan content but did not release a file hash.",
       "iocs": [
-        { "type": "tool", "category": "host", "value": "ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)", "context": "Group claiming the Ampath Laboratories database theft", "seen": "OCT 13" },
-        { "type": "detection", "category": "host", "value": "Backdoor and trojan malware embedded in files presented as 'sample' proof data for this breach claim", "context": "Confirmed by independent scan of a posted sample file", "seen": "OCT 13" }
+        { "type": "handle", "category": "net", "value": "@ByteToBreach", "context": "Telegram handle used by the actor claiming the Ampath Laboratories theft; prior aliases include CvHNWwEG and inesslopez (per KELA research)", "seen": "OCT 13" }
       ]
     },
     {
@@ -182,10 +186,8 @@
         { "label": "Tageskarte", "url": "https://www.tageskarte.io/detail/seetelhotels-meldet-ransomware-angriff-auf-interne-it-systeme.html" },
         { "label": "ahgz.de", "url": "https://www.ahgz.de/hotellerie/news/digitale-kriminalitaet-cyberangriff-auf-seetelhotels-320393" }
       ],
-      "action": "SeetelHotels guests and business partners should watch for official confirmation of the Incransom claim before treating the passport/payment/medical-dietary data exposure as confirmed; hospitality operators generally should pre-establish a ransom-negotiation policy aligned with national law-enforcement guidance before an incident, following SeetelHotels' stated approach as a reference point; monitor Incransom's leak site for proof files substantiating scope.",
-      "iocs": [
-        { "type": "tool", "category": "host", "value": "Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)", "context": "Group that listed SeetelHotels on its leak site following the Oct 10-11 intrusion", "seen": "OCT 14" }
-      ]
+      "action": "SeetelHotels guests and business partners should watch for official confirmation of the Incransom claim before treating the passport/payment/medical-dietary data exposure as confirmed; hospitality operators generally should pre-establish a ransom-negotiation policy aligned with national law-enforcement guidance before an incident, following SeetelHotels' stated approach as a reference point; monitor Incransom's leak site for proof files substantiating scope. No encryptor hash, ransom-note filename, or leak-site domain for Incransom has been publicly documented in available reporting on this specific intrusion as of this writing.",
+      "iocs": []
     },
     {
       "id": "midnight-mimosa-android",
@@ -204,9 +206,11 @@
       ],
       "action": "Avoid budget MediaTek-based Android devices from unverified sellers, especially those claiming flagship model names at low prices; if a device's Google Play Store app is missing, disabled, or won't function, treat that as a strong indicator of firmware-level compromise rather than a minor software glitch; organizations issuing low-cost Android devices to staff should source only from verified OEM channels and scan for the named package names (com.android.system.lite and its variants) before deployment.",
       "iocs": [
-        { "type": "package", "category": "host", "value": "com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot", "context": "Hidden firmware-level system app (and renamed variants) running as the Midnight Mimosa enabler", "seen": "OCT 12" },
-        { "type": "package", "category": "host", "value": "com.mobile.applock.wt", "context": "Related obfuscated dropper associated with the campaign, though not confirmed as root cause", "seen": "OCT 12" },
-        { "type": "detection", "category": "host", "value": "Developer accounts 'fivedev' and 'CPS Developer'; certificate name 'Shenzhen Zediel' on some system-app builds; Google Play Store disabled or non-functional on a budget Android device", "context": "Identifiers associated with the campaign per Bitdefender", "seen": "OCT 12" }
+        { "type": "package", "category": "host", "value": "com.android.system.lite", "context": "Hidden firmware-level system app acting as the Midnight Mimosa enabler", "seen": "OCT 12" },
+        { "type": "package", "category": "host", "value": "com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot", "context": "Renamed variants of the Midnight Mimosa enabler package", "seen": "OCT 12" },
+        { "type": "package", "category": "host", "value": "com.mobile.applock.wt", "context": "Related obfuscated dropper posing as an app lock, associated with the campaign though not confirmed as root cause", "seen": "OCT 12" },
+        { "type": "handle", "category": "net", "value": "fivedev ; CPS Developer", "context": "Google Play developer account names used to publish the ad-fraud apps sharing Midnight Mimosa's code", "seen": "OCT 12" },
+        { "type": "cert", "category": "host", "value": "Shenzhen Zediel", "context": "Signing certificate name found on some infected system-app builds (Bitdefender notes this does not prove the named company was responsible)", "seen": "OCT 12" }
       ]
     }
   ]

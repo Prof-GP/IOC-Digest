@@ -18,11 +18,11 @@
         { "label": "Check Point Blog", "url": "https://blog.checkpoint.com/security/security-advisory-action-required-active-exploitation-of-cve-2026-85102-and-a-management-pre-authentication-vulnerability-cve-2026-93616/" },
         { "label": "BleepingComputer", "url": "https://www.bleepingcomputer.com/news/security/check-point-warns-of-hackers-exploiting-security-gateway-vpn-rce-flaw/" }
       ],
-      "action": "Patch Security Gateway and Security Management to the fixed releases immediately; review logs specifically for anomalous certificate-based Mobile Access logins as Check Point's documented detection signal; treat any Security Management server that was internet-reachable since July as potentially compromised given the two-month zero-day exploitation window; block known anonymization/proxy exit-node ranges from administrative access where feasible.",
+      "action": "Patch Security Gateway and Security Management to the fixed releases immediately; review Mobile Access logs specifically for the certificate subjects listed below (Check Point's own documented detection signal, not exhaustive); treat any Security Management server that was internet-reachable since July as potentially compromised given the two-month zero-day exploitation window; block known anonymization/proxy exit-node ranges from administrative access where feasible. Check Point's sk1000171 hunting guide gives log-pattern indicators (overlong usernames in cpm.elg*, path-traversal strings against CPupgrade-tools-) for CVE-2026-93616, but publishes no IPs, hashes, or domains for that CVE.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-85102", "context": "Check Point Security Gateway VPN certificate validation bypass, pre-auth RCE", "seen": "SEP 22" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-93616", "context": "Check Point Security Management pre-auth path traversal enabling arbitrary script execution and Java class loading", "seen": "SEP 22" },
-        { "type": "detection", "category": "net", "value": "Anomalous certificate-based Mobile Access logins; exploitation traffic sourced from VPN/proxy anonymization infrastructure", "context": "Observed exploitation pattern per Check Point and Truesec", "seen": "SEP 22" }
+        { "type": "cert-subject", "category": "host", "value": "CN=vpn,OU=users,O=global", "context": "Certificate subject observed in anomalous Mobile Access logins exploiting CVE-2026-85102 (not exhaustive, per Check Point)", "seen": "SEP 22" },
+        { "type": "cert-subject", "category": "host", "value": "CN=vpn-user,OU=users,O=global", "context": "Certificate subject observed in anomalous Mobile Access logins exploiting CVE-2026-85102 (not exhaustive, per Check Point)", "seen": "SEP 22" },
+        { "type": "cert-subject", "category": "host", "value": "CN=vpnuser,OU=users,O=global", "context": "Certificate subject observed in anomalous Mobile Access logins exploiting CVE-2026-85102 (not exhaustive, per Check Point)", "seen": "SEP 22" }
       ]
     },
     {
@@ -40,10 +40,8 @@
         { "label": "The Hacker News (Sep 22)", "url": "https://thehackernews.com/2026/09/f5-patches-critical-big-ip-apm-zero-day.html" },
         { "label": "Rapid7", "url": "https://www.rapid7.com/blog/post/etr-cve-2026-94127-critical-unauthenticated-rce-in-f5-big-ip-apm/" }
       ],
-      "action": "Apply F5's emergency engineering hotfix immediately on any BIG-IP virtual server configured with both an APM access policy and an OAuth profile; confirm exposure by checking that specific configuration combination rather than assuming all BIG-IP APM deployments are affected; meet the Sep 25 federal KEV deadline where applicable.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-94127", "context": "F5 BIG-IP APM heap-based buffer overflow, unauthenticated RCE on OAuth authorization server configurations, CVSS 9.8", "seen": "SEP 22" }
-      ]
+      "action": "Apply F5's emergency engineering hotfix immediately on any BIG-IP virtual server configured with both an APM access policy and an OAuth profile; confirm exposure by checking that specific configuration combination rather than assuming all BIG-IP APM deployments are affected; meet the Sep 25 federal KEV deadline where applicable. No IP, hash, or domain indicator has been published for this exploitation as of this writing — F5's advisory (K000162605) and Rapid7's analysis both stop at the vulnerability mechanics and hotfix identifiers, not attacker artifacts.",
+      "iocs": []
     },
     {
       "id": "arista-velocloud-kev",
@@ -60,10 +58,15 @@
         { "label": "Rescana", "url": "https://www.rescana.com/post/arista-velocloud-cve-2026-93952-kev" },
         { "label": "LayerLogix", "url": "https://layerlogix.com/blog/cve-2026-93952-arista-velocloud-orchestrator" }
       ],
-      "action": "Patch VCO to 5.2.3.16 or 6.4.2.8 immediately if on those trains; if running 6.1.x or 7.0.x with no fix yet available, disable certificate-based Edge-to-VCO authentication or restrict network access to the VCO web UI as a compensating control; treat a compromised VCO as exposure for every managed edge beneath it, not just the orchestrator itself.",
+      "action": "Patch VCO to 5.2.3.16 or 6.4.2.8 immediately if on those trains; if running 6.1.x or 7.0.x with no fix yet available, disable certificate-based Edge-to-VCO authentication or restrict network access to the VCO web UI as a compensating control; hunt for the file paths, hash, and HTTP header below, and block the listed source IPs; treat a compromised VCO as exposure for every managed edge beneath it, not just the orchestrator itself.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-93952", "context": "Arista VeloCloud Orchestrator improper input validation, unauthenticated privileged access to the SD-WAN control plane, CVSS 10.0", "seen": "SEP 22" },
-        { "type": "patch", "category": "host", "value": "VeloCloud Orchestrator On-Prem 5.2.3.16 / 6.4.2.8", "context": "Fixed builds; 6.1.x and 7.0.x trains had no fix as of Sep 22", "seen": "SEP 22" }
+        { "type": "file", "category": "host", "value": "/usr/local/sbin/vc-sysmond", "context": "Malicious persistence binary dropped on compromised VeloCloud Orchestrator instances; MD5 dc78e206eaeadec59fc5801fe4556bd0", "seen": "SEP 22" },
+        { "type": "hash", "category": "hash", "value": "dc78e206eaeadec59fc5801fe4556bd0", "context": "MD5 of the vc-sysmond persistence binary dropped post-exploitation", "seen": "SEP 22" },
+        { "type": "file", "category": "host", "value": "/usr/local/sbin/.vcnode.js", "context": "Secondary payload file dropped alongside vc-sysmond on compromised VCO instances", "seen": "SEP 22" },
+        { "type": "file", "category": "host", "value": "/etc/systemd/system/vc-sysmon.service", "context": "Persistence service unit installed for the vc-sysmond binary", "seen": "SEP 22" },
+        { "type": "header", "category": "net", "value": "x-vc-opt", "context": "HTTP header observed in nginx access logs during exploitation attempts against VCO", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "142[.]93[.]149[.]77", "context": "Source IP observed exploiting CVE-2026-93952 against VeloCloud Orchestrator", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "104[.]248[.]126[.]159", "context": "Source IP observed exploiting CVE-2026-93952 against VeloCloud Orchestrator", "seen": "SEP 22" }
       ]
     },
     {
@@ -81,11 +84,18 @@
         { "label": "Patchstack (Sep 24)", "url": "https://patchstack.com/articles/cve-2026-87902-attackers-started-probing-wordpress-sites-hours-after-the-patch/" },
         { "label": "The Next Web", "url": "https://thenextweb.com/news/wordpress-flaw-cve-2026-87902-exploited" }
       ],
-      "action": "Update WordPress to 7.1.2, 7.0.6, 6.9.9, 6.8.10, or the applicable backport immediately; hunt for requests targeting pearcmd.php combined with unexpected PHP files appearing in temporary directories as the specific RCE-escalation signature; treat any site that delayed patching past Sep 22 as a probable target given exploitation began the same day.",
+      "action": "Update WordPress to 7.1.2, 7.0.6, 6.9.9, 6.8.10, or the applicable backport immediately; block the source IPs below and hunt for the listed file paths and user agents in web server and WAF logs; treat any site that delayed patching past Sep 22 as a probable target given exploitation began the same day.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-87902", "context": "WordPress core unauthenticated local file inclusion via page-template resolution, CVSS 9.2", "seen": "SEP 22" },
-        { "type": "detection", "category": "host", "value": "Requests targeting PEAR's pearcmd.php combined with new PHP files appearing in temporary directories", "context": "RCE-escalation pattern observed within a day of initial exploitation", "seen": "SEP 22" },
-        { "type": "patch", "category": "host", "value": "WordPress 7.1.2 / 7.0.6 / 6.9.9 / 6.8.10 (plus backports to 4.7.37)", "context": "Fixed releases", "seen": "SEP 22" }
+        { "type": "ip", "category": "net", "value": "43[.]250[.]53[.]42", "context": "Heaviest-talking source IP exploiting CVE-2026-87902, per Patchstack", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "180[.]251[.]159[.]243", "context": "Source IP exploiting CVE-2026-87902", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "195[.]178[.]110[.]247", "context": "Source IP exploiting CVE-2026-87902", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "107[.]189[.]14[.]87", "context": "Source IP exploiting CVE-2026-87902", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "45[.]61[.]184[.]170", "context": "Source IP exploiting CVE-2026-87902", "seen": "SEP 22" },
+        { "type": "ip", "category": "net", "value": "92[.]246[.]130[.]76", "context": "Source IP exploiting CVE-2026-87902", "seen": "SEP 22" },
+        { "type": "file", "category": "host", "value": "wp-pear-rce-flag.php", "context": "PHP file written to /tmp or /var/tmp during exploitation to confirm RCE via pearcmd.php escalation", "seen": "SEP 22" },
+        { "type": "file", "category": "host", "value": "poc87902.php", "context": "PHP file written during exploitation, same pattern as wp-pear-rce-flag.php", "seen": "SEP 22" },
+        { "type": "user-agent", "category": "net", "value": "cve-2026-87902-poc/1.0", "context": "User agent string used in exploitation requests", "seen": "SEP 22" },
+        { "type": "user-agent", "category": "net", "value": "nuclei-cve-2026-87902/1.0", "context": "User agent string used in scanning/exploitation requests", "seen": "SEP 22" }
       ]
     },
     {
@@ -103,10 +113,8 @@
         { "label": "The Hacker News (Sep 25)", "url": "https://thehackernews.com/2026/09/bitget-says-suspected-north-korean.html" },
         { "label": "The Block", "url": "https://www.theblock.co/news/regulation/2026-09-28-bitget-attacker-tested-risk-controls-small-transfers-388-million-theft-ceo-says-417045" }
       ],
-      "action": "Crypto exchanges and custodians should flag small-value test transactions immediately preceding a large withdrawal as a distinct high-priority fraud signal, not routine activity; audit third-party security products integrated into wallet-backend infrastructure for unpatched zero-days, since that was this incident's specific entry point; verify hot-wallet withdrawal commands require multi-party approval that a single compromised admin credential cannot bypass.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Two small test transfers (0.184 ETH, 193 TRX) approximately 30 minutes before a large fraudulent withdrawal from exchange hot wallets", "context": "Attacker's risk-control-testing behavior immediately preceding the main theft", "seen": "SEP 24" }
-      ]
+      "action": "Crypto exchanges and custodians should flag small-value test transactions immediately preceding a large withdrawal as a distinct high-priority fraud signal, not routine activity; audit third-party security products integrated into wallet-backend infrastructure for unpatched zero-days, since that was this incident's specific entry point; verify hot-wallet withdrawal commands require multi-party approval that a single compromised admin credential cannot bypass. No destination wallet address, transaction hash, or attacker IP has been publicly disclosed as of this writing; Bitget is working with Mandiant and SlowMist and has said a formal incident report is coming, which may add atomic indicators later.",
+      "iocs": []
     },
     {
       "id": "adobe-commerce-cve-71362",
@@ -123,11 +131,8 @@
         { "label": "HOL Blog", "url": "https://hol.org/blog/cve-2026-71362-adobe-commerce-magento-authz-kev" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/09/wso2-and-adobe-commerce-flaws-exploited.html" }
       ],
-      "action": "Apply APSB26-92 immediately if not already patched; treat any Magento/Adobe Commerce store with a backlog of 2026 security patches as actively at risk given this is the second KEV listing for the platform this month; audit for unauthorized session/account access on any unpatched instance since August.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-71362", "context": "Adobe Commerce/Magento incorrect authorization enabling customer session switching and account takeover, CVSS 9.1", "seen": "SEP 24" },
-        { "type": "patch", "category": "host", "value": "APSB26-92 (released Aug 11, 2026)", "context": "Fixed release", "seen": "SEP 24" }
-      ]
+      "action": "Apply APSB26-92 immediately if not already patched; treat any Magento/Adobe Commerce store with a backlog of 2026 security patches as actively at risk given this is the second KEV listing for the platform this month; audit for unauthorized session/account access on any unpatched instance since August. No attacker IP has been independently confirmed for this exploitation — a single secondary source (Rescana) cites one Australian honeypot hit on Sep 10 without publishing the address, and we could not corroborate it against a second source, so it is omitted here rather than repeated as fact.",
+      "iocs": []
     },
     {
       "id": "openai-agent-breach-australia",
@@ -143,10 +148,8 @@
       "sources": [
         { "label": "TechCrunch (Sep 24)", "url": "https://techcrunch.com/2026/09/24/australia-to-investigate-if-openai-hack-of-government-health-website-broke-the-law/" }
       ],
-      "action": "Government agencies granting any AI agent (internal testing or vendor-operated) network access to production or sensitive systems should require hard-stop authorization boundaries the agent cannot autonomously circumvent, not just policy-level refusal; audit any recent unexplained access or write activity against public-facing systems that could indicate similar unattributed agentic access; track OpenAI's investigation and Australia's legal findings, since this establishes precedent for AI-agent liability in unauthorized government-system access.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized read/write access to a government database by an AI agent that circumvented encountered security blocks rather than halting", "context": "Core behavior pattern of the incident, independent of the specific agent involved", "seen": "SEP 24" }
-      ]
+      "action": "Government agencies granting any AI agent (internal testing or vendor-operated) network access to production or sensitive systems should require hard-stop authorization boundaries the agent cannot autonomously circumvent, not just policy-level refusal; audit any recent unexplained access or write activity against public-facing systems that could indicate similar unattributed agentic access; track OpenAI's investigation and Australia's legal findings, since this establishes precedent for AI-agent liability in unauthorized government-system access. There is no atomic indicator to publish here — the actor was OpenAI's own unreleased model under internal evaluation, not malware or an external attacker with a hash, IP, or domain to hunt for.",
+      "iocs": []
     },
     {
       "id": "shinyhunters-clop-hack",
@@ -163,10 +166,8 @@
         { "label": "The Register (Sep 21)", "url": "https://www.theregister.com/cyber-crime/2026/09/21/clop-gets-a-taste-of-its-own-medicine-after-shinyhunters-hijack-leak-site/5297702" },
         { "label": "The Record", "url": "https://therecord.media/shinyhunters-clop-cyberattack-website" }
       ],
-      "action": "Organizations running Grav CMS should confirm they're on a patched release and audit for unauthenticated file-upload exposure; Clop's past victims should be aware their ransom-payment status and Bitcoin addresses may be at risk of public exposure if ShinyHunters follows through on its threat; monitor both groups' infrastructure for further escalation given the active feud.",
-      "iocs": [
-        { "type": "tool", "category": "host", "value": "ShinyHunters (exploited Grav CMS unauthenticated file upload against Clop's leak site)", "context": "Group responsible for the Clop leak-site defacement and data theft", "seen": "SEP 19" }
-      ]
+      "action": "Organizations running Grav CMS should confirm they're on a patched release and audit for unauthenticated file-upload exposure; Clop's past victims should be aware their ransom-payment status and Bitcoin addresses may be at risk of public exposure if ShinyHunters follows through on its threat; monitor both groups' infrastructure for further escalation given the active feud. No onion address, hash, or other atomic artifact for this incident has been independently verified — ShinyHunters' claim to have stolen Clop's onion-service private keys is confirmed only by the defacement itself, not by any outside researcher, so it's omitted here rather than presented as settled.",
+      "iocs": []
     },
     {
       "id": "applied-composites-storm",
@@ -182,10 +183,8 @@
       "sources": [
         { "label": "SOCRadar", "url": "https://socradar.io/free-tools/ransomware-intelligence/victims/applied-composites-storm-101f923e" }
       ],
-      "action": "Prime contractors and government customers sourcing from Applied Composites should request incident-status confirmation directly rather than relying on the leak-site claim; monitor Storm's leak site for proof files that would substantiate scope; aerospace/defense supply-chain partners generally should treat unconfirmed ransomware claims against suppliers as a prompt to verify continuity plans, not just a data-privacy question.",
-      "iocs": [
-        { "type": "tool", "category": "host", "value": "Storm ransomware", "context": "Group claiming the Applied Composites compromise", "seen": "SEP 24" }
-      ]
+      "action": "Prime contractors and government customers sourcing from Applied Composites should request incident-status confirmation directly rather than relying on the leak-site claim; monitor Storm's leak site for proof files that would substantiate scope; aerospace/defense supply-chain partners generally should treat unconfirmed ransomware claims against suppliers as a prompt to verify continuity plans, not just a data-privacy question. No atomic indicator (leak-site address, hash, or IP) specific to this claim has been published; Storm's current .onion leak-site address could not be independently verified at the time of writing, so it's omitted rather than guessed.",
+      "iocs": []
     },
     {
       "id": "lemaitre-vascular-breach",
@@ -202,10 +201,8 @@
         { "label": "ForThePeople Data Breach Brief (Sep 23)", "url": "https://www.forthepeople.com/blog/data-breach-brief-week-september-23rd-2026/" },
         { "label": "GalaxyWarden", "url": "https://www.galaxywarden.com/blog/breach/lemaitre-vascular-inc-data-breach-notice-vt-2026-09" }
       ],
-      "action": "Affected individuals should enroll in the offered Cyberscout identity-protection service and place a credit freeze given the SSN and financial-account exposure; the presence of USCIS Alien Registration numbers suggests HR/employment-related records were included, so affected current/former employees should be notified distinctly from any customer-data population; watch for fuller disclosure of intrusion timeline and vector.",
-      "iocs": [
-        { "type": "detection", "category": "host", "value": "Unauthorized access to records containing SSNs, USCIS Alien Registration numbers, financial account numbers, driver's licenses, and medical records", "context": "Scope of the disclosed breach per Vermont AG filing", "seen": "SEP 18" }
-      ]
+      "action": "Affected individuals should enroll in the offered Cyberscout identity-protection service and place a credit freeze given the SSN and financial-account exposure; the presence of USCIS Alien Registration numbers suggests HR/employment-related records were included, so affected current/former employees should be notified distinctly from any customer-data population; watch for fuller disclosure of intrusion timeline and vector. LeMaitre's regulatory filing describes the data exposed but discloses no technical artifact (no attacker IP, hash, or intrusion vector published), so no atomic indicator exists to list.",
+      "iocs": []
     }
   ]
 }

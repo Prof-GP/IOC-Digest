@@ -5,6 +5,81 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
+      "id": "indicator--d2597201-cfaa-5c8a-a5ec-c640ff648eb3",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "\"Plex2Shell\" exploit chain hit vulnerable Plex Media Servers within a day of PoC release, dropped cryptominers: IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2",
+      "description": "Source: https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers; https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure",
+      "pattern": "[ipv4-addr:value = '45.194.92.222']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0ae79b0b-d486-5404-a1db-f32188d9b984",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "\"Plex2Shell\" exploit chain hit vulnerable Plex Media Servers within a day of PoC release, dropped cryptominers: IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2",
+      "description": "Source: https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers; https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure",
+      "pattern": "[ipv4-addr:value = '91.92.40.202']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--adbfba9a-1f93-52f5-a3e6-7b2f5d5d27c8",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "\"Plex2Shell\" exploit chain hit vulnerable Plex Media Servers within a day of PoC release, dropped cryptominers: IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2",
+      "description": "Source: https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers; https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure",
+      "pattern": "[ipv4-addr:value = '176.65.139.228']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--53b5690c-37ca-5722-8b87-fd428d82703b",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "ClickFix operators exploited a Siemens Software Center DLL side-loading flaw to deploy malware via fake verification prompts: Reported payload-hosting/C2 domain for the Romulus ClickFix campaign delivering this DLL side-loading attack",
+      "description": "Source: https://www.helpnetsecurity.com/2026/10/20/exploitation-siemens-software-center-vulnerability-cve-2026-110936/; https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html",
+      "pattern": "[domain-name:value = 'wizardexpensive.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--293b4711-4c14-5520-865b-bc71fc894b82",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "ClickFix operators exploited a Siemens Software Center DLL side-loading flaw to deploy malware via fake verification prompts: Reported distribution-channel IP serving the AllMyBasic.msi installer",
+      "description": "Source: https://www.helpnetsecurity.com/2026/10/20/exploitation-siemens-software-center-vulnerability-cve-2026-110936/; https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html",
+      "pattern": "[ipv4-addr:value = '2.27.248.127']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
       "id": "indicator--f69a0f81-955f-5c91-8136-9bc8d7662085",
       "created": "2026-10-23T00:00:00.000Z",
       "modified": "2026-10-23T00:00:00.000Z",

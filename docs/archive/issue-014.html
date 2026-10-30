@@ -416,8 +416,8 @@
   <a class="navlink" href="index.html">← ALL ISSUES</a>
   <button class="fchip on" data-type="all">ALL<b>20</b></button>
   <button class="fchip" data-type="hash">HASHES<b>1</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>3</b></button>
-  <button class="fchip" data-type="host">HOST<b>16</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>9</b></button>
+  <button class="fchip" data-type="host">HOST<b>10</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -453,7 +453,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch to PHP 8.5.12, 8.4.27, 8.3.36, or 8.2.35 immediately on every server; do not rely on WAF/CDN rules as a substitute since attackers are already mutating payloads around them; audit shared hosting environments specifically, since a single unpatched PHP binary on a host can expose every tenant site regardless of their own CMS patch status.</span>
+      <span>Patch to PHP 8.5.12, 8.4.27, 8.3.36, or 8.2.35 immediately on every server; do not rely on WAF/CDN rules as a substitute since attackers are already mutating payloads around them; audit shared hosting environments specifically, since a single unpatched PHP binary on a host can expose every tenant site regardless of their own CMS patch status. No atomic indicator (payload hash, dropped filename, attacker-controlled domain) has been publicly published for this campaign as of this writing — the flaws are memory-corruption bugs in PHP&#x27;s request handling, and Amazon&#x27;s only reported detail was that one probe originated from a commercial anonymization network, not a reusable IP. Detection here is necessarily behavioral (anomalous PHP worker crashes/restarts, unexpected memory-handling errors in logs) rather than indicator-based.</span>
       <button class="tbtn copy-inc" data-inc="php2shell-dual-cve">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -462,18 +462,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-109618">CVE-2026-109618</button></td>
-            <td class="ctx">Critical unauthenticated RCE in PHP core request handling, CVSS 9.2</td>
-            <td class="seen">OCT 21</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-109619">CVE-2026-109619</button></td>
-            <td class="ctx">Second critical unauthenticated RCE in PHP core request handling, CVSS 9.2</td>
-            <td class="seen">OCT 21</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -499,7 +488,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Upgrade any Plex Media Server instance to 1.43.3.10861 or later immediately — this has been fixed since August, so any instance still vulnerable in October was simply never updated; self-hosted/home-lab instances exposed directly to the internet are the highest-risk population and should not be reachable without a VPN or reverse proxy with authentication in front of them.</span>
+      <span>Upgrade any Plex Media Server instance to 1.43.3.10861 or later immediately — this has been fixed since August, so any instance still vulnerable in October was simply never updated; self-hosted/home-lab instances exposed directly to the internet are the highest-risk population and should not be reachable without a VPN or reverse proxy with authentication in front of them. If a process named myawesomeproxy, mylovelyminer, or x12345 is found running under the Plex Media Server account, treat the host as compromised, rebuild from a clean install rather than just patching, and rotate the Plex owner account&#x27;s credentials.</span>
       <button class="tbtn copy-inc" data-inc="plex2shell-kev-chain">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -509,28 +498,40 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-96652">CVE-2026-96652</button></td>
-            <td class="ctx">One of four chained Plex Media Server flaws enabling unauthenticated RCE (&quot;Plex2Shell&quot;)</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="myawesomeproxy">myawesomeproxy</button></td>
+            <td class="ctx">Reverse-proxy/backdoor payload dropped post-exploitation; routes the host&#x27;s outbound traffic externally</td>
             <td class="seen">OCT 17</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-96654">CVE-2026-96654</button></td>
-            <td class="ctx">Chained Plex Media Server flaw</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="mylovelyminer">mylovelyminer</button></td>
+            <td class="ctx">XMRig-based cryptominer payload process name observed alongside myawesomeproxy on compromised Plex hosts</td>
             <td class="seen">OCT 17</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-96655">CVE-2026-96655</button></td>
-            <td class="ctx">Chained Plex Media Server flaw</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="x12345">x12345</button></td>
+            <td class="ctx">Additional malicious child-process name reported spawned by the Plex Media Server binary post-exploitation</td>
             <td class="seen">OCT 17</td>
           </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-96656">CVE-2026-96656</button></td>
-            <td class="ctx">Chained Plex Media Server flaw</td>
-            <td class="seen">OCT 17</td>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="45[.]194[.]92[.]222">45[.]194[.]92[.]222</button></td>
+            <td class="ctx">IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2</td>
+            <td class="seen">OCT 17-21</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="91[.]92[.]40[.]202">91[.]92[.]40[.]202</button></td>
+            <td class="ctx">IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2</td>
+            <td class="seen">OCT 17-21</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="176[.]65[.]139[.]228">176[.]65[.]139[.]228</button></td>
+            <td class="ctx">IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2</td>
+            <td class="seen">OCT 17-21</td>
           </tr>
         </tbody>
       </table>
@@ -557,7 +558,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch FortiSIEM to 7.5.1 immediately regardless of the exploitation dispute — a public working PoC is sufficient reason to treat this as urgent; as an interim mitigation, restrict access to TCP port 27918 to trusted management networks only; do not wait for KEV listing or exploitation confirmation to act, since both are lagging indicators here.</span>
+      <span>Patch FortiSIEM to 7.5.1 immediately regardless of the exploitation dispute — a public working PoC is sufficient reason to treat this as urgent; as an interim mitigation, restrict access to TCP port 27918 to trusted management networks only; do not wait for KEV listing or exploitation confirmation to act, since both are lagging indicators here. No attacker IP, payload hash, or other atomic exploitation indicator has been publicly published for this CVE as of this writing — Horizon3.ai specifically noted that successful exploitation leaves no application-log trace, so detection has to rely on network-level monitoring of port 27918 rather than a signature or IOC list.</span>
       <button class="tbtn copy-inc" data-inc="fortisiem-poc-cve106173">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -566,10 +567,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-106173">CVE-2026-106173</button></td>
-            <td class="ctx">FortiSIEM RCE flaw with public PoC exploit; in-the-wild exploitation disputed across sources</td>
+          <tr data-type="net">
+            <td><span class="t-badge">port</span></td>
+            <td><button class="val" data-defanged="TCP/27918">TCP/27918</button></td>
+            <td class="ctx">gRPC service port exposing the vulnerable FortiSIEM component targeted by CVE-2026-106173; restrict access as mitigation</td>
             <td class="seen">OCT 20</td>
           </tr>
         </tbody>
@@ -649,7 +650,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Update Siemens Software Center to 4.0.9.8 or later and verify the installed version rather than assuming an update succeeded; train users to recognize and refuse ClickFix-style &quot;paste this command to verify you&#x27;re human&quot; prompts, since the infection vector here is social engineering, not a drive-by exploit; hunt for Software Center processes loading DLLs from non-standard directories.</span>
+      <span>Update Siemens Software Center to 4.0.9.8 or later and verify the installed version rather than assuming an update succeeded; train users to recognize and refuse ClickFix-style &quot;paste this command to verify you&#x27;re human&quot; prompts, since the infection vector here is social engineering, not a drive-by exploit; hunt for an archive.dll file sitting next to a Siemens Software Center installation that was never legitimately installed on that host, an AllMyBasic.msi installer, or a &quot;SM Software Provisioning Service&quot; folder under AppData\Local\Programs. Note archive.dll alone isn&#x27;t proof of compromise — it&#x27;s also a legitimate component in some unrelated Siemens/Vero Software products — so confirm by checking the calling executable and install path, not the filename alone.</span>
       <button class="tbtn copy-inc" data-inc="siemens-clickfix-dll">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -659,15 +660,33 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-110936">CVE-2026-110936</button></td>
-            <td class="ctx">Siemens Software Center DLL side-loading flaw via uncontrolled search path element, CVSS v4.0 8.4</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="AllMyBasic.msi">AllMyBasic.msi</button></td>
+            <td class="ctx">ClickFix-delivered installer that launches a legitimate signed Siemens Software Center binary as a loader for the malicious DLL</td>
             <td class="seen">OCT 19</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Romulus (ClickFix delivery platform)">Romulus (ClickFix delivery platform)</button></td>
-            <td class="ctx">Delivery platform used to serve the fake verification lure leading to DLL side-loading</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="archive.dll">archive.dll</button></td>
+            <td class="ctx">Malicious side-loaded DLL dropped alongside the legitimate signed Software Center binary; not inherently malicious outside this install path</td>
+            <td class="seen">OCT 19</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="%AppData%\Local\Programs\SM Software Provisioning Service">%AppData%\Local\Programs\SM Software Provisioning Service</button></td>
+            <td class="ctx">Reported persistence/staging folder created by the campaign</td>
+            <td class="seen">OCT 19</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">domain</span></td>
+            <td><button class="val" data-defanged="wizardexpensive[.]com">wizardexpensive[.]com</button></td>
+            <td class="ctx">Reported payload-hosting/C2 domain for the Romulus ClickFix campaign delivering this DLL side-loading attack</td>
+            <td class="seen">OCT 19</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="2[.]27[.]248[.]127">2[.]27[.]248[.]127</button></td>
+            <td class="ctx">Reported distribution-channel IP serving the AllMyBasic.msi installer</td>
             <td class="seen">OCT 19</td>
           </tr>
         </tbody>
@@ -787,7 +806,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Electric utilities and grid operators running MicroSCADA X SYS600 should apply the 10.8 update for CVE-2026-9852 and follow Hitachi advisory 8DBD000249&#x27;s specific mitigation steps for CVE-2026-9853 and CVE-2026-9854, since no full vendor patch exists yet for the RBAC privilege-escalation flaw on the current version; segment SCADA management interfaces from general IT networks regardless of patch status.</span>
+      <span>Electric utilities and grid operators running MicroSCADA X SYS600 should apply the 10.8 update for CVE-2026-9852 and follow Hitachi advisory 8DBD000249&#x27;s specific mitigation steps for CVE-2026-9853 and CVE-2026-9854, since no full vendor patch exists yet for the RBAC privilege-escalation flaw on the current version; segment SCADA management interfaces from general IT networks regardless of patch status. No atomic indicator applies here — CISA and Hitachi both report no known exploitation, so there is nothing observed in the wild to key detection on; this advisory is a patch-now notice, not an active-intrusion lead.</span>
       <button class="tbtn copy-inc" data-inc="hitachi-microscada-advisory">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -796,24 +815,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-9852">CVE-2026-9852</button></td>
-            <td class="ctx">CSV injection in MicroSCADA X SYS600, CWE-1236, CVSS v4.0 4.6, no known exploitation</td>
-            <td class="seen">OCT 20</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-9853">CVE-2026-9853</button></td>
-            <td class="ctx">Unauthorized access to application objects, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8</td>
-            <td class="seen">OCT 20</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-9854">CVE-2026-9854</button></td>
-            <td class="ctx">RBAC privilege elevation, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8, no vendor patch yet for 10.8</td>
-            <td class="seen">OCT 20</td>
-          </tr>
+
         </tbody>
       </table>
     </div>

@@ -18,11 +18,8 @@
         { "label": "Cybernews", "url": "https://cybernews.com/security/php2shell-wordpress-amazon-cloudflare-ai-cyberattacks/" },
         { "label": "ITdaily", "url": "https://itdaily.com/blogs/software/php2shell-bug-php/" }
       ],
-      "action": "Patch to PHP 8.5.12, 8.4.27, 8.3.36, or 8.2.35 immediately on every server; do not rely on WAF/CDN rules as a substitute since attackers are already mutating payloads around them; audit shared hosting environments specifically, since a single unpatched PHP binary on a host can expose every tenant site regardless of their own CMS patch status.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-109618", "context": "Critical unauthenticated RCE in PHP core request handling, CVSS 9.2", "seen": "OCT 21" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-109619", "context": "Second critical unauthenticated RCE in PHP core request handling, CVSS 9.2", "seen": "OCT 21" }
-      ]
+      "action": "Patch to PHP 8.5.12, 8.4.27, 8.3.36, or 8.2.35 immediately on every server; do not rely on WAF/CDN rules as a substitute since attackers are already mutating payloads around them; audit shared hosting environments specifically, since a single unpatched PHP binary on a host can expose every tenant site regardless of their own CMS patch status. No atomic indicator (payload hash, dropped filename, attacker-controlled domain) has been publicly published for this campaign as of this writing — the flaws are memory-corruption bugs in PHP's request handling, and Amazon's only reported detail was that one probe originated from a commercial anonymization network, not a reusable IP. Detection here is necessarily behavioral (anomalous PHP worker crashes/restarts, unexpected memory-handling errors in logs) rather than indicator-based.",
+      "iocs": []
     },
     {
       "id": "plex2shell-kev-chain",
@@ -39,12 +36,14 @@
         { "label": "BleepingComputer", "url": "https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers" },
         { "label": "SecurityWeek", "url": "https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure" }
       ],
-      "action": "Upgrade any Plex Media Server instance to 1.43.3.10861 or later immediately — this has been fixed since August, so any instance still vulnerable in October was simply never updated; self-hosted/home-lab instances exposed directly to the internet are the highest-risk population and should not be reachable without a VPN or reverse proxy with authentication in front of them.",
+      "action": "Upgrade any Plex Media Server instance to 1.43.3.10861 or later immediately — this has been fixed since August, so any instance still vulnerable in October was simply never updated; self-hosted/home-lab instances exposed directly to the internet are the highest-risk population and should not be reachable without a VPN or reverse proxy with authentication in front of them. If a process named myawesomeproxy, mylovelyminer, or x12345 is found running under the Plex Media Server account, treat the host as compromised, rebuild from a clean install rather than just patching, and rotate the Plex owner account's credentials.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-96652", "context": "One of four chained Plex Media Server flaws enabling unauthenticated RCE (\"Plex2Shell\")", "seen": "OCT 17" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-96654", "context": "Chained Plex Media Server flaw", "seen": "OCT 17" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-96655", "context": "Chained Plex Media Server flaw", "seen": "OCT 17" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-96656", "context": "Chained Plex Media Server flaw", "seen": "OCT 17" }
+        { "type": "file", "category": "host", "value": "myawesomeproxy", "context": "Reverse-proxy/backdoor payload dropped post-exploitation; routes the host's outbound traffic externally", "seen": "OCT 17" },
+        { "type": "file", "category": "host", "value": "mylovelyminer", "context": "XMRig-based cryptominer payload process name observed alongside myawesomeproxy on compromised Plex hosts", "seen": "OCT 17" },
+        { "type": "file", "category": "host", "value": "x12345", "context": "Additional malicious child-process name reported spawned by the Plex Media Server binary post-exploitation", "seen": "OCT 17" },
+        { "type": "ip", "category": "net", "value": "45[.]194[.]92[.]222", "context": "IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2", "seen": "OCT 17-21" },
+        { "type": "ip", "category": "net", "value": "91[.]92[.]40[.]202", "context": "IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2", "seen": "OCT 17-21" },
+        { "type": "ip", "category": "net", "value": "176[.]65[.]139[.]228", "context": "IP observed in connection with Plex2Shell scanning/exploitation activity; reported as an observed source, not independently confirmed as C2", "seen": "OCT 17-21" }
       ]
     },
     {
@@ -62,10 +61,13 @@
         { "label": "Help Net Security", "url": "https://www.helpnetsecurity.com/2026/10/20/exploitation-siemens-software-center-vulnerability-cve-2026-110936/" },
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html" }
       ],
-      "action": "Update Siemens Software Center to 4.0.9.8 or later and verify the installed version rather than assuming an update succeeded; train users to recognize and refuse ClickFix-style \"paste this command to verify you're human\" prompts, since the infection vector here is social engineering, not a drive-by exploit; hunt for Software Center processes loading DLLs from non-standard directories.",
+      "action": "Update Siemens Software Center to 4.0.9.8 or later and verify the installed version rather than assuming an update succeeded; train users to recognize and refuse ClickFix-style \"paste this command to verify you're human\" prompts, since the infection vector here is social engineering, not a drive-by exploit; hunt for an archive.dll file sitting next to a Siemens Software Center installation that was never legitimately installed on that host, an AllMyBasic.msi installer, or a \"SM Software Provisioning Service\" folder under AppData\\Local\\Programs. Note archive.dll alone isn't proof of compromise — it's also a legitimate component in some unrelated Siemens/Vero Software products — so confirm by checking the calling executable and install path, not the filename alone.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-110936", "context": "Siemens Software Center DLL side-loading flaw via uncontrolled search path element, CVSS v4.0 8.4", "seen": "OCT 19" },
-        { "type": "tool", "category": "host", "value": "Romulus (ClickFix delivery platform)", "context": "Delivery platform used to serve the fake verification lure leading to DLL side-loading", "seen": "OCT 19" }
+        { "type": "file", "category": "host", "value": "AllMyBasic.msi", "context": "ClickFix-delivered installer that launches a legitimate signed Siemens Software Center binary as a loader for the malicious DLL", "seen": "OCT 19" },
+        { "type": "file", "category": "host", "value": "archive.dll", "context": "Malicious side-loaded DLL dropped alongside the legitimate signed Software Center binary; not inherently malicious outside this install path", "seen": "OCT 19" },
+        { "type": "path", "category": "host", "value": "%AppData%\\Local\\Programs\\SM Software Provisioning Service", "context": "Reported persistence/staging folder created by the campaign", "seen": "OCT 19" },
+        { "type": "domain", "category": "net", "value": "wizardexpensive[.]com", "context": "Reported payload-hosting/C2 domain for the Romulus ClickFix campaign delivering this DLL side-loading attack", "seen": "OCT 19" },
+        { "type": "ip", "category": "net", "value": "2[.]27[.]248[.]127", "context": "Reported distribution-channel IP serving the AllMyBasic.msi installer", "seen": "OCT 19" }
       ]
     },
     {
@@ -83,9 +85,9 @@
         { "label": "The Hacker News", "url": "https://thehackernews.com/2026/10/critical-fortisiem-flaw-gets-public.html" },
         { "label": "Cyber Centre Canada (AL26 update)", "url": "https://www.cyber.gc.ca/" }
       ],
-      "action": "Patch FortiSIEM to 7.5.1 immediately regardless of the exploitation dispute — a public working PoC is sufficient reason to treat this as urgent; as an interim mitigation, restrict access to TCP port 27918 to trusted management networks only; do not wait for KEV listing or exploitation confirmation to act, since both are lagging indicators here.",
+      "action": "Patch FortiSIEM to 7.5.1 immediately regardless of the exploitation dispute — a public working PoC is sufficient reason to treat this as urgent; as an interim mitigation, restrict access to TCP port 27918 to trusted management networks only; do not wait for KEV listing or exploitation confirmation to act, since both are lagging indicators here. No attacker IP, payload hash, or other atomic exploitation indicator has been publicly published for this CVE as of this writing — Horizon3.ai specifically noted that successful exploitation leaves no application-log trace, so detection has to rely on network-level monitoring of port 27918 rather than a signature or IOC list.",
       "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-106173", "context": "FortiSIEM RCE flaw with public PoC exploit; in-the-wild exploitation disputed across sources", "seen": "OCT 20" }
+        { "type": "port", "category": "net", "value": "TCP/27918", "context": "gRPC service port exposing the vulnerable FortiSIEM component targeted by CVE-2026-106173; restrict access as mitigation", "seen": "OCT 20" }
       ]
     },
     {
@@ -102,12 +104,8 @@
       "sources": [
         { "label": "CISA ICS Advisory ICSA-26-293-04", "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-293-04" }
       ],
-      "action": "Electric utilities and grid operators running MicroSCADA X SYS600 should apply the 10.8 update for CVE-2026-9852 and follow Hitachi advisory 8DBD000249's specific mitigation steps for CVE-2026-9853 and CVE-2026-9854, since no full vendor patch exists yet for the RBAC privilege-escalation flaw on the current version; segment SCADA management interfaces from general IT networks regardless of patch status.",
-      "iocs": [
-        { "type": "cve", "category": "host", "value": "CVE-2026-9852", "context": "CSV injection in MicroSCADA X SYS600, CWE-1236, CVSS v4.0 4.6, no known exploitation", "seen": "OCT 20" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-9853", "context": "Unauthorized access to application objects, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8", "seen": "OCT 20" },
-        { "type": "cve", "category": "host", "value": "CVE-2026-9854", "context": "RBAC privilege elevation, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8, no vendor patch yet for 10.8", "seen": "OCT 20" }
-      ]
+      "action": "Electric utilities and grid operators running MicroSCADA X SYS600 should apply the 10.8 update for CVE-2026-9852 and follow Hitachi advisory 8DBD000249's specific mitigation steps for CVE-2026-9853 and CVE-2026-9854, since no full vendor patch exists yet for the RBAC privilege-escalation flaw on the current version; segment SCADA management interfaces from general IT networks regardless of patch status. No atomic indicator applies here — CISA and Hitachi both report no known exploitation, so there is nothing observed in the wild to key detection on; this advisory is a patch-now notice, not an active-intrusion lead.",
+      "iocs": []
     },
     {
       "id": "olympia-orthopaedic-braincipher",

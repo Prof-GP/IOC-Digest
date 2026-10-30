@@ -1,5 +1,111 @@
 {
   "type": "bundle",
   "id": "bundle--3141b255-3a9b-5c91-b70b-a8e9a0fce018",
-  "objects": []
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--19d3402c-bd21-53e5-bc6f-1fce7c2a3108",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices: PivotC2 C2 node",
+      "description": "Source: https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html",
+      "pattern": "[ipv4-addr:value = '46.151.29.58']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--b1933ee4-543f-574e-89a7-3517c7b23c47",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices: PivotC2 C2 node",
+      "description": "Source: https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html",
+      "pattern": "[ipv4-addr:value = '146.103.99.177']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--30b9a509-40c7-54ef-9ba0-02d0fd15ae59",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices: obfs4proxy Tor bridge used by PivotC2 infrastructure",
+      "description": "Source: https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html",
+      "pattern": "[ipv4-addr:value = '45.138.16.182:9130']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--5e199677-4d2a-54a3-8140-28137dbd91be",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices: obfs4proxy Tor bridge used by PivotC2 infrastructure",
+      "description": "Source: https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html",
+      "pattern": "[ipv4-addr:value = '89.217.174.207:9001']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--9c89c7a7-acb4-59c6-8790-501c0dbc2aee",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "The Gentlemen ransomware claims Air Canada, alleges 51,409 critical files taken: The Gentlemen ransomware group's Tor leak site, cited by most outlets as the posting location for this claim",
+      "description": "Source: https://socradar.io/free-tools/ransomware-intelligence/victims/air-canada-thegentlemen-6edb45b0; https://thecyberexpress.com/cyberattack-on-air-canada-bianlian-data-risk/",
+      "pattern": "[url:value = 'tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--9c89c7a7-acb4-59c6-8790-501c0dbc2aee",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "Veradigm discloses patient data breach after The Gentlemen ransomware gang claims 3.5 million records via vendor API: The Gentlemen ransomware group's Tor leak site where the Veradigm claim was posted Sep 5",
+      "description": "Source: https://www.bleepingcomputer.com/news/security/veradigm-discloses-patient-data-breach-after-gentlemen-gang-claims-attack/; https://www.hipaajournal.com/veradigm-data-breach-2026/",
+      "pattern": "[url:value = 'tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--812cc9e3-f4b8-5764-9fb6-01530ab93ac8",
+      "created": "2026-09-11T00:00:00.000Z",
+      "modified": "2026-09-11T00:00:00.000Z",
+      "name": "AUDIT TEAM extortion group claims four victims across South Korea, Germany, and Argentina: AuditTeam's Tor data-extortion leak site (\"/// DATA EXPOSURE TERMINAL ///\")",
+      "description": "Source: https://asec.ahnlab.com/en/95338/",
+      "pattern": "[url:value = '6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-11T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
 }

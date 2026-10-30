@@ -1,5 +1,66 @@
 {
   "type": "bundle",
   "id": "bundle--b44562ef-6c34-5737-a4ae-0d44f3239e00",
-  "objects": []
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c8be32d2-029b-5800-896f-023dc89e66eb",
+      "created": "2026-10-09T00:00:00.000Z",
+      "modified": "2026-10-09T00:00:00.000Z",
+      "name": "ARTEX \u2014 AI pentesting tool combined with multiple LLMs automates data-theft campaign against South Korean banks: Attacker-controlled server hosting an open directory with an ARTEX instance and exposed Claude Code session files",
+      "description": "Source: https://thehackernews.com/2026/10/artex-ai-pentesting-tool-used-in-data.html; https://securityaffairs.com/200661/hacking/ai-driven-tool-artex-used-in-attacks-against-south-korean-banks.html",
+      "pattern": "[ipv4-addr:value = '38.244.50.120']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-09T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--cb61c492-0d66-5e96-ad67-fb2e5ffc92bf",
+      "created": "2026-10-09T00:00:00.000Z",
+      "modified": "2026-10-09T00:00:00.000Z",
+      "name": "Malicious npm release of 'tensorlake' extends the ChainDrop/Shai-Hulud worm into AI agent infrastructure: Reported C2/exfiltration domain for the tensorlake payload (port 443, path /router); disputed \u2014 Socket's own analysis reportedly found no hardcoded C2 domain",
+      "description": "Source: https://www.scworld.com/brief/tensorlake-npm-package-compromised-in-supply-chain-attack",
+      "pattern": "[domain-name:value = 'iseekaigogo.com']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-09T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f38479df-2dc9-50ad-b7b3-c0293655d41f",
+      "created": "2026-10-09T00:00:00.000Z",
+      "modified": "2026-10-09T00:00:00.000Z",
+      "name": "European police dismantle KillSec ransomware infrastructure, arrest suspected 16-year-old lead operator: KillSec's primary Tor leak site, seized by law enforcement Sep 30 in Operation KillSwitch",
+      "description": "Source: https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html; https://www.teiss.co.uk/news/european-law-enforcement-takes-down-killsec-infrastructure-arrests-teenager-18260",
+      "pattern": "[url:value = 'kill432ltnkqvaqntbalnsgojqqs2wz4lhnamrqjg66tq6fuvcztilyd.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-09T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--e977c60e-e41c-5c59-b6ff-10a12c3f8c74",
+      "created": "2026-10-09T00:00:00.000Z",
+      "modified": "2026-10-09T00:00:00.000Z",
+      "name": "European police dismantle KillSec ransomware infrastructure, arrest suspected 16-year-old lead operator: Secondary KillSec Tor leak-site address tracked by multiple ransomware trackers",
+      "description": "Source: https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html; https://www.teiss.co.uk/news/european-law-enforcement-takes-down-killsec-infrastructure-arrests-teenager-18260",
+      "pattern": "[url:value = 'ks5424y3wpr5zlug5c7i6svvxweinhbdcqcfnptkfcutrncfazzgz5id.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-09T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
 }

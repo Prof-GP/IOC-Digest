@@ -16,6 +16,96 @@
       "labels": [
         "malicious-activity"
       ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--32a8e097-3944-51b7-b7bc-b16f75d5eda0",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "SPACEBEARS ransomware posts three new victims across US retail, US legal, and Italian healthcare: SPACEBEARS' Tor data-leak site where all three victim listings were posted (believed linked to Phobos RaaS infrastructure)",
+      "description": "Source: https://securityarsenal.com/blog/spacebears-ransomware-gang-3-fresh-leak-site-victims-usit-sector-pressure-kev-edge-exposure-and-pre-encryption-hunt-rules",
+      "pattern": "[url:value = '5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--73fc4b9e-c579-597d-86f2-9f36361f63d4",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "Settra ransomware claims Italian biotech DiaSorin, uses vulnerable driver to blind EDR before encryption: Settra-linked MeshAgent C2 IP observed in the group's July 2026 campaign (family-level indicator, not confirmed specific to DiaSorin)",
+      "description": "Source: https://malware.news/t/settra-ransomware-attack-on-diasorin-s-p-a/125325; https://www.moxfive.com/blog/settra-ransomware-ttps-victims-and-defense-guide",
+      "pattern": "[ipv4-addr:value = '45.13.122.7']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--23d2398d-946f-57a3-9246-04a390d0dc94",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "Settra ransomware claims Italian biotech DiaSorin, uses vulnerable driver to blind EDR before encryption: Settra-linked MeshAgent C2 IP observed in the group's September 2026 campaign (family-level indicator, not confirmed specific to DiaSorin)",
+      "description": "Source: https://malware.news/t/settra-ransomware-attack-on-diasorin-s-p-a/125325; https://www.moxfive.com/blog/settra-ransomware-ttps-victims-and-defense-guide",
+      "pattern": "[ipv4-addr:value = '193.5.65.114']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--743c4946-8217-5e75-8e45-038b42efd341",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads: StreamRat C2 IP",
+      "description": "Source: https://threatfabric.com/blogs/from-meta-ads-to-full-device-takeover-uncovering-streamrat; https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html",
+      "pattern": "[ipv4-addr:value = '45.147.28.59']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--c6bad53d-1bc3-5248-aac0-09393f2b0c03",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads: StreamRat C2 IP",
+      "description": "Source: https://threatfabric.com/blogs/from-meta-ads-to-full-device-takeover-uncovering-streamrat; https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html",
+      "pattern": "[ipv4-addr:value = '193.32.2.245']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--be9d2191-70d2-5b4b-9ff2-5d5fc55b4898",
+      "created": "2026-09-04T00:00:00.000Z",
+      "modified": "2026-09-04T00:00:00.000Z",
+      "name": "ZaWoo data-extortion group adds a German sports-research institute and a New Zealand CRO to its victim list: ZaWoo's Tor data-leak site where victim claims are posted",
+      "description": "Source: https://asec.ahnlab.com/en/95223/; https://www.dexpose.io/zawoo-ransomware-attack-on-german-sports-institute-fes/",
+      "pattern": "[url:value = 'fyenuhkq3pfhnbpidj5jm2fl2lryxip4byhg6eozynrnlomu4szf2nyd.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-09-04T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
     }
   ]
 }

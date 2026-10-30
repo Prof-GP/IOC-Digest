@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 011 · WK 2026-10-02 · 10 INCIDENTS · 14 IOCs</span>
+  <span class="issue-meta">ISSUE 011 · WK 2026-10-02 · 10 INCIDENTS · 13 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>14</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>1</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>2</b></button>
-  <button class="fchip" data-type="host">HOST<b>11</b></button>
+  <button class="fchip on" data-type="all">ALL<b>13</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>4</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>4</b></button>
+  <button class="fchip" data-type="host">HOST<b>5</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -453,7 +453,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Apply Fortinet&#x27;s workaround immediately per FG-IR-26-175: disable IBE and/or remove internet exposure of the FortiMail management interface; do not wait for a patch given confirmed active exploitation; monitor for unexpected file writes outside expected FortiMail directories as a sign of exploitation; apply the eventual patch as soon as Fortinet ships one.</span>
+      <span>Apply Fortinet&#x27;s workaround immediately per FG-IR-26-175: disable IBE and/or remove internet exposure of the FortiMail management interface; do not wait for a patch given confirmed active exploitation; check for the listed file paths/hashes and attacker IPs on any internet-facing FortiMail instance, including a CLI-added archive account named archive234 pointing to 79[.]141[.]169[.]187; apply the eventual patch as soon as Fortinet ships one (7.4.9, 7.6.7, 8.0.2 expected).</span>
       <button class="tbtn copy-inc" data-inc="fortimail-zeroday">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -462,10 +462,40 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="79[.]141[.]169[.]187 ; 45[.]129[.]0[.]192">79[.]141[.]169[.]187 ; 45[.]129[.]0[.]192</button></td>
+            <td class="ctx">Attacker-controlled infrastructure; 79.141.169.187 used as the remote server for an unauthorized archive234 exfiltration account</td>
+            <td class="seen">OCT 1</td>
+          </tr>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-104286">CVE-2026-104286</button></td>
-            <td class="ctx">FortiMail unauthenticated path traversal/NULL-byte handling enabling arbitrary file write, CVSS 9.8, no patch available</td>
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="/data/lib/liblog.so ; /data/bin/webconsole ; /data/bin/mailservice">/data/lib/liblog.so ; /data/bin/webconsole ; /data/bin/mailservice</button></td>
+            <td class="ctx">Files added to FortiMail filesystem post-exploitation</td>
+            <td class="seen">OCT 1</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="/bin/smit ; /data/etc/ld.so.preload ; /data/etc/httpd.conf ; /data/migadmin.tar.gz">/bin/smit ; /data/etc/ld.so.preload ; /data/etc/httpd.conf ; /data/migadmin.tar.gz</button></td>
+            <td class="ctx">Existing files modified during exploitation (ld.so.preload enables persistence via forced library loading)</td>
+            <td class="seen">OCT 1</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="8015f34dc84922b03688399d7f9fe7a00361789f7e420c7e2a2cdb23e75cef84">8015f34dc84922b03688399d7f9fe7a00361789f7e420c7e2a2cdb23e75cef84</button></td>
+            <td class="ctx">SHA-256 of malicious liblog.so</td>
+            <td class="seen">OCT 1</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="7a6cea9f5c9e2e9994d4e3c4da73f86cf5acd05ea5d312c066c9d1dafd69ee38">7a6cea9f5c9e2e9994d4e3c4da73f86cf5acd05ea5d312c066c9d1dafd69ee38</button></td>
+            <td class="ctx">SHA-256 of malicious webconsole binary</td>
+            <td class="seen">OCT 1</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="4000276a150a165d3c2537d1e19fb393c4de8333076a16655e28059cae82157b">4000276a150a165d3c2537d1e19fb393c4de8333076a16655e28059cae82157b</button></td>
+            <td class="ctx">SHA-256 of malicious mailservice binary</td>
             <td class="seen">OCT 1</td>
           </tr>
         </tbody>
@@ -502,16 +532,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-76504">CVE-2026-76504</button></td>
-            <td class="ctx">Cisco Catalyst SD-WAN Manager authentication bypass via unnormalized URI encoding on a protected API path, CVSS 9.8</td>
-            <td class="seen">SEP 30</td>
-          </tr>
           <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Requests to an encoded variant of the j_security_check path (e.g., /%6a_security_check)">Requests to an encoded variant of the j_security_check path (e.g., /%6a_security_check)</button></td>
-            <td class="ctx">Exact exploitation technique for this authentication bypass</td>
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/%6a_security_check">/%6a_security_check</button></td>
+            <td class="ctx">Literal encoded request path attackers use to bypass authentication on the protected j_security_check API endpoint; a direct grep target in web/access logs</td>
             <td class="seen">SEP 30</td>
           </tr>
         </tbody>
@@ -539,7 +563,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Install iOS 26.7.1/iPadOS 26.7.1/macOS 26.7.1/macOS Sequoia 15.8.1 immediately; high-risk individuals should prioritize this update given the confirmed spyware-consistent targeted-attack pattern; enable Lockdown Mode on devices belonging to likely-targeted individuals (journalists, activists, dissidents, executives) as an additional layer pending full patch rollout.</span>
+      <span>Install iOS 26.7.1/iPadOS 26.7.1/macOS 26.7.1/macOS Sequoia 15.8.1 immediately; high-risk individuals should prioritize this update given the confirmed spyware-consistent targeted-attack pattern; enable Lockdown Mode on devices belonging to likely-targeted individuals (journalists, activists, dissidents, executives) as an additional layer pending full patch rollout. No public atomic indicator (malicious file hash, delivery domain, C2 infrastructure) has been disclosed for this exploit as of this writing — neither Apple nor Meta published forensic artifacts, consistent with typical spyware-vendor operational security.</span>
       <button class="tbtn copy-inc" data-inc="apple-coregraphics-zeroday">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -548,12 +572,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-86950">CVE-2026-86950</button></td>
-            <td class="ctx">Apple CoreGraphics out-of-bounds write via crafted image/document, exploited against specific targeted individuals</td>
-            <td class="seen">SEP 29</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -579,7 +598,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Affected current/former service members, civilians, contractors, veterans, and family members should enroll in the offered identity protection and credit monitoring; organizations holding large personnel/HR databases should audit file-sharing systems specifically for the detection-latency gap this incident exposed, since the vulnerability existed for roughly nine months before discovery despite being readily patchable once found; treat this as a reminder that database size alone (60M+ records here) raises the stakes of any single file-sharing misconfiguration.</span>
+      <span>Affected current/former service members, civilians, contractors, veterans, and family members should enroll in the offered identity protection and credit monitoring; organizations holding large personnel/HR databases should audit file-sharing systems specifically for the detection-latency gap this incident exposed, since the vulnerability existed for roughly nine months before discovery despite being readily patchable once found; treat this as a reminder that database size alone (60M+ records here) raises the stakes of any single file-sharing misconfiguration. No public atomic indicator (specific CVE, attacker IP, malware hash) has been disclosed for this breach as of this writing — DoD has described root cause only as &quot;a vulnerability in a file-sharing system,&quot; without technical specifics.</span>
       <button class="tbtn copy-inc" data-inc="pentagon-dmdc-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -588,12 +607,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to a Defense Manpower Data Center file-sharing system between October 2025 and July 2026">Unauthorized access to a Defense Manpower Data Center file-sharing system between October 2025 and July 2026</button></td>
-            <td class="ctx">Root cause and intrusion window of the confirmed breach</td>
-            <td class="seen">SEP 29</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -628,12 +642,6 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-88771 / CVE-2026-88772">CVE-2026-88771 / CVE-2026-88772</button></td>
-            <td class="ctx">NetScaler ADC/Gateway command injection (User-Agent dropper → log poisoning → Perl-launched PHP web shell) and DTLS memory overflow (.deb web shell), both CVSS v4.0 9.5</td>
-            <td class="seen">SEP 27</td>
-          </tr>
           <tr data-type="net">
             <td><span class="t-badge">ip</span></td>
             <td><button class="val" data-defanged="77[.]83[.]199[.]39 ; 104[.]248[.]244[.]66 ; 193[.]149[.]176[.]207 ; 162[.]33[.]178[.]9">77[.]83[.]199[.]39 ; 104[.]248[.]244[.]66 ; 193[.]149[.]176[.]207 ; 162[.]33[.]178[.]9</button></td>
@@ -677,7 +685,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations that rely on third-party contractors to maintain any platform should independently verify patch application rather than trusting contractor sign-off, since an unapplied-but-issued patch is exactly how this breach happened; audit AWS GovCloud or equivalent cloud environments for lateral-movement paths from a public-facing application tier; affected FBI personnel/applicants should expect targeted phishing or physical-security risk given the home-address and family-member exposure, not just identity theft.</span>
+      <span>Organizations that rely on third-party contractors to maintain any platform should independently verify patch application rather than trusting contractor sign-off, since an unapplied-but-issued patch is exactly how this breach happened; audit AWS GovCloud or equivalent cloud environments for lateral-movement paths from a public-facing application tier; affected FBI personnel/applicants should expect targeted phishing or physical-security risk given the home-address and family-member exposure, not just identity theft. Organizations running Oracle PeopleSoft with the Environment Management Hub (PSEMHUB) exposed should hunt for the listed web-shell filenames in the PSEMHUB.war directory, though these come from a single secondary source and are not confirmed against a primary Oracle/Mandiant advisory.</span>
       <button class="tbtn copy-inc" data-inc="fbi-jobs-shinyhunters">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -687,10 +695,16 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ShinyHunters (exploited an unpatched Oracle PeopleSoft vulnerability against apply[.]fbijobs[.]gov)">ShinyHunters (exploited an unpatched Oracle PeopleSoft vulnerability against apply[.]fbijobs[.]gov)</button></td>
-            <td class="ctx">Group responsible for the FBI jobs portal breach and subsequent AWS GovCloud lateral movement</td>
-            <td class="seen">SEP 22</td>
+            <td><span class="t-badge">host-name</span></td>
+            <td><button class="val" data-defanged="apply[.]fbijobs[.]gov">apply[.]fbijobs[.]gov</button></td>
+            <td class="ctx">The breached FBI jobs-portal domain exploited via the unpatched Oracle PeopleSoft flaw</td>
+            <td class="seen">SEP 21</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">filename</span></td>
+            <td><button class="val" data-defanged="x.jsp ; u.jsp ; tunnel.jsp ; tunnel.jspx ; Ple64.exe">x.jsp ; u.jsp ; tunnel.jsp ; tunnel.jspx ; Ple64.exe</button></td>
+            <td class="ctx">Reported web-shell/tunneling filenames within the PeopleSoft PSEMHUB.war directory from this campaign family; unconfirmed against a primary vendor advisory, treat as low-confidence</td>
+            <td class="seen">UNCONFIRMED</td>
           </tr>
         </tbody>
       </table>
@@ -717,7 +731,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>O&#x27;Reilly Automotive and DexCom should investigate independently rather than relying on the listing&#x27;s removal as evidence of resolution, given the unexplained pull; organizations named by ShinyHunters during this period of apparent internal law-enforcement pressure should expect unusually volatile, possibly uncoordinated claims rather than the group&#x27;s typical consistent extortion pattern; monitor for the listings&#x27; reappearance given multiple actors evidently retain infrastructure access.</span>
+      <span>O&#x27;Reilly Automotive and DexCom should investigate independently rather than relying on the listing&#x27;s removal as evidence of resolution, given the unexplained pull; organizations named by ShinyHunters during this period of apparent internal law-enforcement pressure should expect unusually volatile, possibly uncoordinated claims rather than the group&#x27;s typical consistent extortion pattern; monitor for the listings&#x27; reappearance given multiple actors evidently retain infrastructure access. We could not confirm the specific domain of the newly stood-up leak site, nor any sample file hash from the alleged O&#x27;Reilly/DexCom data, so no atomic indicator is included here.</span>
       <button class="tbtn copy-inc" data-inc="shinyhunters-oreilly-dexcom">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -726,12 +740,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ShinyHunters (listed, then withdrew, claims against O&#x27;Reilly Automotive and DexCom)">ShinyHunters (listed, then withdrew, claims against O&#x27;Reilly Automotive and DexCom)</button></td>
-            <td class="ctx">Group behind the short-lived Oct 1-3 extortion listing</td>
-            <td class="seen">OCT 1</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -757,7 +766,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Operators mixing safety-critical infrastructure (trains) with customer-facing business systems (hospitality, payments) should verify network segmentation actually isolates the two, as Keio&#x27;s case suggests theirs did; monitor for a ransomware group claim that would clarify scope and likely data exposure; customers of Keio-affiliated hotels and the Times Car ride-sharing service should watch for breach notification regarding payment or personal data.</span>
+      <span>Operators mixing safety-critical infrastructure (trains) with customer-facing business systems (hospitality, payments) should verify network segmentation actually isolates the two, as Keio&#x27;s case suggests theirs did; monitor for a ransomware group claim that would clarify scope and likely data exposure; customers of Keio-affiliated hotels and the Times Car ride-sharing service should watch for breach notification regarding payment or personal data. No ransomware group has claimed the attack and no malware sample, hash, or attacker infrastructure has been publicly disclosed as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="keio-ransomware-japan">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -766,12 +775,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Ransomware encryption/disruption affecting payment and hospitality booking systems while core rail operations remain isolated and unaffected">Ransomware encryption/disruption affecting payment and hospitality booking systems while core rail operations remain isolated and unaffected</button></td>
-            <td class="ctx">Observed segmentation outcome in this incident</td>
-            <td class="seen">SEP 28</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -797,7 +801,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Affected Massachusetts residents should request specifics on intrusion timeline and full data scope directly from CareSource/Commonwealth Care Alliance given the minimal public filing detail; healthcare organizations should treat a filing this sparse as a floor, not a model, for their own breach-notification practices.</span>
+      <span>Affected Massachusetts residents should request specifics on intrusion timeline and full data scope directly from CareSource/Commonwealth Care Alliance given the minimal public filing detail; healthcare organizations should treat a filing this sparse as a floor, not a model, for their own breach-notification practices. No technical indicator of any kind (vector, malware, attacker infrastructure) is included in the public filing, and none has surfaced elsewhere as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="caresource-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -806,12 +810,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to medical records affecting 826 Massachusetts residents">Unauthorized access to medical records affecting 826 Massachusetts residents</button></td>
-            <td class="ctx">Scope of the disclosed breach per Massachusetts filing</td>
-            <td class="seen">SEP 30</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -845,10 +844,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Wallstreet ransomware">Wallstreet ransomware</button></td>
-            <td class="ctx">Group claiming the Gibson Area Hospital &amp; Health Services compromise</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="4dwiv37h7hhuhjpvtn72hme4ylcv3qoe65arfc6mbweal7als6ma7pyd[.]onion">4dwiv37h7hhuhjpvtn72hme4ylcv3qoe65arfc6mbweal7als6ma7pyd[.]onion</button></td>
+            <td class="ctx">Wallstreet ransomware group&#x27;s Tor leak/extortion site, per third-party threat-intel trackers (WatchGuard, BreachSense); not law-enforcement confirmed</td>
             <td class="seen">SEP 29</td>
           </tr>
         </tbody>

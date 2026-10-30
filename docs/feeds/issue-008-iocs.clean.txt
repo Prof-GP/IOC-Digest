@@ -2,49 +2,42 @@
 # CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
 #
 # --- CVE-2026-85706 \u2014 max-severity GitLab path traversal in the commits API added to KEV under emergency directive  (https://www.rapid7.com/blog/post/etr-cve-2026-85706-critical-gitlab-path-traversal-exploited-in-the-wild/)
-CVE-2026-85706
-GitLab 19.1.8 / 19.2.6 / 19.3.2
+/api/v4/projects/{id}/repository/commits/
 #
 # --- CVE-2026-20079 \u2014 max-severity Cisco Secure FMC auth bypass exploited by Sandworm and Qilin to drop web shells  (https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html, https://blog.talosintelligence.com/fmc-ongoing-exploitation/)
-CVE-2026-20079
-Unexpected .jsp web shell in the FMC Tomcat webroot, paired with an unfamiliar JAR-based command executor
+cmd.jar
+F6C1F0E7
 #
 # --- CVE-2026-19490 \u2014 second Citrix NetScaler auth-bypass flaw in weeks, 56 honeypot exploit attempts recorded  (https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html)
-CVE-2026-19490
-Exploitation attempts against NetScaler AAA/Gateway honeypots, concentrated Sep 3-8 (56 total, 36 on Sep 8 alone)
 #
 # --- PivotC2 RAT campaign weaponizes FortiOS heap overflow against 3,000+ IPs, infects 178 devices  (https://thehackernews.com/2026/09/cisa-flags-exploited-cisco-citrix.html)
-CVE-2025-25249
-PivotC2 RAT
-Reverse shell established via a single-line Node.js command on a Fortinet appliance
+46.151.29.58
+146.103.99.177
+45.138.16.182:9130
+89.217.174.207:9001
+2d338ffc8cc80293575c6800c059e33eb41e967907c20ba7687b2231c50837db
+c25a27b506fbae62010caf2abff699df5c94d29f056fa7ccfb5f3170d917c8cb
+/tmp/.i.js
 #
 # --- 'StyleSmuggler' \u2014 CVE-2026-75650 lets attackers turn Adobe Commerce's own template engine into unauthenticated RCE  (https://sansec.io/research/stylesmuggler-0day, https://www.crowdsec.net/vulntracking-report/cve-2026-75650-stylesmuggler-rce-adobe-commerce-magento)
-CVE-2026-75650
-Hotfix VULN-39341
-Requests matching the StyleSmuggler exploitation pattern; 500 unique source IPs observed since Sep 9, with documented overlap against IPs that also probed CVE-2025-54236 (SessionReaper)
 #
 # --- The Gentlemen ransomware claims Air Canada, alleges 51,409 critical files taken  (https://socradar.io/free-tools/ransomware-intelligence/victims/air-canada-thegentlemen-6edb45b0, https://thecyberexpress.com/cyberattack-on-air-canada-bianlian-data-risk/)
-TheGentlemen ransomware (double extortion, ransomware-as-a-service)
+tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad.onion
 #
 # --- CVE-2026-86218 \u2014 pre-auth RCE in N-able N-central RMM exploited, fourth patch in five weeks  (https://thehackernews.com/2026/09/n-able-n-central-pre-auth-rce-flaw.html, https://arcticwolf.com/resources/blog/cve-2026-86218/)
-CVE-2026-86218
-N-central 2026.3 Hotfix 4 (released Sep 5, 2026)
+/remoteControlAction.do?method=getPierDetails
 #
 # --- Microsoft's record 964-CVE Patch Tuesday includes two actively exploited Windows zero-days  (https://www.bleepingcomputer.com/news/microsoft/microsoft-september-2026-patch-tuesday-fixes-966-flaws-2-zero-days/, https://www.securityweek.com/microsoft-patches-record-974-vulnerabilities-including-two-exploited-zero-days/)
-CVE-2026-81963 / CVE-2026-85880
 #
 # --- CenterPoint Energy investigates alleged 7.49 million-record breach tied to its guest bill-pay feature  (https://therecord.media/texas-utility-firm-investigating-potential-data-leak-moveit-breach, https://www.yahoo.com/news/us/articles/centerpoint-energy-hit-multiple-proposed-235213317.html)
-Threat actor alias '4d722e4d656f77'
-Unauthorized access via the online guest bill-pay feature (per subsequent litigation, not yet confirmed by CenterPoint)
+4d722e4d656f77
 #
 # --- Veradigm discloses patient data breach after The Gentlemen ransomware gang claims 3.5 million records via vendor API  (https://www.bleepingcomputer.com/news/security/veradigm-discloses-patient-data-breach-after-gentlemen-gang-claims-attack/, https://www.hipaajournal.com/veradigm-data-breach-2026/)
-The Gentlemen (ransomware-as-a-service, double extortion)
+tezwsse5czllksjb7cwp65rvnk4oobmzti2znn42i43bjdfd2prqqkad.onion
 #
 # --- AUDIT TEAM extortion group claims four victims across South Korea, Germany, and Argentina  (https://asec.ahnlab.com/en/95338/)
-AUDIT TEAM (data-extortion group, newly active Sep 2026)
+6tdqqaxftvradka5d2frzgwixis7fmro7rfh4ettzcx7jfapkebe6jad.onion
 #
 # --- LAPSUS$ resumes activity, teases a new victim disclosure without naming a target  (https://asec.ahnlab.com/en/95338/)
-LAPSUS$ / Scattered LAPSUS$ Hunters (resurgent social-engineering-focused group)
 #
 # --- Elixir Medical discloses HR data breach affecting current and former employees, two-month gap before detection  (https://www.globenewswire.com/news-release/2026/09/09/3359120/0/en/elixir-medical-corporation-data-breach-exposes-personal-information-murphy-law-firm-investigates-legal-claims.html)
-Unauthorized network access to HR/finance file stores containing SSNs, driver's license numbers, payment card, and direct-deposit bank data

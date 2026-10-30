@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 007 · WK 2026-09-04 · 12 INCIDENTS · 25 IOCs</span>
+  <span class="issue-meta">ISSUE 007 · WK 2026-09-04 · 12 INCIDENTS · 19 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>25</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>6</b></button>
-  <button class="fchip" data-type="host">HOST<b>19</b></button>
+  <button class="fchip on" data-type="all">ALL<b>19</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>2</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>11</b></button>
+  <button class="fchip" data-type="host">HOST<b>6</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -462,12 +462,6 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-9586">CVE-2026-9586</button></td>
-            <td class="ctx">Sangoma Switchvox unauth SQL injection via /pa endpoint, CVSS 9.3</td>
-            <td class="seen">SEP 2</td>
-          </tr>
           <tr data-type="net">
             <td><span class="t-badge">ip</span></td>
             <td><button class="val" data-defanged="176[.]65[.]148[.]184">176[.]65[.]148[.]184</button></td>
@@ -479,12 +473,6 @@
             <td><button class="val" data-defanged="/var/log/switchvox/db-quirks.log">/var/log/switchvox/db-quirks.log</button></td>
             <td class="ctx">Log file containing suspicious statements left by exploitation attempts</td>
             <td class="seen">AUG 30</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="Switchvox 8.4.0.2">Switchvox 8.4.0.2</button></td>
-            <td class="ctx">Fixed release</td>
-            <td class="seen">SEP 2</td>
           </tr>
         </tbody>
       </table>
@@ -511,7 +499,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch Kestra OSS to the fixed release immediately; block or restrict any request path ending in /configs at the reverse proxy/WAF layer as a compensating control; hunt for unexpected workflow creation, Docker socket access, or XMRig-pattern CPU spikes on any internet-reachable Kestra host, especially since possible exploitation predates public disclosure by months.</span>
+      <span>Patch Kestra OSS to 1.0.45 / 1.3.21 immediately; block or restrict any request path ending in /configs at the reverse proxy/WAF layer as a compensating control (the known exploit path is a POST to /api/v1/main/executions/tutorial/configs); hunt for unexpected workflow creation, Docker socket access, or XMRig-pattern CPU spikes on any internet-reachable Kestra host, especially since possible exploitation predates public disclosure by months. Microsoft and WatchTowr have not published attacker IPs, sample hashes, or C2 infrastructure for this specific campaign as of this writing — XMRig is a widely-reused public miner binary, not a unique sample, so we&#x27;re not listing a generic hash as if it were specific to this incident.</span>
       <button class="tbtn copy-inc" data-inc="kestra-oss-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -521,21 +509,9 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-49869">CVE-2026-49869</button></td>
-            <td class="ctx">Kestra OSS unauthenticated command injection RCE via AuthenticationFilter suffix-match bypass, CVSS 10.0</td>
-            <td class="seen">SEP 2</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="XMRig cryptocurrency miner">XMRig cryptocurrency miner</button></td>
-            <td class="ctx">Payload deployed post-exploitation per Microsoft reporting</td>
-            <td class="seen">JUN 2026</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthenticated requests to any URL path ending in /configs against a Kestra instance">Unauthenticated requests to any URL path ending in /configs against a Kestra instance</button></td>
-            <td class="ctx">Exact exploitation pattern for the AuthenticationFilter bypass</td>
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="/api/v1/main/executions/tutorial/configs">/api/v1/main/executions/tutorial/configs</button></td>
+            <td class="ctx">Specific exploit request path observed abusing the AuthenticationFilter suffix-match bypass (any path ending in /configs is exploitable; this is the documented example)</td>
             <td class="seen">SEP 1</td>
           </tr>
         </tbody>
@@ -563,7 +539,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch SMA1000 appliances (models 6210, 7210, 8200v) to 12.4.3-03526 platform-hotfix or 12.5.0-02952 platform-hotfix immediately; treat any internet-facing Workplace interface or Appliance Management Console as a probable target regardless of whether an IOC has surfaced yet; review appliance logs for anomalous Workplace-interface requests or unexpected command execution since Sep 1.</span>
+      <span>Patch SMA1000 appliances (models 6210, 7210, 8200v) to 12.4.3-03526 platform-hotfix or 12.5.0-02952 platform-hotfix immediately; treat any internet-facing Workplace interface or Appliance Management Console as a probable target regardless of whether an IOC has surfaced yet; review appliance logs for anomalous Workplace-interface requests or unexpected command execution since Sep 1. No atomic indicator (attacker IP, hash, or malware sample) has been publicly released for this exploitation as of this writing — CVE numbers and patch versions are not indicators of compromise, so none are listed below.</span>
       <button class="tbtn copy-inc" data-inc="sonicwall-sma1000-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -572,18 +548,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-83548 / CVE-2026-83549">CVE-2026-83548 / CVE-2026-83549</button></td>
-            <td class="ctx">SonicWall SMA1000 pre-auth SSRF chained to OS command injection, CVSS 10.0</td>
-            <td class="seen">SEP 1</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix">SMA1000 12.4.3-03526 platform-hotfix / 12.5.0-02952 platform-hotfix</button></td>
-            <td class="ctx">Fixed releases</td>
-            <td class="seen">SEP 1</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -667,7 +632,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch JFrog Artifactory to the fixed release immediately; audit admin token creation events and federated-identity provider logs for unexpected enumeration activity since disclosure; treat Artifactory as a CI/CD credential store during incident response, not just an artifact cache, and rotate any secrets it held if compromise is suspected.</span>
+      <span>Patch JFrog Artifactory to the fixed release immediately; audit admin token creation events and federated-identity provider logs for unexpected enumeration activity since disclosure; treat Artifactory as a CI/CD credential store during incident response, not just an artifact cache, and rotate any secrets it held if compromise is suspected. Neither CISA nor the researchers who reported this have published an atomic indicator (IP, hash, domain) tied to Artifactory exploitation specifically as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="jfrog-artifactory-kev">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -676,18 +641,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-82329">CVE-2026-82329</button></td>
-            <td class="ctx">JFrog Artifactory improper authentication bypassing default access controls, CVSS 9.8</td>
-            <td class="seen">SEP 2</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies">Unexpected admin token minting or enumeration of users/groups/credential sets/federated access topologies</button></td>
-            <td class="ctx">Attacker activity pattern per CISA advisory</td>
-            <td class="seen">SEP 2</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -712,7 +666,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Healthcare systems should maintain a pre-agreed ambulance-diversion protocol with regional EMS for cyber-driven outages, not just natural-disaster scenarios; verify offline/downtime procedures for patient registration and records access are rehearsed, not theoretical; monitor for a ransomware leak-site claim or data-breach notification as the incident develops.</span>
+      <span>Healthcare systems should maintain a pre-agreed ambulance-diversion protocol with regional EMS for cyber-driven outages, not just natural-disaster scenarios; verify offline/downtime procedures for patient registration and records access are rehearsed, not theoretical; monitor for a ransomware leak-site claim or data-breach notification as the incident develops. No attacker, malware family, or technical indicator has been publicly disclosed for this incident as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="luminis-health-maryland">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -721,12 +675,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion">Loss of access to hospital computer systems and online patient portal across two affiliated Maryland facilities, triggering ambulance diversion</button></td>
-            <td class="ctx">Reported operational impact pattern</td>
-            <td class="seen">SEP 2</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -752,7 +701,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Assume attacker dwell time can now compress to hours rather than weeks when planning detection and response SLAs; harden public API endpoints as a primary initial-access path, since that&#x27;s how this intrusion began; restrict CI/CD pipeline access to cloud credentials and monitor for anomalous, rapid-fire actions across identity, CI/CD, container, and SaaS environments in sequence, which is the behavioral signature of an agent-driven attack chain rather than a human operator.</span>
+      <span>Assume attacker dwell time can now compress to hours rather than weeks when planning detection and response SLAs; harden public API endpoints as a primary initial-access path, since that&#x27;s how this intrusion began; restrict CI/CD pipeline access to cloud credentials and monitor for anomalous, rapid-fire actions across identity, CI/CD, container, and SaaS environments in sequence, which is the behavioral signature of an agent-driven attack chain rather than a human operator. Unit 42 did not name the victim, the AI framework/model used, or publish any technical indicator (IP, hash, domain) tied to this intrusion — there is nothing atomic to list.</span>
       <button class="tbtn copy-inc" data-inc="ai-agent-ransomware-unit42">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -761,12 +710,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks">Rapid, sequential compromise of cloud, identity, CI/CD, container, and SaaS environments within hours rather than days or weeks</button></td>
-            <td class="ctx">Behavioral signature of the agentic attack chain per Unit 42</td>
-            <td class="seen">SEP 2</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -791,7 +735,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations resembling any of the three victim profiles should verify common ransomware entry points are closed (exposed RDP, unpatched edge/VPN devices, phishing-resistant MFA on remote access); monitor SPACEBEARS&#x27; leak site for proof files that would substantiate scope for any of the three listed victims; treat the group&#x27;s opportunistic, cross-sector pattern as a reason not to assume industry-specific exemption.</span>
+      <span>Organizations resembling any of the three victim profiles should verify common ransomware entry points are closed (exposed RDP, unpatched edge/VPN devices, phishing-resistant MFA on remote access); monitor SPACEBEARS&#x27; leak site using the indicator below for proof files that would substantiate scope for any of the three listed victims; treat the group&#x27;s opportunistic, cross-sector pattern as a reason not to assume industry-specific exemption.</span>
       <button class="tbtn copy-inc" data-inc="spacebears-leak-site">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -800,10 +744,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="SPACEBEARS ransomware">SPACEBEARS ransomware</button></td>
-            <td class="ctx">Group behind all three listings (Sports Endeavors, SGLA, Studio Oculistico Ciraci)</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid[.]onion">5butbkrljkaorg5maepuca25oma7eiwo6a2rlhvkblb4v6mf3ki2ovid[.]onion</button></td>
+            <td class="ctx">SPACEBEARS&#x27; Tor data-leak site where all three victim listings were posted (believed linked to Phobos RaaS infrastructure)</td>
             <td class="seen">SEP 3-4</td>
           </tr>
         </tbody>
@@ -830,7 +774,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Blocklist the STProcessMonitor_v114.sys driver hash/name via Microsoft&#x27;s vulnerable-driver blocklist or WDAC; alert on any new kernel driver installation outside change-managed maintenance windows; monitor for mass Windows event-log clearing as a late-stage precursor to encryption; DiaSorin partners/customers should watch the group&#x27;s leak site for confirmation before treating any data claim as verified.</span>
+      <span>Blocklist the STProcessMonitor_v114.sys driver hash/name via Microsoft&#x27;s vulnerable-driver blocklist or WDAC; alert on any new kernel driver installation outside change-managed maintenance windows; monitor for mass Windows event-log clearing as a late-stage precursor to encryption; DiaSorin partners/customers should watch the group&#x27;s leak site for confirmation before treating any data claim as verified. No hash for the edr_blind tool itself has been published; the two C2 IPs below are documented Settra infrastructure from the group&#x27;s broader July/September campaigns, not confirmed specific to the DiaSorin intrusion.</span>
       <button class="tbtn copy-inc" data-inc="settra-diasorin">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -840,22 +784,22 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Settra ransomware (double-extortion, active since Jun 2026)">Settra ransomware (double-extortion, active since Jun 2026)</button></td>
-            <td class="ctx">Group claiming the DiaSorin S.p.A. compromise</td>
-            <td class="seen">SEP 3</td>
-          </tr>
-          <tr data-type="host">
             <td><span class="t-badge">filename</span></td>
             <td><button class="val" data-defanged="STProcessMonitor_v114.sys">STProcessMonitor_v114.sys</button></td>
             <td class="ctx">Vulnerable Safetica driver (CVE-2025-70795) abused via BYOVD to kill EDR/AV from kernel context</td>
             <td class="seen">SEP 3</td>
           </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="edr_blind">edr_blind</button></td>
-            <td class="ctx">Companion tool used alongside the vulnerable driver to disable endpoint detection</td>
-            <td class="seen">SEP 3</td>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="45[.]13[.]122[.]7">45[.]13[.]122[.]7</button></td>
+            <td class="ctx">Settra-linked MeshAgent C2 IP observed in the group&#x27;s July 2026 campaign (family-level indicator, not confirmed specific to DiaSorin)</td>
+            <td class="seen">JUL 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="193[.]5[.]65[.]114">193[.]5[.]65[.]114</button></td>
+            <td class="ctx">Settra-linked MeshAgent C2 IP observed in the group&#x27;s September 2026 campaign (family-level indicator, not confirmed specific to DiaSorin)</td>
+            <td class="seen">SEP 2026</td>
           </tr>
         </tbody>
       </table>
@@ -868,21 +812,21 @@
           <span class="sev med">MEDIUM</span>
           <h2>StreamRat Android banking trojan spread to 570,000 users via Meta and TikTok streaming-service ads</h2>
         </div>
-        <p class="inc-sum">Malwarebytes disclosed StreamRat, an Android banking trojan and infostealer distributed through Meta ads for a fake free streaming service running Jun 11-Jul 3, 2026, with the same promotional banners simultaneously pushed on TikTok; the campaign exposed an estimated 570,000 people, overwhelmingly Spanish-speaking users located in Spain. Victims received social-engineering instructions tailored to their entry point (Instagram, TikTok, Facebook, or a plain browser) that coached them past Android's unknown-sources installation warnings; once installed, StreamRat can monitor the screen, capture keystrokes, overlay fake login screens to steal credentials, and grant attackers remote device control. Malwarebytes detects the payload under three signatures but did not publish package names, APK hashes, or C2 infrastructure. <b>Durable catch: any Android install flow that walks a user step-by-step through disabling the unknown-sources warning, tailored to the specific app/ad the victim just clicked, is StreamRat's exact delivery mechanism — the coaching itself is the tell, regardless of which streaming brand is being impersonated this month.</b></p>
+        <p class="inc-sum">ThreatFabric disclosed StreamRat, an Android banking trojan and infostealer distributed through Meta ads for a fake free streaming service running Jun 11-Jul 3, 2026, with the same promotional banners simultaneously pushed on TikTok; the campaign exposed an estimated 570,000 people, overwhelmingly Spanish-speaking users located in Spain. Victims received social-engineering instructions tailored to their entry point (Instagram, TikTok, Facebook, or a plain browser) that coached them past Android's unknown-sources installation warnings; once installed, StreamRat can monitor the screen, capture keystrokes, overlay fake login screens to steal credentials, and grant attackers remote device control. The payload communicates over WebSockets and is dropped into the public Downloads directory as update_{timestamp}.apk before being installed via Android's session-based installer. <b>Durable catch: any Android install flow that walks a user step-by-step through disabling the unknown-sources warning, tailored to the specific app/ad the victim just clicked, is StreamRat's exact delivery mechanism — the coaching itself is the tell, regardless of which streaming brand is being impersonated this month.</b></p>
         <div class="inc-meta">
           <span class="reported">REPORTED 2026-09-03</span><span>ACTIVE SINCE 2026-06-11</span>
         <span>~570,000 USERS EXPOSED VIA META + TIKTOK ADS, JUN 11-JUL 3 2026</span>
         <span>TARGETS SPANISH-SPEAKING USERS, PREDOMINANTLY IN SPAIN</span>
-        <span>PACKAGE NAMES/APK HASHES/C2 NOT DISCLOSED BY MALWAREBYTES</span>
+        <span>THREATFABRIC PUBLISHED PACKAGE NAMES, SHA-256 HASHES, AND C2 IPs</span>
           <span class="attck">T1204.002 · T1417</span>
-          <span><a href="https://www.malwarebytes.com/blog/news/2026/09/streamrat-android-malware-spreads-through-meta-and-tiktok-ads" rel="noopener">Malwarebytes (Sep 3)</a></span>
+          <span><a href="https://threatfabric.com/blogs/from-meta-ads-to-full-device-takeover-uncovering-streamrat" rel="noopener">ThreatFabric</a> · <a href="https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html" rel="noopener">The Hacker News (Sep 3)</a></span>
         </div>
       </div>
       <span class="inc-kind">MOBILE MALWARE · MALVERTISING · BANKING TROJAN</span>
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Block installation from unknown sources by policy on managed Android fleets; warn Spanish-speaking user populations specifically about free-streaming-service ads on Meta/TikTok that walk them through enabling sideloading; flag Malwarebytes detections Android/Trojan.Agent.ACRAEEF8A36H36, Android/Trojan.Agent.ACR02DB0614H7, and Android/Trojan.Dropper.ACR9B7ECE83D1 in mobile threat-defense tooling.</span>
+      <span>Block installation from unknown sources by policy on managed Android fleets; warn Spanish-speaking user populations specifically about free-streaming-service ads on Meta/TikTok that walk them through enabling sideloading; block the listed package names and C2 IPs in mobile threat-defense/MDM tooling and hunt for the listed hashes.</span>
       <button class="tbtn copy-inc" data-inc="streamrat-android">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -892,10 +836,40 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1">Android/Trojan.Agent.ACRAEEF8A36H36 ; Android/Trojan.Agent.ACR02DB0614H7 ; Android/Trojan.Dropper.ACR9B7ECE83D1</button></td>
-            <td class="ctx">Malwarebytes detection signatures for the StreamRat payload</td>
-            <td class="seen">SEP 3</td>
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="io.base.one887">io.base.one887</button></td>
+            <td class="ctx">StreamRat-bearing app package name, distributed as &quot;StrεαmTV Pro&quot;</td>
+            <td class="seen">JUN-JUL 2026</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="io.meat.hint">io.meat.hint</button></td>
+            <td class="ctx">StreamRat-bearing app package name, distributed as &quot;Sistema de vídeo&quot;</td>
+            <td class="seen">JUN-JUL 2026</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="e0714788b4e2518b0d9d4cbf18c7217bb97718e01689d77338f1cc4a230fcb6c">e0714788b4e2518b0d9d4cbf18c7217bb97718e01689d77338f1cc4a230fcb6c</button></td>
+            <td class="ctx">SHA-256 of a StreamRat APK sample</td>
+            <td class="seen">JUN-JUL 2026</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="ba83cc3c9535690191018edf73ca5c6001609df9919462796aa2e551f142e4d3">ba83cc3c9535690191018edf73ca5c6001609df9919462796aa2e551f142e4d3</button></td>
+            <td class="ctx">SHA-256 of a second StreamRat APK sample</td>
+            <td class="seen">JUN-JUL 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="45[.]147[.]28[.]59">45[.]147[.]28[.]59</button></td>
+            <td class="ctx">StreamRat C2 IP</td>
+            <td class="seen">JUN-JUL 2026</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="193[.]32[.]2[.]245">193[.]32[.]2[.]245</button></td>
+            <td class="ctx">StreamRat C2 IP</td>
+            <td class="seen">JUN-JUL 2026</td>
           </tr>
         </tbody>
       </table>
@@ -921,7 +895,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>South Korean automotive supply-chain manufacturers should treat Black X as an actively targeting group and review perimeter/remote-access exposure now rather than after a listing; monitor Black X&#x27;s leak site for proof files that would substantiate the claims against i-one and iwin; downstream OEMs sourcing from either supplier should ask about incident status before assuming supply continuity.</span>
+      <span>South Korean automotive supply-chain manufacturers should treat Black X as an actively targeting group and review perimeter/remote-access exposure now rather than after a listing; monitor Black X&#x27;s leak site for proof files that would substantiate the claims against i-one and iwin; downstream OEMs sourcing from either supplier should ask about incident status before assuming supply continuity. No initial-access vector, malware sample, or attacker infrastructure has been publicly disclosed for either claim as of this writing; the victims&#x27; own domains are not attacker indicators and are not listed here.</span>
       <button class="tbtn copy-inc" data-inc="black-x-korea-auto">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -930,18 +904,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Black X ransomware (emerging group, active Aug 2026)">Black X ransomware (emerging group, active Aug 2026)</button></td>
-            <td class="ctx">Group claiming both i-one and iwin compromises</td>
-            <td class="seen">SEP 1</td>
-          </tr>
-          <tr data-type="net">
-            <td><span class="t-badge">host-name</span></td>
-            <td><button class="val" data-defanged="iwin[.]kr">iwin[.]kr</button></td>
-            <td class="ctx">Second claimed South Korean auto-parts victim&#x27;s domain</td>
-            <td class="seen">SEP 1</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -966,7 +929,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Organizations in technology, manufacturing, and research sectors should treat ZaWoo as an active threat and review mailbox/data-loss-prevention controls given its customer-notification-as-pressure tactic; if compromised, prepare proactive customer communication rather than waiting for the group to contact them directly; monitor ZaWoo&#x27;s leak site for confirmation of scope for both named victims.</span>
+      <span>Organizations in technology, manufacturing, and research sectors should treat ZaWoo as an active threat and review mailbox/data-loss-prevention controls given its customer-notification-as-pressure tactic; if compromised, prepare proactive customer communication rather than waiting for the group to contact them directly; monitor ZaWoo&#x27;s leak site for confirmation of scope for both named victims using the indicators below.</span>
       <button class="tbtn copy-inc" data-inc="zawoo-extortion">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -975,10 +938,16 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ZaWoo (double-extortion data-theft group, active since mid-2026)">ZaWoo (double-extortion data-theft group, active since mid-2026)</button></td>
-            <td class="ctx">Group claiming FES (Germany) and Zenith Technology (New Zealand) as victims</td>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="fyenuhkq3pfhnbpidj5jm2fl2lryxip4byhg6eozynrnlomu4szf2nyd[.]onion">fyenuhkq3pfhnbpidj5jm2fl2lryxip4byhg6eozynrnlomu4szf2nyd[.]onion</button></td>
+            <td class="ctx">ZaWoo&#x27;s Tor data-leak site where victim claims are posted</td>
+            <td class="seen">SEP 1</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">email</span></td>
+            <td><button class="val" data-defanged="zawooorecover[at]onionmail[.]org">zawooorecover[at]onionmail[.]org</button></td>
+            <td class="ctx">ZaWoo&#x27;s contact email for extortion negotiation</td>
             <td class="seen">SEP 1</td>
           </tr>
         </tbody>

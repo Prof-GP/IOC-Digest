@@ -2,17 +2,17 @@
 # DEFANGED values. Refang: replace [.] with .  (sed 's/\[\.\]/./g')
 #
 # --- "PHP2Shell" \u2014 two critical PHP core flaws drew millions of exploit attempts within hours of disclosure  (https://cybernews.com/security/php2shell-wordpress-amazon-cloudflare-ai-cyberattacks/, https://itdaily.com/blogs/software/php2shell-bug-php/)
-CVE-2026-109618
-CVE-2026-109619
 #
 # --- "Plex2Shell" exploit chain hit vulnerable Plex Media Servers within a day of PoC release, dropped cryptominers  (https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers, https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure)
-CVE-2026-96652
-CVE-2026-96654
-CVE-2026-96655
-CVE-2026-96656
+myawesomeproxy
+mylovelyminer
+x12345
+45[.]194[.]92[.]222
+91[.]92[.]40[.]202
+176[.]65[.]139[.]228
 #
 # --- Public exploit released for critical FortiSIEM RCE a week after Fortinet's patch; in-the-wild exploitation claim disputed  (https://thehackernews.com/2026/10/critical-fortisiem-flaw-gets-public.html, https://www.cyber.gc.ca/)
-CVE-2026-106173
+TCP/27918
 #
 # --- BrainCipher claims ransomware attack on Washington state orthopaedic practice, threatens leak of 105GB  (https://www.dexpose.io/braincipher-strikes-olyortho/)
 eb82946fa0de261e92f8f60aa878c9fef9ebb34fdababa66995403b110118b1
@@ -20,8 +20,11 @@ brain[.]support[at]cyberfear[.]com
 [id].README.txt
 #
 # --- ClickFix operators exploited a Siemens Software Center DLL side-loading flaw to deploy malware via fake verification prompts  (https://www.helpnetsecurity.com/2026/10/20/exploitation-siemens-software-center-vulnerability-cve-2026-110936/, https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html)
-CVE-2026-110936
-Romulus (ClickFix delivery platform)
+AllMyBasic.msi
+archive.dll
+%AppData%\\Local\\Programs\\SM Software Provisioning Service
+wizardexpensive[.]com
+2[.]27[.]248[.]127
 #
 # --- DragonForce claims ransomware attack on US defense/military-training contractor Oak Grove Technologies  (https://www.breachsense.com/breaches/oak-grove-technologies-data-breach/)
 .dragonforce_encrypted
@@ -32,9 +35,6 @@ vssadmin.exe / wmic.exe shadow copy deletion
 nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad[.]onion
 #
 # --- CISA discloses three new access-control flaws in Hitachi Energy's MicroSCADA X SYS600 grid-control platform  (https://www.cisa.gov/news-events/ics-advisories/icsa-26-293-04)
-CVE-2026-9852
-CVE-2026-9853
-CVE-2026-9854
 #
 # --- PEAR extortion group claims data theft from Arizona landscaping/tree-management firm, no systems encrypted  (https://www.dexpose.io/pear-ransomware-hits-caretaker-landscape-and-tree-management/)
 peargxn3oki34c4savcbcfqofjjwjnnyrlrbszfv6ujlx36mhrh57did[.]onion

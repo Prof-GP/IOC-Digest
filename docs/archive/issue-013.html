@@ -412,12 +412,12 @@
 
 <div class="controls" role="toolbar" aria-label="Filter indicators">
   <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
-  <span class="issue-meta">ISSUE 013 · WK 2026-10-16 · 10 INCIDENTS · 18 IOCs</span>
+  <span class="issue-meta">ISSUE 013 · WK 2026-10-16 · 10 INCIDENTS · 26 IOCs</span>
   <a class="navlink" href="index.html">← ALL ISSUES</a>
-  <button class="fchip on" data-type="all">ALL<b>18</b></button>
-  <button class="fchip" data-type="hash">HASHES<b>0</b></button>
-  <button class="fchip" data-type="net">NETWORK<b>0</b></button>
-  <button class="fchip" data-type="host">HOST<b>18</b></button>
+  <button class="fchip on" data-type="all">ALL<b>26</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>5</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>10</b></button>
+  <button class="fchip" data-type="host">HOST<b>11</b></button>
   <span class="spacer"></span>
   <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
   <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
@@ -462,23 +462,47 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-102764">CVE-2026-102764</button></td>
-            <td class="ctx">BeyondTrust Remote Support improper origin validation in internal messaging, enabling authentication bypass by spoofing, CVSS 9.3</td>
-            <td class="seen">OCT 15</td>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="dc14e215269a93fdbc4c1a80b984c23faf7af0911c6dbb85309796a6f2ae95fb">dc14e215269a93fdbc4c1a80b984c23faf7af0911c6dbb85309796a6f2ae95fb</button></td>
+            <td class="ctx">SHA-256 of mangoapi.php, the Sawfly web shell dropped into the appliance&#x27;s Laravel public web root</td>
+            <td class="seen">AUG 29</td>
           </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Sawfly (web shell) ; Bareclaw (tunneler)">Sawfly (web shell) ; Bareclaw (tunneler)</button></td>
-            <td class="ctx">Post-exploitation tools deployed by ARMORY CASTLE for persistence</td>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="1f19b9a27d79c11bda00a1e8faf74a7fdd683d38ccef1b60df2fd0307e3aa462">1f19b9a27d79c11bda00a1e8faf74a7fdd683d38ccef1b60df2fd0307e3aa462</button></td>
+            <td class="ctx">SHA-256 of ingredi_ws, the Bareclaw tunneler binary</td>
             <td class="seen">AUG 29</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)">ARMORY CASTLE (PRC-nexus, also tracked as UNC5221/Warp Panda)</button></td>
-            <td class="ctx">Threat group responsible for the exploitation</td>
-            <td class="seen">OCT 15</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="mangoapi.php">mangoapi.php</button></td>
+            <td class="ctx">Sawfly web shell filename; dropped at /%SITE_SERVICE_ACCOUNT%/ingredi/app/laravel/public/</td>
+            <td class="seen">AUG 29</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="ingredi_ws">ingredi_ws</button></td>
+            <td class="ctx">Bareclaw tunneler binary, executed from /tmp/ingredi_ws</td>
+            <td class="seen">AUG 29</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="/usr/bin/dbus-authd">/usr/bin/dbus-authd</button></td>
+            <td class="ctx">SUID-enabled copy of /bin/sh planted for root persistence</td>
+            <td class="seen">AUG 29</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="/home/bomgar/sbin/post_boot.d/zz-root-persist">/home/bomgar/sbin/post_boot.d/zz-root-persist</button></td>
+            <td class="ctx">Persistence script placed in the startup-script directory</td>
+            <td class="seen">AUG 29</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">port</span></td>
+            <td><button class="val" data-defanged="TCP 19800">TCP 19800</button></td>
+            <td class="ctx">Bareclaw tunneler&#x27;s localhost listener port, reached through modified HAProxy config (/ns/config/haproxy.conf)</td>
+            <td class="seen">AUG 29</td>
           </tr>
         </tbody>
       </table>
@@ -514,22 +538,52 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-105133 / CVE-2026-105134">CVE-2026-105133 / CVE-2026-105134</button></td>
-            <td class="ctx">AhsayCBS authentication bypass (checkSysPwd) chained with command injection (Replication Receiver /rps/api/json/UpdateReceivers.do), unauthenticated SYSTEM code execution</td>
-            <td class="seen">OCT 15</td>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="4dcb0202fe8b2d4d7b183764e38184cd6ed50132786cc7e7d1f7f4bce1dd6f3d">4dcb0202fe8b2d4d7b183764e38184cd6ed50132786cc7e7d1f7f4bce1dd6f3d</button></td>
+            <td class="ctx">SHA-256 of edge.exe, the XMRig cryptominer disguised as Microsoft Edge</td>
+            <td class="seen">OCT 7</td>
           </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)">XMRig cryptominer (disguised as an Edge executable, Windows-service persistence)</button></td>
-            <td class="ctx">Payload deployed post-exploitation</td>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="05f69ae6b2b89c1c4dcf836bff032232f11bf0109f2b498e2345045d06139034">05f69ae6b2b89c1c4dcf836bff032232f11bf0109f2b498e2345045d06139034</button></td>
+            <td class="ctx">SHA-256 of msedge.exe, a modified NSSM utility used to run the miner as a Windows service</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="481728a7c9c4c02be07051d9c1958d902ea6397ebb8952ab83944818e3d25d21">481728a7c9c4c02be07051d9c1958d902ea6397ebb8952ab83944818e3d25d21</button></td>
+            <td class="ctx">SHA-256 of Taskgmr.ps1, the PowerShell script that hides the miner from Task Manager</td>
             <td class="seen">OCT 7</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host">Suspicious child processes of cbssvcX64.exe; unexpected JSP web shells on an AhsayCBS host</button></td>
-            <td class="ctx">Exploitation indicators per Huntress</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="edge.exe ; msedge.exe ; Taskgmr.ps1 ; WinRing0x64.sys">edge.exe ; msedge.exe ; Taskgmr.ps1 ; WinRing0x64.sys</button></td>
+            <td class="ctx">Malicious files dropped to %TEMP%; WinRing0x64.sys is the vulnerable kernel driver abused for Task Manager concealment</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">net</span></td>
+            <td><button class="val" data-defanged="imagefiles-backup[.]oss-ap-southeast-7[.]aliyuncs[.]com">imagefiles-backup[.]oss-ap-southeast-7[.]aliyuncs[.]com</button></td>
+            <td class="ctx">Hosting domain for the miner payload, PowerShell script, and config.json used in this campaign</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">net</span></td>
+            <td><button class="val" data-defanged="xmr[.]kryptex[.]network">xmr[.]kryptex[.]network</button></td>
+            <td class="ctx">XMRig mining pool domain used by the deployed miner</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="51.195.127[.]124">51.195.127[.]124</button></td>
+            <td class="ctx">Mining pool IP:port (8029) the deployed XMRig miner connects to</td>
+            <td class="seen">OCT 7</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">service</span></td>
+            <td><button class="val" data-defanged="MicrosoftEdgeUpdateSvc">MicrosoftEdgeUpdateSvc</button></td>
+            <td class="ctx">Malicious Windows service name designed to resemble the legitimate edgeupdate service</td>
             <td class="seen">OCT 7</td>
           </tr>
         </tbody>
@@ -566,10 +620,22 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-0322">CVE-2026-0322</button></td>
-            <td class="ctx">PAN-OS authenticated code injection via management interface, root privilege execution, CVSS v4.0 8.6</td>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="66[.]42[.]72[.]14">66[.]42[.]72[.]14</button></td>
+            <td class="ctx">One of three attacker IP addresses Palo Alto Networks shared as exploiting CVE-2026-0322</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="208[.]83[.]239[.]114">208[.]83[.]239[.]114</button></td>
+            <td class="ctx">Attacker IP address exploiting CVE-2026-0322, per Palo Alto Networks</td>
+            <td class="seen">OCT 14</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">ip</span></td>
+            <td><button class="val" data-defanged="149[.]248[.]47[.]234">149[.]248[.]47[.]234</button></td>
+            <td class="ctx">Attacker IP address exploiting CVE-2026-0322, per Palo Alto Networks</td>
             <td class="seen">OCT 14</td>
           </tr>
         </tbody>
@@ -597,7 +663,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Confirm Secure Email Gateway is on 15.5.5-014, 16.5.0-780, or later, and that Content Scanner Tools is updated past 25.3.0.5525 — if File Reputation is enabled on an older Content Scanner Tools version, treat the gateway as exposed regardless of overall AsyncOS patch level; since Cisco contacted some Secure Email Cloud customers directly about confirmed malicious activity, verify with Cisco whether your deployment was among those notified; given this is the second exploited flaw in this product line within a month, schedule a full review of Secure Email Gateway&#x27;s patch history rather than tracking CVEs individually.</span>
+      <span>Confirm Secure Email Gateway is on 15.5.5-014, 16.5.0-780, or later, and that Content Scanner Tools is updated past 25.3.0.5525 — if File Reputation is enabled on an older Content Scanner Tools version, treat the gateway as exposed regardless of overall AsyncOS patch level; since Cisco contacted some Secure Email Cloud customers directly about confirmed malicious activity, verify with Cisco whether your deployment was among those notified; given this is the second exploited flaw in this product line within a month, schedule a full review of Secure Email Gateway&#x27;s patch history rather than tracking CVEs individually. No public atomic indicator (attacker IP, domain, or file hash) has been published for this exploitation as of this writing; Cisco&#x27;s advisory points only to generic system-log compromise-scan messages (grep &quot;System Security&quot; system_logs) rather than a specific artifact.</span>
       <button class="tbtn copy-inc" data-inc="cisco-secure-email-gateway-76519">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -606,18 +672,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-76519">CVE-2026-76519</button></td>
-            <td class="ctx">Cisco Secure Email Gateway arbitrary file write via crafted email attachment in Advanced Malware Protection, root RCE, CVSS 9.8</td>
-            <td class="seen">OCT 14</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">patch</span></td>
-            <td><button class="val" data-defanged="Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)">Secure Email Gateway 15.5.5-014 / 16.5.0-780 (shipped Sep 14, 2026)</button></td>
-            <td class="ctx">Fixed releases</td>
-            <td class="seen">OCT 14</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -643,7 +698,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Nikkei should investigate whether its three breaches within one month share a common root cause (credential management, cloud access controls, or detection gap) rather than treating each as isolated; affected individuals should monitor for misuse of exposed data despite the company&#x27;s current &#x27;no evidence&#x27; assessment; organizations generally should rotate and audit cloud-development credentials on a schedule independent of any single incident, given credential theft was the entry point here.</span>
+      <span>Nikkei should investigate whether its three breaches within one month share a common root cause (credential management, cloud access controls, or detection gap) rather than treating each as isolated; affected individuals should monitor for misuse of exposed data despite the company&#x27;s current &#x27;no evidence&#x27; assessment; organizations generally should rotate and audit cloud-development credentials on a schedule independent of any single incident, given credential theft was the entry point here. No attacker IP, domain, or credential-theft-malware hash has been publicly disclosed for this incident as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="nikkei-breach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -652,12 +707,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Unauthorized access to a cloud development environment via stolen credentials">Unauthorized access to a cloud development environment via stolen credentials</button></td>
-            <td class="ctx">Entry vector for the disclosed breach</td>
-            <td class="seen">OCT 16</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -683,7 +733,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Patch self-hosted Atlassian Data Center products immediately (e.g., Bitbucket 9.4.26/10.2.8/10.5.1, Confluence 9.2.26/10.2.19 — confirm the fixed version for each affected product against Atlassian&#x27;s advisory); review web-server access logs for requests to known sensitive file paths (configuration files, credential stores) since Oct 6, since public PoC scripts exist; given the two-hour exploitation window observed here, prioritize automated patch deployment for any internet-facing Data Center instance.</span>
+      <span>Patch self-hosted Atlassian Data Center products immediately (e.g., Bitbucket 9.4.26/10.2.8/10.5.1, Confluence 9.2.26/10.2.19 — confirm the fixed version for each affected product against Atlassian&#x27;s advisory); review web-server access logs since Oct 6 for requests targeting WEB-INF/classes/crowd.properties and for double-URL-decoded path-traversal sequences; given the two-hour exploitation window observed here, prioritize automated patch deployment for any internet-facing Data Center instance. No attacker IP or file hash has been publicly disclosed for this exploitation; the indicators below are the request pattern/target path watchTowr documented, not a specific attacker artifact.</span>
       <button class="tbtn copy-inc" data-inc="atlassian-cve-21589">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -693,10 +743,16 @@
         </thead>
         <tbody>
           <tr data-type="host">
-            <td><span class="t-badge">cve</span></td>
-            <td><button class="val" data-defanged="CVE-2026-21589">CVE-2026-21589</button></td>
-            <td class="ctx">Atlassian Data Center unauthenticated arbitrary file access from the web root (no directory listing), affecting Jira/Confluence/Bitbucket/Bamboo/Crowd/Crucible/Fisheye, CVSS v4.0 9.3</td>
-            <td class="seen">OCT 15</td>
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="WEB-INF/classes/crowd.properties">WEB-INF/classes/crowd.properties</button></td>
+            <td class="ctx">File watchTowr demonstrated reading via CVE-2026-21589, exposing Crowd credentials; requests for this path in access logs are a strong exploitation signal</td>
+            <td class="seen">OCT 6</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">pattern</span></td>
+            <td><button class="val" data-defanged="(?is).*(?:/|\\|::|%(?:25)*(?:2f|5c)|(?::|%(?:25)*3a){2})(?:\.|%(?:25)*2e){2}">(?is).*(?:/|\\|::|%(?:25)*(?:2f|5c)|(?::|%(?:25)*3a){2})(?:\.|%(?:25)*2e){2}</button></td>
+            <td class="ctx">Vendor-supplied regex for detecting double-URL-decoded path-traversal sequences in raw access logs</td>
+            <td class="seen">OCT 6</td>
           </tr>
         </tbody>
       </table>
@@ -723,7 +779,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>IDCF Cloud customers should treat &#x27;no evidence data was taken&#x27; as provisional, not a clearance, and continue their own independent assessment of potential exposure; do not rely on the attacker&#x27;s 225-database/3.6PB figure as verified scope either; organizations evaluating cloud-provider incident communications generally should distinguish &#x27;no evidence of X&#x27; from &#x27;X did not happen&#x27; as a matter of course.</span>
+      <span>IDCF Cloud customers should treat &#x27;no evidence data was taken&#x27; as provisional, not a clearance, and continue their own independent assessment of potential exposure; do not rely on the attacker&#x27;s 225-database/3.6PB figure as verified scope either; organizations evaluating cloud-provider incident communications generally should distinguish &#x27;no evidence of X&#x27; from &#x27;X did not happen&#x27; as a matter of course. No technical atomic indicator (ransomware family artifact, attacker IP, or file hash) has been publicly disclosed for this incident as of this writing — see Issue 012 for the original report.</span>
       <button class="tbtn copy-inc" data-inc="idcf-cloud-followup">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -732,12 +788,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted">Disputed scope of a ransomware attack against a cloud provider: no confirmed data exfiltration per the provider, versus an unverified attacker claim of 225 databases/3.6PB encrypted</button></td>
-            <td class="ctx">Status update to the IDCF Cloud incident originally reported in Issue 012</td>
-            <td class="seen">OCT 14</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -763,7 +814,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>Do not download or open any files presented as proof/sample data from this claim, given confirmed malware in at least one sample; Ampath patients should monitor for fraudulent communication referencing personal/medical-aid details per the company&#x27;s own notice, independent of the disputed record count; researchers and journalists verifying this claim should request verification through safe, sandboxed channels rather than direct download.</span>
+      <span>Do not download or open any files presented as proof/sample data from this claim, given confirmed malware in at least one sample; Ampath patients should monitor for fraudulent communication referencing personal/medical-aid details per the company&#x27;s own notice, independent of the disputed record count; researchers and journalists verifying this claim should request verification through safe, sandboxed channels rather than direct download. No hash of the malware-laden sample file has been published; MyBroadband&#x27;s scan confirmed backdoor/trojan content but did not release a file hash.</span>
       <button class="tbtn copy-inc" data-inc="ampath-labs-bytetobreach">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -772,16 +823,10 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)">ByteToBreach (likely an individual actor based in Algeria, per KELA assessment)</button></td>
-            <td class="ctx">Group claiming the Ampath Laboratories database theft</td>
-            <td class="seen">OCT 13</td>
-          </tr>
-          <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Backdoor and trojan malware embedded in files presented as &#x27;sample&#x27; proof data for this breach claim">Backdoor and trojan malware embedded in files presented as &#x27;sample&#x27; proof data for this breach claim</button></td>
-            <td class="ctx">Confirmed by independent scan of a posted sample file</td>
+          <tr data-type="net">
+            <td><span class="t-badge">handle</span></td>
+            <td><button class="val" data-defanged="@ByteToBreach">@ByteToBreach</button></td>
+            <td class="ctx">Telegram handle used by the actor claiming the Ampath Laboratories theft; prior aliases include CvHNWwEG and inesslopez (per KELA research)</td>
             <td class="seen">OCT 13</td>
           </tr>
         </tbody>
@@ -809,7 +854,7 @@
     </div>
     <div class="act-row">
       <b>ACTION</b>
-      <span>SeetelHotels guests and business partners should watch for official confirmation of the Incransom claim before treating the passport/payment/medical-dietary data exposure as confirmed; hospitality operators generally should pre-establish a ransom-negotiation policy aligned with national law-enforcement guidance before an incident, following SeetelHotels&#x27; stated approach as a reference point; monitor Incransom&#x27;s leak site for proof files substantiating scope.</span>
+      <span>SeetelHotels guests and business partners should watch for official confirmation of the Incransom claim before treating the passport/payment/medical-dietary data exposure as confirmed; hospitality operators generally should pre-establish a ransom-negotiation policy aligned with national law-enforcement guidance before an incident, following SeetelHotels&#x27; stated approach as a reference point; monitor Incransom&#x27;s leak site for proof files substantiating scope. No encryptor hash, ransom-note filename, or leak-site domain for Incransom has been publicly documented in available reporting on this specific intrusion as of this writing.</span>
       <button class="tbtn copy-inc" data-inc="seetelhotels-germany">COPY IOCs</button>
     </div>
     <div class="scroll">
@@ -818,12 +863,7 @@
           <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
         </thead>
         <tbody>
-          <tr data-type="host">
-            <td><span class="t-badge">tool</span></td>
-            <td><button class="val" data-defanged="Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)">Incransom ransomware (claimed Seetelhotels[.]de leak-site listing)</button></td>
-            <td class="ctx">Group that listed SeetelHotels on its leak site following the Oct 10-11 intrusion</td>
-            <td class="seen">OCT 14</td>
-          </tr>
+
         </tbody>
       </table>
     </div>
@@ -860,20 +900,32 @@
         <tbody>
           <tr data-type="host">
             <td><span class="t-badge">package</span></td>
-            <td><button class="val" data-defanged="com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot">com.android.system.lite ; com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot</button></td>
-            <td class="ctx">Hidden firmware-level system app (and renamed variants) running as the Midnight Mimosa enabler</td>
+            <td><button class="val" data-defanged="com.android.system.lite">com.android.system.lite</button></td>
+            <td class="ctx">Hidden firmware-level system app acting as the Midnight Mimosa enabler</td>
+            <td class="seen">OCT 12</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">package</span></td>
+            <td><button class="val" data-defanged="com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot">com.android.sys.prot ; com.android.sys.gmsprot ; com.android.sys.bcprot</button></td>
+            <td class="ctx">Renamed variants of the Midnight Mimosa enabler package</td>
             <td class="seen">OCT 12</td>
           </tr>
           <tr data-type="host">
             <td><span class="t-badge">package</span></td>
             <td><button class="val" data-defanged="com.mobile.applock.wt">com.mobile.applock.wt</button></td>
-            <td class="ctx">Related obfuscated dropper associated with the campaign, though not confirmed as root cause</td>
+            <td class="ctx">Related obfuscated dropper posing as an app lock, associated with the campaign though not confirmed as root cause</td>
+            <td class="seen">OCT 12</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">handle</span></td>
+            <td><button class="val" data-defanged="fivedev ; CPS Developer">fivedev ; CPS Developer</button></td>
+            <td class="ctx">Google Play developer account names used to publish the ad-fraud apps sharing Midnight Mimosa&#x27;s code</td>
             <td class="seen">OCT 12</td>
           </tr>
           <tr data-type="host">
-            <td><span class="t-badge">detection</span></td>
-            <td><button class="val" data-defanged="Developer accounts &#x27;fivedev&#x27; and &#x27;CPS Developer&#x27;; certificate name &#x27;Shenzhen Zediel&#x27; on some system-app builds; Google Play Store disabled or non-functional on a budget Android device">Developer accounts &#x27;fivedev&#x27; and &#x27;CPS Developer&#x27;; certificate name &#x27;Shenzhen Zediel&#x27; on some system-app builds; Google Play Store disabled or non-functional on a budget Android device</button></td>
-            <td class="ctx">Identifiers associated with the campaign per Bitdefender</td>
+            <td><span class="t-badge">cert</span></td>
+            <td><button class="val" data-defanged="Shenzhen Zediel">Shenzhen Zediel</button></td>
+            <td class="ctx">Signing certificate name found on some infected system-app builds (Bitdefender notes this does not prove the named company was responsible)</td>
             <td class="seen">OCT 12</td>
           </tr>
         </tbody>

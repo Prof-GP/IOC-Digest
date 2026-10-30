@@ -5,12 +5,42 @@
     {
       "type": "indicator",
       "spec_version": "2.1",
+      "id": "indicator--efc9f8af-e13d-5337-b6e3-09bdc4132a4c",
+      "created": "2026-10-02T00:00:00.000Z",
+      "modified": "2026-10-02T00:00:00.000Z",
+      "name": "CVE-2026-104286 \u2014 FortiMail path-traversal zero-day exploited in the wild with no patch available, only a workaround: Attacker-controlled infrastructure; 79.141.169.187 used as the remote server for an unauthorized archive234 exfiltration account",
+      "description": "Source: https://www.rescana.com/post/fortinet-fortimail-cve-2026-104286-actively-exploited-critical-path-traversal-and-null-byte-vulnerability-alert; https://hard2bit.com/en/blog/fortimail-zero-day-cve-2026-104286-patch-iocs/",
+      "pattern": "[ipv4-addr:value = '79.141.169.187 ; 45.129.0.192']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-02T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
       "id": "indicator--2d270c08-1fc6-5624-a6bc-20e10ca35242",
       "created": "2026-10-02T00:00:00.000Z",
       "modified": "2026-10-02T00:00:00.000Z",
       "name": "CVE-2026-88771/88772 \u2014 third NetScaler zero-day pair of the year, exploited with documented IPs, hashes, and web-shell paths: Attacker infrastructure IPs observed exploiting the NetScaler zero-days (plus six additional unlisted IPs)",
       "description": "Source: https://unit42.paloaltonetworks.com/netscaler-zero-days-exploited/; https://www.rapid7.com/blog/post/etr-critical-cisco-catalyst-sd-wan-manager-api-authentication-bypass-exploited-in-the-wild-cve-2026-76504/",
       "pattern": "[ipv4-addr:value = '77.83.199.39 ; 104.248.244.66 ; 193.149.176.207 ; 162.33.178.9']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-02T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--0726224b-e86d-5ef1-a5ea-546578f818e7",
+      "created": "2026-10-02T00:00:00.000Z",
+      "modified": "2026-10-02T00:00:00.000Z",
+      "name": "Wallstreet ransomware claims Illinois nonprofit Gibson Area Hospital, alleges 600GB exfiltrated: Wallstreet ransomware group's Tor leak/extortion site, per third-party threat-intel trackers (WatchGuard, BreachSense); not law-enforcement confirmed",
+      "description": "Source: https://www.dexpose.io/wallstreet-ransomware-strikes-gibson-area-hospital-health-services/",
+      "pattern": "[url:value = '4dwiv37h7hhuhjpvtn72hme4ylcv3qoe65arfc6mbweal7als6ma7pyd.onion']",
       "pattern_type": "stix",
       "valid_from": "2026-10-02T00:00:00.000Z",
       "labels": [

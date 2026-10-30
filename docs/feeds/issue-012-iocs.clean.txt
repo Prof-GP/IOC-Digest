@@ -2,31 +2,29 @@
 # CLEAN values - import into TIP/SIEM. May trip AV/mail scanning.
 #
 # --- Ransomware knocks out SoftBank-affiliated IDCF Cloud, attacker claims to have destroyed 41.5PB of backups across 495 clients  (https://bleepingcomputer.com/news/security/ransomware-attack-disrupts-japans-idcf-cloud-used-by-govt-clients/amp, https://tech-insider.org/idcf-cloud-ransomware-zones-unrecoverable-backups-2026/)
-Large-scale ransomware encryption and backup destruction across a cloud provider's data-center zones, locking customers out of virtual servers
 #
 # --- ARTEX \u2014 AI pentesting tool combined with multiple LLMs automates data-theft campaign against South Korean banks  (https://thehackernews.com/2026/10/artex-ai-pentesting-tool-used-in-data.html, https://securityaffairs.com/200661/hacking/ai-driven-tool-artex-used-in-attacks-against-south-korean-banks.html)
-ARTEX (open-source Chinese pentesting platform) combined with DeepSeek v4.1-flash, GLM-5.3, and Grok 4.6
+38.244.50.120
+/.claude/CLAUDE.md
 #
 # --- Malicious npm release of 'tensorlake' extends the ChainDrop/Shai-Hulud worm into AI agent infrastructure  (https://www.scworld.com/brief/tensorlake-npm-package-compromised-in-supply-chain-attack)
-tensorlake v0.5.144 (published Oct 8, 2026)
+tensorlake@0.5.144
+iseekaigogo.com
+.claude/settings.json ; .vscode/tasks.json
 #
 # --- South Africa's air navigation provider finds ransomware-linked malware in OT network supporting aviation weather services  (https://www.scworld.com/brief/south-african-air-traffic-control-firm-investigates-ransomware-linked-malware-in-ot-network, https://mybroadband.co.za/news/security/670359-china-linked-hackers-attacked-south-africas-air-traffic-control-system.html)
-Ransomware-precursor malware in an OT network supporting aviation weather services, with suspected exfiltration to external IPs in China
 #
 # --- CVE-2026-88779 \u2014 fourth NetScaler zero-day in two months knocks SAML-configured appliances offline in targeted attacks  (https://thehackernews.com/2026/10/new-netscaler-zero-day-exploited-in.html, https://www.helpnetsecurity.com/2026/10/05/cisa-flags-new-exploited-netscaler-flaw-as-attackers-crash-appliances-cve-2026-88779/)
-CVE-2026-88779
 #
 # --- European police dismantle KillSec ransomware infrastructure, arrest suspected 16-year-old lead operator  (https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html, https://www.teiss.co.uk/news/european-law-enforcement-takes-down-killsec-infrastructure-arrests-teenager-18260)
-KillSec ransomware (infrastructure seized, leak site and 5 core servers taken down)
+kill432ltnkqvaqntbalnsgojqqs2wz4lhnamrqjg66tq6fuvcztilyd.onion
+ks5424y3wpr5zlug5c7i6svvxweinhbdcqcfnptkfcutrncfazzgz5id.onion
 #
 # --- ASOS breach traced to an employee tricked into handing over login credentials by an attacker posing as a trusted contact  (https://www.bleepingcomputer.com/news/security/asos-links-data-breach-to-social-engineering-attack-credential-theft/, https://www.infosecurity-magazine.com/news/asos-data-breach-stolen-employee/)
-Xuanye Group (self-identified attacker group behind the ASOS employee credential theft)
+@xuanyegroup
 #
 # --- Advantest confirms ransomware data theft 233 days after detection, citing cross-jurisdiction notification complexity  (https://www.bleepingcomputer.com/news/security/advantest-confirms-personal-information-stolen-in-ransomware-attack/, https://www.securityweek.com/chip-testing-giant-advantest-hit-by-ransomware/)
-Ransomware-related data theft of SSNs, passport numbers, driver's license details, medical and financial records, detected Feb 2026 and confirmed Oct 2026
 #
 # --- Everest group claims flydubai breach, alleges theft of Boeing software source code and crew-training records  (https://www.rescana.com/post/flydubai-everest-breach-claim-advisory-oct-2026)
-Everest (cybercriminal extortion group claiming the flydubai compromise)
 #
 # --- Asahi Kasei Therapeutics discloses cyberattack on healthcare-professional website exposing up to 558,700 people's data  (https://pj.jiho.jp/article/256548)
-Unauthorized access to a healthcare-professional-facing website, affecting up to 558,700 people
