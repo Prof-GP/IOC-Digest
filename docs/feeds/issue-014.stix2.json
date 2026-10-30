@@ -1,0 +1,36 @@
+{
+  "type": "bundle",
+  "id": "bundle--75a46650-5dba-55ea-b650-6b21bfdb4f9a",
+  "objects": [
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--f69a0f81-955f-5c91-8136-9bc8d7662085",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "N0n extortion group leaks Amagi Media Labs' internal network maps and device configs after cloud-TV infrastructure provider confirms attack: N0n group's Tor leak/extortion site where the Amagi claim and proof files were posted",
+      "description": "Source: https://www.dexpose.io/n0n-ransomware-group-targets-amagi-media-labs/; https://socradar.io/free-tools/ransomware-intelligence/victims/amagi-media-labs-n0n-bdfc450f",
+      "pattern": "[url:value = 'nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    },
+    {
+      "type": "indicator",
+      "spec_version": "2.1",
+      "id": "indicator--edf6fd50-cf92-5b88-9ed7-5a96fe2d1861",
+      "created": "2026-10-23T00:00:00.000Z",
+      "modified": "2026-10-23T00:00:00.000Z",
+      "name": "PEAR extortion group claims data theft from Arizona landscaping/tree-management firm, no systems encrypted: PEAR group's Tor leak/extortion site where the Caretaker Landscape claim was posted",
+      "description": "Source: https://www.dexpose.io/pear-ransomware-hits-caretaker-landscape-and-tree-management/",
+      "pattern": "[url:value = 'peargxn3oki34c4savcbcfqofjjwjnnyrlrbszfv6ujlx36mhrh57did.onion']",
+      "pattern_type": "stix",
+      "valid_from": "2026-10-23T00:00:00.000Z",
+      "labels": [
+        "malicious-activity"
+      ]
+    }
+  ]
+}

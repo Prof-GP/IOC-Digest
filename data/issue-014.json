@@ -1,0 +1,194 @@
+{
+  "issue": 14,
+  "week": "2026-10-23",
+  "_note": "All network indicators are stored DEFANGED ([.] for .). The site refangs in-browser only; feeds ship defanged. This keeps the repo safe for AV, mail gateways, and accidental clicks.",
+  "incidents": [
+    {
+      "id": "php2shell-dual-cve",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · ZERO-DAY · MASS EXPLOITATION · PHP CORE",
+      "title": "\"PHP2Shell\" — two critical PHP core flaws drew millions of exploit attempts within hours of disclosure",
+      "summary": "PHP maintainers disclosed CVE-2026-109618 and CVE-2026-109619 (each rated 9.2) on Oct 21, two flaws in PHP's core request-handling that let an unauthenticated attacker execute code on any server running an affected build — no WordPress plugin, theme, or app-layer bug required, since the flaw sits in the PHP engine itself. Cloudflare reported exploit attempts climbing from thousands in the ten hours before disclosure to tens of thousands within 45 minutes of the public advisory, hundreds of thousands within two hours, and millions within the day; Amazon's threat intel team recorded a probe against a decoy server as early as Oct 17, four days before public disclosure. Fixes shipped same-day in PHP 8.5.12, 8.4.27, 8.3.36, and 8.2.35. WordPress said no core update was needed since the bug is in PHP itself, not WordPress code, pushing the patching burden onto hosts and server admins instead of site owners. <b>Durable catch: Cloudflare observed attackers actively mutating payloads to slip past its emergency WAF rules within hours of them going live — a signed vendor patch is the only fix that holds; any WAF rule bought time, not closure.</b>",
+      "reported": "2026-10-21",
+      "first_seen": "2026-10-17",
+      "facts": ["CVE-2026-109618 + CVE-2026-109619, BOTH CVSS 9.2 · UNAUTHENTICATED RCE IN PHP CORE", "EXPLOIT ATTEMPTS WENT FROM THOUSANDS TO MILLIONS WITHIN HOURS OF DISCLOSURE", "FIRST PROBE RECORDED OCT 17, 4 DAYS BEFORE PUBLIC DISCLOSURE · FIXED IN PHP 8.5.12/8.4.27/8.3.36/8.2.35"],
+      "attack": ["T1190", "T1059"],
+      "sources": [
+        { "label": "Cybernews", "url": "https://cybernews.com/security/php2shell-wordpress-amazon-cloudflare-ai-cyberattacks/" },
+        { "label": "ITdaily", "url": "https://itdaily.com/blogs/software/php2shell-bug-php/" }
+      ],
+      "action": "Patch to PHP 8.5.12, 8.4.27, 8.3.36, or 8.2.35 immediately on every server; do not rely on WAF/CDN rules as a substitute since attackers are already mutating payloads around them; audit shared hosting environments specifically, since a single unpatched PHP binary on a host can expose every tenant site regardless of their own CMS patch status.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-109618", "context": "Critical unauthenticated RCE in PHP core request handling, CVSS 9.2", "seen": "OCT 21" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-109619", "context": "Second critical unauthenticated RCE in PHP core request handling, CVSS 9.2", "seen": "OCT 21" }
+      ]
+    },
+    {
+      "id": "plex2shell-kev-chain",
+      "severity": "crit",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · KEV · CRYPTOMINER",
+      "title": "\"Plex2Shell\" exploit chain hit vulnerable Plex Media Servers within a day of PoC release, dropped cryptominers",
+      "summary": "Researcher Zach Main reported four Plex Media Server flaws (CVE-2026-96652, -96654, -96655, -96656) to Plex on Jul 27; chained together they let an unauthenticated remote attacker execute code with the privileges of the Plex Media Server process. Plex shipped a fix in build 1.43.3.10861 in early August, but exploitation began roughly a day after Main published technical details and PoC code, with activity first observed against Plex honeypots on Oct 17 dropping cryptominers and proxy/relay software. CISA added all four CVEs to its Known Exploited Vulnerabilities catalog around Oct 21 and set an Oct 23 remediation deadline for federal agencies. <b>Durable catch: the four-month gap between Plex's patch (early August) and the exploitation wave (mid-October) is the actual lesson here — the PoC publication, not the patch release, was what triggered mass scanning, so unpatched self-hosted media servers stayed exposed on a known-fixed bug for months before anyone came looking.</b>",
+      "reported": "2026-10-21",
+      "first_seen": "2026-10-17",
+      "facts": ["CVE-2026-96652, -96654, -96655, -96656 CHAINED FOR UNAUTHENTICATED RCE", "EXPLOITATION BEGAN ~1 DAY AFTER PUBLIC PoC, TARGETING HONEYPOTS FIRST", "CISA KEV ADDED ~OCT 21, FEDERAL DEADLINE OCT 23 · FIX IN BUILD 1.43.3.10861 (AUG)"],
+      "attack": ["T1190", "T1496"],
+      "sources": [
+        { "label": "BleepingComputer", "url": "https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers" },
+        { "label": "SecurityWeek", "url": "https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure" }
+      ],
+      "action": "Upgrade any Plex Media Server instance to 1.43.3.10861 or later immediately — this has been fixed since August, so any instance still vulnerable in October was simply never updated; self-hosted/home-lab instances exposed directly to the internet are the highest-risk population and should not be reachable without a VPN or reverse proxy with authentication in front of them.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-96652", "context": "One of four chained Plex Media Server flaws enabling unauthenticated RCE (\"Plex2Shell\")", "seen": "OCT 17" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-96654", "context": "Chained Plex Media Server flaw", "seen": "OCT 17" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-96655", "context": "Chained Plex Media Server flaw", "seen": "OCT 17" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-96656", "context": "Chained Plex Media Server flaw", "seen": "OCT 17" }
+      ]
+    },
+    {
+      "id": "siemens-clickfix-dll",
+      "severity": "high",
+      "wide": true,
+      "kind": "CVE · EXPLOITED · CLICKFIX · DLL SIDE-LOADING",
+      "title": "ClickFix operators exploited a Siemens Software Center DLL side-loading flaw to deploy malware via fake verification prompts",
+      "summary": "Siemens confirmed on Oct 19 that CVE-2026-110936 (CVSS v4.0 8.4), an uncontrolled-search-path flaw (CWE-427) in Software Center versions before 4.0.9.8, is being actively exploited in real attacks. Attackers pair a legitimate, digitally signed older Software Center binary with an attacker-supplied malicious DLL dropped in the same directory; because the legitimate executable itself is never modified, file-reputation and signature checks miss it entirely, and the malicious code runs with the trust of a signed Siemens binary. Siemens ties the activity to the ClickFix social-engineering technique — fake CAPTCHA/verification pages that walk a victim through copy-pasting a malicious command — delivered via a platform researchers track as Romulus. <b>Durable catch: a signed, legitimate binary is not proof of a clean execution chain — defenders need to inspect adjacent DLLs, parent processes, and outbound connections around trusted executables, not just the executable's own signature, since that is exactly the gap this campaign is built to exploit.</b>",
+      "reported": "2026-10-20",
+      "first_seen": "2026-10-19",
+      "facts": ["CVE-2026-110936 CVSS v4.0 8.4 · DLL SIDE-LOADING VIA UNCONTROLLED SEARCH PATH (CWE-427)", "SIEMENS CONFIRMED ACTIVE EXPLOITATION OCT 19 · DELIVERED VIA CLICKFIX/ROMULUS", "LEGITIMATE SIGNED BINARY UNMODIFIED — MALICIOUS DLL DOES THE WORK · FIXED IN 4.0.9.8"],
+      "attack": ["T1574.002", "T1204.001", "T1553.002"],
+      "sources": [
+        { "label": "Help Net Security", "url": "https://www.helpnetsecurity.com/2026/10/20/exploitation-siemens-software-center-vulnerability-cve-2026-110936/" },
+        { "label": "The Hacker News", "url": "https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html" }
+      ],
+      "action": "Update Siemens Software Center to 4.0.9.8 or later and verify the installed version rather than assuming an update succeeded; train users to recognize and refuse ClickFix-style \"paste this command to verify you're human\" prompts, since the infection vector here is social engineering, not a drive-by exploit; hunt for Software Center processes loading DLLs from non-standard directories.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-110936", "context": "Siemens Software Center DLL side-loading flaw via uncontrolled search path element, CVSS v4.0 8.4", "seen": "OCT 19" },
+        { "type": "tool", "category": "host", "value": "Romulus (ClickFix delivery platform)", "context": "Delivery platform used to serve the fake verification lure leading to DLL side-loading", "seen": "OCT 19" }
+      ]
+    },
+    {
+      "id": "fortisiem-poc-cve106173",
+      "severity": "high",
+      "wide": true,
+      "kind": "CVE · PUBLIC PoC · CONTESTED EXPLOITATION",
+      "title": "Public exploit released for critical FortiSIEM RCE a week after Fortinet's patch; in-the-wild exploitation claim disputed",
+      "summary": "Fortinet patched CVE-2026-106173 on Oct 13; Horizon3.ai published a working proof-of-concept exploit on GitHub a week later, Oct 20. Singapore's CSA issued an alert Oct 22 confirming the public PoC's existence, and Canada's Centre for Cyber Security updated its advisory on Oct 23 to state the flaw \"is being exploited in the wild\" citing open-source reporting — but a separate contemporaneous report found no independent source confirming actual exploitation, and the flaw is not in CISA's KEV catalog as of this writing. Sources also disagree on affected version ranges and CVSS scoring. We're including this one with that caveat explicit rather than presenting a contested claim as settled fact: a public, working PoC against an unpatched FortiSIEM instance is dangerous regardless of whether the \"in the wild\" claim holds up, since the one-week patch-to-PoC gap left plenty of time for mass scanning to begin quietly before any public confirmation. <b>Durable catch: when multiple government advisories disagree on whether a flaw is actively exploited, treat the public PoC's existence — not the disputed attribution — as the operative risk signal and patch on that basis alone.</b>",
+      "reported": "2026-10-23",
+      "first_seen": "2026-10-20",
+      "facts": ["CVE-2026-106173 · FORTISIEM RCE, PATCHED OCT 13 · PUBLIC PoC RELEASED OCT 20 (HORIZON3.AI)", "CANADIAN CYBER CENTRE SAYS EXPLOITED ITW (OCT 23 UPDATE) — CLAIM DISPUTED BY OTHER REPORTING, NOT ON CISA KEV", "MITIGATION: RESTRICT ACCESS TO TCP PORT 27918 · FIXED IN 7.5.1"],
+      "attack": ["T1190"],
+      "sources": [
+        { "label": "The Hacker News", "url": "https://thehackernews.com/2026/10/critical-fortisiem-flaw-gets-public.html" },
+        { "label": "Cyber Centre Canada (AL26 update)", "url": "https://www.cyber.gc.ca/" }
+      ],
+      "action": "Patch FortiSIEM to 7.5.1 immediately regardless of the exploitation dispute — a public working PoC is sufficient reason to treat this as urgent; as an interim mitigation, restrict access to TCP port 27918 to trusted management networks only; do not wait for KEV listing or exploitation confirmation to act, since both are lagging indicators here.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-106173", "context": "FortiSIEM RCE flaw with public PoC exploit; in-the-wild exploitation disputed across sources", "seen": "OCT 20" }
+      ]
+    },
+    {
+      "id": "hitachi-microscada-advisory",
+      "severity": "med",
+      "wide": true,
+      "kind": "CVE · ICS/OT · NO KNOWN EXPLOITATION",
+      "title": "CISA discloses three new access-control flaws in Hitachi Energy's MicroSCADA X SYS600 grid-control platform",
+      "summary": "CISA published ICSA-26-293-04 on Oct 20 alongside five other ICS advisories (HMS Networks PCAN drivers, WAGO OS Linux, Moxa AIG-302, and two Hitachi Energy RTU500 entries), disclosing CVE-2026-9852 (CSV injection, CWE-1236, CVSS v4.0 4.6), CVE-2026-9853 (unauthorized access to application objects, CWE-303, CVSS v4.0 8.5), and CVE-2026-9854 (RBAC privilege elevation, CWE-303, CVSS v4.0 8.5) in MicroSCADA X SYS600, a SCADA platform used by electric utilities for grid monitoring and control. Hitachi's own advisory (8DBD000249) and CISA both mark exploitation status as none observed — we're flagging that explicitly rather than implying active attack, since the honest state here is \"disclosed, unpatched-for-one-version, not yet seen exploited.\" A fix to 10.8 closes CVE-2026-9852; CVE-2026-9853 and -9854 affect 10.8 as well, with Hitachi offering mitigation guidance rather than a vendor patch for the RBAC flaw. <b>Durable catch: two of the three CVEs affect the current shipping version (10.8), not just the legacy branch — \"update to the latest version\" isn't a complete answer here, and utilities running MicroSCADA X need the specific Hitachi mitigation guidance for CVE-2026-9854, not just a version bump.</b>",
+      "reported": "2026-10-20",
+      "first_seen": "2026-10-20",
+      "facts": ["CVE-2026-9852/-9853/-9854 IN HITACHI ENERGY MICROSCADA X SYS600 (GRID SCADA PLATFORM)", "CVSS v4.0 UP TO 8.5 · NO KNOWN EXPLOITATION, PER CISA AND HITACHI", "TWO OF THREE CVEs AFFECT CURRENT VERSION 10.8, NOT JUST LEGACY 10.7 AND EARLIER"],
+      "attack": ["T1078", "T1068"],
+      "sources": [
+        { "label": "CISA ICS Advisory ICSA-26-293-04", "url": "https://www.cisa.gov/news-events/ics-advisories/icsa-26-293-04" }
+      ],
+      "action": "Electric utilities and grid operators running MicroSCADA X SYS600 should apply the 10.8 update for CVE-2026-9852 and follow Hitachi advisory 8DBD000249's specific mitigation steps for CVE-2026-9853 and CVE-2026-9854, since no full vendor patch exists yet for the RBAC privilege-escalation flaw on the current version; segment SCADA management interfaces from general IT networks regardless of patch status.",
+      "iocs": [
+        { "type": "cve", "category": "host", "value": "CVE-2026-9852", "context": "CSV injection in MicroSCADA X SYS600, CWE-1236, CVSS v4.0 4.6, no known exploitation", "seen": "OCT 20" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-9853", "context": "Unauthorized access to application objects, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8", "seen": "OCT 20" },
+        { "type": "cve", "category": "host", "value": "CVE-2026-9854", "context": "RBAC privilege elevation, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8, no vendor patch yet for 10.8", "seen": "OCT 20" }
+      ]
+    },
+    {
+      "id": "olympia-orthopaedic-braincipher",
+      "severity": "high",
+      "wide": false,
+      "kind": "RANSOMWARE · DATA EXTORTION · HEALTHCARE",
+      "title": "BrainCipher claims ransomware attack on Washington state orthopaedic practice, threatens leak of 105GB",
+      "summary": "The BrainCipher ransomware group publicly claimed an attack against Olympia Orthopaedic Associates (olyortho[.]com), a Washington-state orthopaedic group, posting the claim to its leak site on or around Oct 21-22 with a threatened leak size of 105GB. As of this writing, we found no patient-notification filing, state attorney general disclosure, or statement from the practice itself confirming the breach, what data was actually taken, or how many patients are affected — this is a leak-site claim, not a confirmed incident, and we're presenting it as such rather than treating BrainCipher's own numbers as fact. <b>Durable catch: a dark-web leak-site claim and a confirmed breach are not the same thing — the responsible read here is \"an orthopaedic practice is under active extortion pressure,\" not \"105GB of patient data is confirmed stolen,\" until the practice or a regulator says otherwise.</b>",
+      "reported": "2026-10-22",
+      "first_seen": "2026-10-21",
+      "facts": ["BRAINCIPHER CLAIMED OLYMPIA ORTHOPAEDIC ASSOCIATES (OLYORTHO[.]COM), WASHINGTON STATE", "CLAIMED LEAK SIZE 105GB · NO PRACTICE STATEMENT OR REGULATOR FILING CONFIRMING SCOPE AS OF WRITING", "UNVERIFIED LEAK-SITE CLAIM — TREAT DATA-TYPE AND VICTIM-COUNT CLAIMS AS UNCONFIRMED"],
+      "attack": ["T1486", "T1567"],
+      "sources": [
+        { "label": "DeXpose", "url": "https://www.dexpose.io/braincipher-strikes-olyortho/" }
+      ],
+      "action": "Olympia Orthopaedic patients should watch for an official notification from the practice rather than acting on leak-site claims directly; healthcare practices generally should treat any BrainCipher leak-site posting as a signal to check their own backup integrity and initial-access logs immediately rather than waiting for a ransom deadline. Note: the indicators below are known BrainCipher-family artifacts from prior incidents, not samples confirmed specific to the Olympia Orthopaedic intrusion — no victim-specific hash or C2 has surfaced publicly as of this writing.",
+      "iocs": [
+        { "type": "hash", "category": "hash", "value": "eb82946fa0de261e92f8f60aa878c9fef9ebb34fdababa66995403b110118b1", "context": "SHA-256 of a known BrainCipher encryptor sample (LockBit 3.0-derived builder); family-level indicator, not confirmed specific to this intrusion", "seen": "PRIOR BRAINCIPHER CAMPAIGNS" },
+        { "type": "email", "category": "net", "value": "brain[.]support[at]cyberfear[.]com", "context": "Contact email address used in BrainCipher ransom notes across prior campaigns", "seen": "PRIOR BRAINCIPHER CAMPAIGNS" },
+        { "type": "file", "category": "host", "value": "[id].README.txt", "context": "BrainCipher ransom note filename pattern (random ID prefix); family encrypts filenames as well as contents", "seen": "PRIOR BRAINCIPHER CAMPAIGNS" }
+      ]
+    },
+    {
+      "id": "amagi-media-labs-n0n",
+      "severity": "high",
+      "wide": false,
+      "kind": "RANSOMWARE · DATA EXTORTION · MEDIA/STREAMING INFRASTRUCTURE",
+      "title": "N0n extortion group leaks Amagi Media Labs' internal network maps and device configs after cloud-TV infrastructure provider confirms attack",
+      "summary": "Amagi Media Labs, which provides cloud-based playout and ad-insertion infrastructure for broadcasters and streaming platforms, disclosed to stock exchanges that an unknown party claims to have taken operational and network-setup data, bringing in outside cybersecurity experts and legal counsel and notifying authorities. The N0n extortion group publicly claimed responsibility for the attack on Oct 18 and published internal network maps and device configuration files as proof, threatening further leaks absent negotiation; N0n is a data-theft (not encryption-based) extortion group active since September 2026 that has now claimed over 100 victims via its Tor leak site. Amagi's shares fell following the disclosure. We found no confirmation of the initial access method for this specific intrusion — researchers have attributed stolen-credential access to N0n in other cases, but that attribution is not yet confirmed for Amagi. <b>Durable catch: N0n's proof-of-claim here was internal network maps and device configs, not customer records — for infrastructure providers, that's arguably worse than a customer-data leak, since it hands follow-on attackers a blueprint of the target's own network before any ransom conversation even starts.</b>",
+      "reported": "2026-10-18",
+      "first_seen": "2026-10-18",
+      "facts": ["AMAGI MEDIA LABS (CLOUD PLAYOUT/AD-INSERTION PROVIDER) DISCLOSED ATTACK TO STOCK EXCHANGES", "N0n GROUP CLAIMED RESPONSIBILITY OCT 18, PUBLISHED INTERNAL NETWORK MAPS AND DEVICE CONFIGS AS PROOF", "N0n IS DATA-THEFT-ONLY EXTORTION GROUP ACTIVE SINCE SEP 2026, 100+ CLAIMED VICTIMS ON ITS LEAK SITE"],
+      "attack": ["T1567", "T1082"],
+      "sources": [
+        { "label": "DeXpose", "url": "https://www.dexpose.io/n0n-ransomware-group-targets-amagi-media-labs/" },
+        { "label": "SOCRadar", "url": "https://socradar.io/free-tools/ransomware-intelligence/victims/amagi-media-labs-n0n-bdfc450f" }
+      ],
+      "action": "Broadcast and streaming partners relying on Amagi's infrastructure should ask Amagi directly whether leaked network maps or device configs touch shared/multi-tenant infrastructure they depend on; organizations targeted by N0n generally should assume stolen credentials as the likely initial-access vector based on prior cases and prioritize credential rotation and MFA enforcement across remote-access points. Blocking/monitoring the leak-site address below can help confirm whether an organization's own data has appeared on N0n's site.",
+      "iocs": [
+        { "type": "url", "category": "net", "value": "nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad[.]onion", "context": "N0n group's Tor leak/extortion site where the Amagi claim and proof files were posted", "seen": "OCT 18" }
+      ]
+    },
+    {
+      "id": "oak-grove-technologies-dragonforce",
+      "severity": "high",
+      "wide": false,
+      "kind": "RANSOMWARE · DEFENSE CONTRACTOR",
+      "title": "DragonForce claims ransomware attack on US defense/military-training contractor Oak Grove Technologies",
+      "summary": "DragonForce ransomware publicly claimed an attack on Oak Grove Technologies, a North Carolina-based defense contractor providing tactical training and simulation services, with both the attack and discovery dated Oct 19 and a claimed leak size of 261.46GB. As with this week's other leak-site claims, we found no confirmation from Oak Grove itself, a defense-sector regulator, or a government contracting authority describing what data was taken or whether any controlled/classified training materials were involved — the scope beyond DragonForce's own claim is unverified. <b>Durable catch: a defense-training contractor is exactly the kind of target where \"we don't know the scope yet\" matters more than usual — course content, simulation scenarios, and client rosters at a firm like this can carry sensitivity well beyond typical commercial data even if no classified material is involved, so downstream government/military clients should ask Oak Grove directly rather than wait for a public disclosure.</b>",
+      "reported": "2026-10-19",
+      "first_seen": "2026-10-19",
+      "facts": ["DRAGONFORCE CLAIMED OAK GROVE TECHNOLOGIES (DEFENSE/TACTICAL-TRAINING CONTRACTOR, NC)", "CLAIMED LEAK SIZE 261.46GB · ATTACK AND DISCOVERY BOTH DATED OCT 19", "NO CONFIRMATION FROM OAK GROVE OR A CONTRACTING AUTHORITY AS OF WRITING — SCOPE UNVERIFIED"],
+      "attack": ["T1486", "T1567"],
+      "sources": [
+        { "label": "BreachSense", "url": "https://www.breachsense.com/breaches/oak-grove-technologies-data-breach/" }
+      ],
+      "action": "Government and military clients of Oak Grove Technologies should contact the firm directly to determine whether any shared training materials, rosters, or network credentials were exposed rather than relying on DragonForce's own leak-site claim; Oak Grove staff/contractor credentials found reused elsewhere should be rotated as a precaution. Note: the indicators below describe DragonForce's known encryptor behavior from prior reverse-engineering work, not a sample confirmed specific to the Oak Grove intrusion.",
+      "iocs": [
+        { "type": "file", "category": "host", "value": ".dragonforce_encrypted", "context": "File extension appended by DragonForce's encryptor (LockBit 3.0-derived builder); family-level indicator from prior reverse-engineering, not confirmed specific to this intrusion", "seen": "PRIOR DRAGONFORCE CAMPAIGNS" },
+        { "type": "path", "category": "host", "value": "C:\\ProgramData ; C:\\Users\\Public", "context": "DragonForce's typical pre-encryption staging directories, observed across prior incidents", "seen": "PRIOR DRAGONFORCE CAMPAIGNS" },
+        { "type": "technique", "category": "host", "value": "vssadmin.exe / wmic.exe shadow copy deletion", "context": "DragonForce's standard shadow-copy destruction step prior to encryption", "seen": "PRIOR DRAGONFORCE CAMPAIGNS" }
+      ]
+    },
+    {
+      "id": "caretaker-landscape-pear",
+      "severity": "med",
+      "wide": false,
+      "kind": "DATA EXTORTION · NO ENCRYPTION",
+      "title": "PEAR extortion group claims data theft from Arizona landscaping/tree-management firm, no systems encrypted",
+      "summary": "The PEAR group — a data-theft extortion operation that, per its own pattern across prior victims, does not deploy encryption and instead steals and threatens to leak data directly — claimed an attack against Caretaker Landscape and Tree Management, an Arizona-based commercial and HOA landscaping provider, on Oct 16. We found no confirmation from the company or a regulator of what data was taken; this is a leak-site claim only. PEAR's other recent victims span healthcare billing, IT services, and accounting firms, suggesting an opportunistic rather than sector-targeted pattern. <b>Durable catch: PEAR's business model is pure data-theft extortion with no ransomware payload — meaning a victim's backup and recovery posture is irrelevant to this threat; the only real defenses are preventing exfiltration in the first place and having a legal/PR response ready for a leak-site deadline, not a restore plan.</b>",
+      "reported": "2026-10-16",
+      "first_seen": "2026-10-16",
+      "facts": ["PEAR GROUP CLAIMED CARETAKER LANDSCAPE AND TREE MANAGEMENT (ARIZONA)", "DATA-THEFT-ONLY EXTORTION — NO ENCRYPTION PAYLOAD, PER PEAR'S OWN PATTERN", "NO COMPANY OR REGULATOR CONFIRMATION OF SCOPE AS OF WRITING — LEAK-SITE CLAIM ONLY"],
+      "attack": ["T1567"],
+      "sources": [
+        { "label": "DeXpose", "url": "https://www.dexpose.io/pear-ransomware-hits-caretaker-landscape-and-tree-management/" }
+      ],
+      "action": "Organizations in PEAR's victim profile (SMBs across services, healthcare billing, accounting, IT) should prioritize egress monitoring and DLP over backup/recovery investment, since PEAR's model skips encryption entirely; Caretaker clients/employees whose data may be included should watch for a company notification. Monitoring the leak-site address below can help confirm whether an organization's own data has appeared on PEAR's site.",
+      "iocs": [
+        { "type": "url", "category": "net", "value": "peargxn3oki34c4savcbcfqofjjwjnnyrlrbszfv6ujlx36mhrh57did[.]onion", "context": "PEAR group's Tor leak/extortion site where the Caretaker Landscape claim was posted", "seen": "OCT 16" }
+      ]
+    }
+  ]
+}

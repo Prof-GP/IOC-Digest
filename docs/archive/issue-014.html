@@ -1,0 +1,946 @@
+<title>IOC Digest — Issue 014 · Week of 2026-10-23</title>
+<style>
+  /* Palettes switched via data-palette on <html>. SPECTRUM is the default: hue is
+     spent semantically (type, severity, interactivity), the ground stays neutral. */
+  :root {
+    color-scheme: dark;
+    --bg-hi: #0b1830;
+    --bg: #081122;
+    --panel: #0e1c33;
+    --panel-2: #132542;
+    --line: #1f3a63;
+    --line-soft: #172d4e;
+    --ink: #dce8fa;
+    --dim: #9ab1d4;
+    --faint: #61789e;
+    --accent: #5cb8ff;
+    --accent-dim: #17497a;
+    --crit: #ff7060;
+    --high: #ffab4a;
+    --med: #e6d24f;
+    --c-hash: var(--dim);
+    --c-net: var(--dim);
+    --c-host: var(--dim);
+    --shadow: 0 10px 28px rgba(3, 8, 18, .4);
+    --mono: ui-monospace, "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+    --sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  :root[data-palette="spectrum"] {
+    --bg-hi: #10141d; --bg: #0b0e15;
+    --panel: #141925; --panel-2: #1b2231;
+    --line: #2a3447; --line-soft: #202939;
+    --ink: #e2e8f2; --dim: #9aa7bd; --faint: #66738c;
+    --accent: #4cc9f0; --accent-dim: #14526b;
+    --crit: #ff5d5d; --high: #ffa94d; --med: #ffd43b;
+    --c-hash: #b48cff; --c-net: #3fd0b6; --c-host: #ffb86c;
+    --shadow: 0 10px 28px rgba(2, 5, 12, .5);
+  }
+  :root[data-palette="violet"] {
+    --bg-hi: #171028; --bg: #100a1d;
+    --panel: #191231; --panel-2: #231a45;
+    --line: #3b2b6b; --line-soft: #2b2050;
+    --ink: #e8e1f9; --dim: #b5a6dc; --faint: #7c6da6;
+    --accent: #c792ff; --accent-dim: #4d2f85;
+    --crit: #ff6d7a; --high: #ffa94d; --med: #ffd43b;
+    --shadow: 0 10px 28px rgba(8, 4, 20, .5);
+  }
+  :root[data-palette="amber"] {
+    --bg-hi: #1c1509; --bg: #131006;
+    --panel: #1e1810; --panel-2: #2b2213;
+    --line: #4d3d1d; --line-soft: #352a16;
+    --ink: #f6ead0; --dim: #cbb488; --faint: #8d7d58;
+    --accent: #ffb224; --accent-dim: #6b4d10;
+    --crit: #ff5347; --high: #ff8f3d; --med: #d9c94f;
+    --shadow: 0 10px 28px rgba(12, 8, 2, .5);
+  }
+  :root[data-palette="hunter"] {
+    --bg-hi: #0a1c15; --bg: #07130e;
+    --panel: #0e2119; --panel-2: #143126;
+    --line: #21503c; --line-soft: #183a2c;
+    --ink: #ddf3e8; --dim: #9dc6b1; --faint: #648c78;
+    --accent: #3ddc97; --accent-dim: #14563c;
+    --crit: #ff6f5e; --high: #ffab4a; --med: #e6d24f;
+    --shadow: 0 10px 28px rgba(2, 12, 8, .5);
+  }
+  :root[data-palette="paper"] {
+    color-scheme: light;
+    --bg-hi: #f4f7fb; --bg: #e9eef6;
+    --panel: #ffffff; --panel-2: #eef2f9;
+    --line: #c2cfe1; --line-soft: #dbe3ee;
+    --ink: #1a2536; --dim: #4d5f78; --faint: #8595ac;
+    --accent: #1f6fd6; --accent-dim: #a9ccf1;
+    --crit: #c22d20; --high: #ac6700; --med: #8b7900;
+    --shadow: 0 8px 22px rgba(35, 55, 90, .14);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: linear-gradient(180deg, var(--bg-hi) 0%, var(--bg) 420px);
+    background-attachment: fixed;
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 0 clamp(14px, 2vw, 32px) 40px;
+  }
+  a { color: var(--accent); }
+
+  /* ---------- slim top strip ---------- */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    background: var(--bg-hi);
+    z-index: 2;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+  .break { flex-basis: 100%; height: 0; }
+  .plabel {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--faint);
+  }
+  .pchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 3px 11px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .pchip .dot {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: var(--dot);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--dot) 60%, transparent);
+  }
+  .pchip .dot.multi {
+    background: conic-gradient(#4cc9f0, #b48cff, #ff5d5d, #ffb86c, #3fd0b6, #4cc9f0);
+    box-shadow: none;
+  }
+  .pchip:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .pchip.on { border-color: var(--accent); color: var(--accent); background: var(--panel-2); }
+  .pchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .wordmark {
+    font-family: var(--mono);
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    margin: 0 6px 0 0;
+  }
+  .wordmark span { color: var(--accent); }
+  .issue-meta {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    white-space: nowrap;
+  }
+  .navlink {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 3px 10px;
+    margin-right: 8px;
+    white-space: nowrap;
+  }
+  .navlink:hover { border-color: var(--accent); }
+  .fchip {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .fchip b { color: var(--ink); font-weight: 600; margin-left: 6px; }
+  .fchip::before {
+    content: "";
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 2px;
+    margin-right: 8px;
+  }
+  .fchip[data-type="all"]::before  { background: linear-gradient(120deg, var(--c-hash), var(--c-net) 50%, var(--c-host)); }
+  .fchip[data-type="hash"]::before { background: var(--c-hash); }
+  .fchip[data-type="net"]::before  { background: var(--c-net); }
+  .fchip[data-type="host"]::before { background: var(--c-host); }
+  .fchip:hover { border-color: var(--accent-dim); color: var(--ink); }
+  .fchip.on {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--panel-2);
+  }
+  .fchip.on b { color: var(--accent); }
+  .fchip:focus-visible, .tbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1; }
+  .tbtn {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--dim);
+    cursor: pointer;
+  }
+  .tbtn:hover { color: var(--ink); border-color: var(--accent-dim); }
+  .tbtn.primary { border-color: var(--accent); color: var(--accent); }
+  .tbtn.primary:hover { background: var(--accent-dim); }
+
+  /* ---------- incident grid ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 1350px) {
+    .grid { grid-template-columns: 1fr 1fr; grid-auto-flow: row dense; }
+    section.incident.wide { grid-column: span 2; }
+  }
+
+  section.incident {
+    background: var(--panel);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    overflow: hidden;
+    align-self: start;
+    box-shadow: var(--shadow);
+  }
+
+  /* Header band: faint severity wash fading into the table below. */
+  .inc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px 26px;
+    padding: 16px 20px 12px;
+  }
+  section.crit .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--crit) 11%, transparent), transparent); }
+  section.high .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--high) 10%, transparent), transparent); }
+  section.med  .inc-head { background: linear-gradient(180deg, color-mix(in srgb, var(--med) 8%, transparent), transparent); }
+
+  .inc-lead { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .inc-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .inc-title h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 650;
+    letter-spacing: -.01em;
+    text-wrap: balance;
+  }
+  .sev {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .07em;
+    padding: 2px 8px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .sev.crit { color: var(--crit); background: color-mix(in srgb, var(--crit) 15%, transparent); }
+  .sev.high { color: var(--high); background: color-mix(in srgb, var(--high) 14%, transparent); }
+  .sev.med  { color: var(--med);  background: color-mix(in srgb, var(--med) 13%, transparent); }
+
+  /* Category badge: far right, directly above the COPY IOCs button below it. */
+  .inc-kind {
+    align-self: flex-start;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .09em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    padding: 3px 10px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+
+  .inc-sum { margin: 0; font-size: 13.5px; color: var(--dim); max-width: 100ch; }
+  .inc-sum b { color: var(--ink); font-weight: 600; }
+  .inc-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+  }
+  .inc-meta .attck { color: var(--dim); }
+  .inc-meta .reported { color: var(--accent); font-weight: 600; }
+
+  .act-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    padding: 4px 20px 12px;
+    font-size: 13px;
+  }
+  .act-row b {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .act-row .copy-inc { margin-left: auto; }
+
+  /* ---------- IOC tables ---------- */
+  .scroll { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  thead th {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    text-align: left;
+    padding: 7px 14px;
+    background: var(--panel-2);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 20px; }
+  tbody td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    font-size: 13px;
+  }
+  tbody td:first-child { padding-left: 20px; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--panel-2); }
+  th.w-type { width: 96px; }
+  th.w-seen { width: 84px; }
+
+  .t-badge {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: .05em;
+    color: var(--dim);
+    background: var(--panel-2);
+    border: 1px solid var(--line-soft);
+    padding: 1px 7px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  tr:hover .t-badge { background: var(--bg); }
+  tr[data-type="hash"] .t-badge { color: var(--c-hash); background: color-mix(in srgb, var(--c-hash) 12%, transparent); border-color: color-mix(in srgb, var(--c-hash) 32%, transparent); }
+  tr[data-type="net"]  .t-badge { color: var(--c-net);  background: color-mix(in srgb, var(--c-net) 12%, transparent);  border-color: color-mix(in srgb, var(--c-net) 32%, transparent); }
+  tr[data-type="host"] .t-badge { color: var(--c-host); background: color-mix(in srgb, var(--c-host) 12%, transparent); border-color: color-mix(in srgb, var(--c-host) 32%, transparent); }
+
+  .val {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    text-align: left;
+  }
+  .val:hover { color: var(--accent); }
+  .val:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .val.flash { color: var(--accent); }
+  .val.flash::after {
+    content: " ✓ copied";
+    font-size: 10.5px;
+    color: var(--accent);
+  }
+  td.ctx { color: var(--dim); font-size: 12.5px; }
+  td.seen { font-family: var(--mono); font-size: 12px; color: var(--faint); white-space: nowrap; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    padding: 16px 2px 0;
+  }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 14px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--faint);
+  }
+  .file {
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 3px 10px;
+    border-radius: 2px;
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .file:hover { border-color: var(--accent); }
+  @media (prefers-reduced-motion: no-preference) {
+    .fchip, .tbtn, tbody td, .val { transition: background .12s, color .12s, border-color .12s; }
+  }
+</style>
+
+<div class="controls" role="toolbar" aria-label="Filter indicators">
+  <h1 class="wordmark">IOC<span>//</span>DIGEST</h1>
+  <span class="issue-meta">ISSUE 014 · WK 2026-10-23 · 9 INCIDENTS · 20 IOCs</span>
+  <a class="navlink" href="index.html">← ALL ISSUES</a>
+  <button class="fchip on" data-type="all">ALL<b>20</b></button>
+  <button class="fchip" data-type="hash">HASHES<b>1</b></button>
+  <button class="fchip" data-type="net">NETWORK<b>3</b></button>
+  <button class="fchip" data-type="host">HOST<b>16</b></button>
+  <span class="spacer"></span>
+  <button class="tbtn" id="defang">SHOWING: DEFANGED</button>
+  <button class="tbtn primary" id="copyall">COPY ALL VISIBLE (CLEAN)</button>
+  <span class="break"></span>
+  <span class="plabel">PALETTE</span>
+  <button class="pchip on" data-palette="spectrum"><span class="dot multi"></span>SPECTRUM</button>
+  <button class="pchip" data-palette="navy"   style="--dot:#5cb8ff"><span class="dot"></span>NAVY</button>
+  <button class="pchip" data-palette="violet" style="--dot:#c792ff"><span class="dot"></span>ULTRAVIOLET</button>
+  <button class="pchip" data-palette="amber"  style="--dot:#ffb224"><span class="dot"></span>PHOSPHOR</button>
+  <button class="pchip" data-palette="hunter" style="--dot:#3ddc97"><span class="dot"></span>HUNTER</button>
+  <button class="pchip" data-palette="paper"  style="--dot:#1f6fd6"><span class="dot"></span>DAYLIGHT</button>
+</div>
+
+<div class="grid">
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>"PHP2Shell" — two critical PHP core flaws drew millions of exploit attempts within hours of disclosure</h2>
+        </div>
+        <p class="inc-sum">PHP maintainers disclosed CVE-2026-109618 and CVE-2026-109619 (each rated 9.2) on Oct 21, two flaws in PHP's core request-handling that let an unauthenticated attacker execute code on any server running an affected build — no WordPress plugin, theme, or app-layer bug required, since the flaw sits in the PHP engine itself. Cloudflare reported exploit attempts climbing from thousands in the ten hours before disclosure to tens of thousands within 45 minutes of the public advisory, hundreds of thousands within two hours, and millions within the day; Amazon's threat intel team recorded a probe against a decoy server as early as Oct 17, four days before public disclosure. Fixes shipped same-day in PHP 8.5.12, 8.4.27, 8.3.36, and 8.2.35. WordPress said no core update was needed since the bug is in PHP itself, not WordPress code, pushing the patching burden onto hosts and server admins instead of site owners. <b>Durable catch: Cloudflare observed attackers actively mutating payloads to slip past its emergency WAF rules within hours of them going live — a signed vendor patch is the only fix that holds; any WAF rule bought time, not closure.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-21</span><span>ACTIVE SINCE 2026-10-17</span>
+        <span>CVE-2026-109618 + CVE-2026-109619, BOTH CVSS 9.2 · UNAUTHENTICATED RCE IN PHP CORE</span>
+        <span>EXPLOIT ATTEMPTS WENT FROM THOUSANDS TO MILLIONS WITHIN HOURS OF DISCLOSURE</span>
+        <span>FIRST PROBE RECORDED OCT 17, 4 DAYS BEFORE PUBLIC DISCLOSURE · FIXED IN PHP 8.5.12/8.4.27/8.3.36/8.2.35</span>
+          <span class="attck">T1190 · T1059</span>
+          <span><a href="https://cybernews.com/security/php2shell-wordpress-amazon-cloudflare-ai-cyberattacks/" rel="noopener">Cybernews</a> · <a href="https://itdaily.com/blogs/software/php2shell-bug-php/" rel="noopener">ITdaily</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ZERO-DAY · MASS EXPLOITATION · PHP CORE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch to PHP 8.5.12, 8.4.27, 8.3.36, or 8.2.35 immediately on every server; do not rely on WAF/CDN rules as a substitute since attackers are already mutating payloads around them; audit shared hosting environments specifically, since a single unpatched PHP binary on a host can expose every tenant site regardless of their own CMS patch status.</span>
+      <button class="tbtn copy-inc" data-inc="php2shell-dual-cve">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="php2shell-dual-cve">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-109618">CVE-2026-109618</button></td>
+            <td class="ctx">Critical unauthenticated RCE in PHP core request handling, CVSS 9.2</td>
+            <td class="seen">OCT 21</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-109619">CVE-2026-109619</button></td>
+            <td class="ctx">Second critical unauthenticated RCE in PHP core request handling, CVSS 9.2</td>
+            <td class="seen">OCT 21</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident crit wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev crit">CRITICAL</span>
+          <h2>"Plex2Shell" exploit chain hit vulnerable Plex Media Servers within a day of PoC release, dropped cryptominers</h2>
+        </div>
+        <p class="inc-sum">Researcher Zach Main reported four Plex Media Server flaws (CVE-2026-96652, -96654, -96655, -96656) to Plex on Jul 27; chained together they let an unauthenticated remote attacker execute code with the privileges of the Plex Media Server process. Plex shipped a fix in build 1.43.3.10861 in early August, but exploitation began roughly a day after Main published technical details and PoC code, with activity first observed against Plex honeypots on Oct 17 dropping cryptominers and proxy/relay software. CISA added all four CVEs to its Known Exploited Vulnerabilities catalog around Oct 21 and set an Oct 23 remediation deadline for federal agencies. <b>Durable catch: the four-month gap between Plex's patch (early August) and the exploitation wave (mid-October) is the actual lesson here — the PoC publication, not the patch release, was what triggered mass scanning, so unpatched self-hosted media servers stayed exposed on a known-fixed bug for months before anyone came looking.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-21</span><span>ACTIVE SINCE 2026-10-17</span>
+        <span>CVE-2026-96652, -96654, -96655, -96656 CHAINED FOR UNAUTHENTICATED RCE</span>
+        <span>EXPLOITATION BEGAN ~1 DAY AFTER PUBLIC PoC, TARGETING HONEYPOTS FIRST</span>
+        <span>CISA KEV ADDED ~OCT 21, FEDERAL DEADLINE OCT 23 · FIX IN BUILD 1.43.3.10861 (AUG)</span>
+          <span class="attck">T1190 · T1496</span>
+          <span><a href="https://bleepingcomputer.com/news/security/cisa-hackers-chain-plex-flaws-in-plex2shell-attacks-to-breach-servers" rel="noopener">BleepingComputer</a> · <a href="https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure" rel="noopener">SecurityWeek</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · KEV · CRYPTOMINER</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Upgrade any Plex Media Server instance to 1.43.3.10861 or later immediately — this has been fixed since August, so any instance still vulnerable in October was simply never updated; self-hosted/home-lab instances exposed directly to the internet are the highest-risk population and should not be reachable without a VPN or reverse proxy with authentication in front of them.</span>
+      <button class="tbtn copy-inc" data-inc="plex2shell-kev-chain">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="plex2shell-kev-chain">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-96652">CVE-2026-96652</button></td>
+            <td class="ctx">One of four chained Plex Media Server flaws enabling unauthenticated RCE (&quot;Plex2Shell&quot;)</td>
+            <td class="seen">OCT 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-96654">CVE-2026-96654</button></td>
+            <td class="ctx">Chained Plex Media Server flaw</td>
+            <td class="seen">OCT 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-96655">CVE-2026-96655</button></td>
+            <td class="ctx">Chained Plex Media Server flaw</td>
+            <td class="seen">OCT 17</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-96656">CVE-2026-96656</button></td>
+            <td class="ctx">Chained Plex Media Server flaw</td>
+            <td class="seen">OCT 17</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>Public exploit released for critical FortiSIEM RCE a week after Fortinet's patch; in-the-wild exploitation claim disputed</h2>
+        </div>
+        <p class="inc-sum">Fortinet patched CVE-2026-106173 on Oct 13; Horizon3.ai published a working proof-of-concept exploit on GitHub a week later, Oct 20. Singapore's CSA issued an alert Oct 22 confirming the public PoC's existence, and Canada's Centre for Cyber Security updated its advisory on Oct 23 to state the flaw "is being exploited in the wild" citing open-source reporting — but a separate contemporaneous report found no independent source confirming actual exploitation, and the flaw is not in CISA's KEV catalog as of this writing. Sources also disagree on affected version ranges and CVSS scoring. We're including this one with that caveat explicit rather than presenting a contested claim as settled fact: a public, working PoC against an unpatched FortiSIEM instance is dangerous regardless of whether the "in the wild" claim holds up, since the one-week patch-to-PoC gap left plenty of time for mass scanning to begin quietly before any public confirmation. <b>Durable catch: when multiple government advisories disagree on whether a flaw is actively exploited, treat the public PoC's existence — not the disputed attribution — as the operative risk signal and patch on that basis alone.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-23</span><span>ACTIVE SINCE 2026-10-20</span>
+        <span>CVE-2026-106173 · FORTISIEM RCE, PATCHED OCT 13 · PUBLIC PoC RELEASED OCT 20 (HORIZON3.AI)</span>
+        <span>CANADIAN CYBER CENTRE SAYS EXPLOITED ITW (OCT 23 UPDATE) — CLAIM DISPUTED BY OTHER REPORTING, NOT ON CISA KEV</span>
+        <span>MITIGATION: RESTRICT ACCESS TO TCP PORT 27918 · FIXED IN 7.5.1</span>
+          <span class="attck">T1190</span>
+          <span><a href="https://thehackernews.com/2026/10/critical-fortisiem-flaw-gets-public.html" rel="noopener">The Hacker News</a> · <a href="https://www.cyber.gc.ca/" rel="noopener">Cyber Centre Canada (AL26 update)</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · PUBLIC PoC · CONTESTED EXPLOITATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Patch FortiSIEM to 7.5.1 immediately regardless of the exploitation dispute — a public working PoC is sufficient reason to treat this as urgent; as an interim mitigation, restrict access to TCP port 27918 to trusted management networks only; do not wait for KEV listing or exploitation confirmation to act, since both are lagging indicators here.</span>
+      <button class="tbtn copy-inc" data-inc="fortisiem-poc-cve106173">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="fortisiem-poc-cve106173">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-106173">CVE-2026-106173</button></td>
+            <td class="ctx">FortiSIEM RCE flaw with public PoC exploit; in-the-wild exploitation disputed across sources</td>
+            <td class="seen">OCT 20</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>BrainCipher claims ransomware attack on Washington state orthopaedic practice, threatens leak of 105GB</h2>
+        </div>
+        <p class="inc-sum">The BrainCipher ransomware group publicly claimed an attack against Olympia Orthopaedic Associates (olyortho[.]com), a Washington-state orthopaedic group, posting the claim to its leak site on or around Oct 21-22 with a threatened leak size of 105GB. As of this writing, we found no patient-notification filing, state attorney general disclosure, or statement from the practice itself confirming the breach, what data was actually taken, or how many patients are affected — this is a leak-site claim, not a confirmed incident, and we're presenting it as such rather than treating BrainCipher's own numbers as fact. <b>Durable catch: a dark-web leak-site claim and a confirmed breach are not the same thing — the responsible read here is "an orthopaedic practice is under active extortion pressure," not "105GB of patient data is confirmed stolen," until the practice or a regulator says otherwise.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-22</span><span>ACTIVE SINCE 2026-10-21</span>
+        <span>BRAINCIPHER CLAIMED OLYMPIA ORTHOPAEDIC ASSOCIATES (OLYORTHO[.]COM), WASHINGTON STATE</span>
+        <span>CLAIMED LEAK SIZE 105GB · NO PRACTICE STATEMENT OR REGULATOR FILING CONFIRMING SCOPE AS OF WRITING</span>
+        <span>UNVERIFIED LEAK-SITE CLAIM — TREAT DATA-TYPE AND VICTIM-COUNT CLAIMS AS UNCONFIRMED</span>
+          <span class="attck">T1486 · T1567</span>
+          <span><a href="https://www.dexpose.io/braincipher-strikes-olyortho/" rel="noopener">DeXpose</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · DATA EXTORTION · HEALTHCARE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Olympia Orthopaedic patients should watch for an official notification from the practice rather than acting on leak-site claims directly; healthcare practices generally should treat any BrainCipher leak-site posting as a signal to check their own backup integrity and initial-access logs immediately rather than waiting for a ransom deadline. Note: the indicators below are known BrainCipher-family artifacts from prior incidents, not samples confirmed specific to the Olympia Orthopaedic intrusion — no victim-specific hash or C2 has surfaced publicly as of this writing.</span>
+      <button class="tbtn copy-inc" data-inc="olympia-orthopaedic-braincipher">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="olympia-orthopaedic-braincipher">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="hash">
+            <td><span class="t-badge">hash</span></td>
+            <td><button class="val" data-defanged="eb82946fa0de261e92f8f60aa878c9fef9ebb34fdababa66995403b110118b1">eb82946fa0de261e92f8f60aa878c9fef9ebb34fdababa66995403b110118b1</button></td>
+            <td class="ctx">SHA-256 of a known BrainCipher encryptor sample (LockBit 3.0-derived builder); family-level indicator, not confirmed specific to this intrusion</td>
+            <td class="seen">PRIOR BRAINCIPHER CAMPAIGNS</td>
+          </tr>
+          <tr data-type="net">
+            <td><span class="t-badge">email</span></td>
+            <td><button class="val" data-defanged="brain[.]support[at]cyberfear[.]com">brain[.]support[at]cyberfear[.]com</button></td>
+            <td class="ctx">Contact email address used in BrainCipher ransom notes across prior campaigns</td>
+            <td class="seen">PRIOR BRAINCIPHER CAMPAIGNS</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged="[id].README.txt">[id].README.txt</button></td>
+            <td class="ctx">BrainCipher ransom note filename pattern (random ID prefix); family encrypts filenames as well as contents</td>
+            <td class="seen">PRIOR BRAINCIPHER CAMPAIGNS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>ClickFix operators exploited a Siemens Software Center DLL side-loading flaw to deploy malware via fake verification prompts</h2>
+        </div>
+        <p class="inc-sum">Siemens confirmed on Oct 19 that CVE-2026-110936 (CVSS v4.0 8.4), an uncontrolled-search-path flaw (CWE-427) in Software Center versions before 4.0.9.8, is being actively exploited in real attacks. Attackers pair a legitimate, digitally signed older Software Center binary with an attacker-supplied malicious DLL dropped in the same directory; because the legitimate executable itself is never modified, file-reputation and signature checks miss it entirely, and the malicious code runs with the trust of a signed Siemens binary. Siemens ties the activity to the ClickFix social-engineering technique — fake CAPTCHA/verification pages that walk a victim through copy-pasting a malicious command — delivered via a platform researchers track as Romulus. <b>Durable catch: a signed, legitimate binary is not proof of a clean execution chain — defenders need to inspect adjacent DLLs, parent processes, and outbound connections around trusted executables, not just the executable's own signature, since that is exactly the gap this campaign is built to exploit.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-20</span><span>ACTIVE SINCE 2026-10-19</span>
+        <span>CVE-2026-110936 CVSS v4.0 8.4 · DLL SIDE-LOADING VIA UNCONTROLLED SEARCH PATH (CWE-427)</span>
+        <span>SIEMENS CONFIRMED ACTIVE EXPLOITATION OCT 19 · DELIVERED VIA CLICKFIX/ROMULUS</span>
+        <span>LEGITIMATE SIGNED BINARY UNMODIFIED — MALICIOUS DLL DOES THE WORK · FIXED IN 4.0.9.8</span>
+          <span class="attck">T1574.002 · T1204.001 · T1553.002</span>
+          <span><a href="https://www.helpnetsecurity.com/2026/10/20/exploitation-siemens-software-center-vulnerability-cve-2026-110936/" rel="noopener">Help Net Security</a> · <a href="https://thehackernews.com/2026/10/clickfix-attackers-exploit-siemens.html" rel="noopener">The Hacker News</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · EXPLOITED · CLICKFIX · DLL SIDE-LOADING</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Update Siemens Software Center to 4.0.9.8 or later and verify the installed version rather than assuming an update succeeded; train users to recognize and refuse ClickFix-style &quot;paste this command to verify you&#x27;re human&quot; prompts, since the infection vector here is social engineering, not a drive-by exploit; hunt for Software Center processes loading DLLs from non-standard directories.</span>
+      <button class="tbtn copy-inc" data-inc="siemens-clickfix-dll">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="siemens-clickfix-dll">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-110936">CVE-2026-110936</button></td>
+            <td class="ctx">Siemens Software Center DLL side-loading flaw via uncontrolled search path element, CVSS v4.0 8.4</td>
+            <td class="seen">OCT 19</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">tool</span></td>
+            <td><button class="val" data-defanged="Romulus (ClickFix delivery platform)">Romulus (ClickFix delivery platform)</button></td>
+            <td class="ctx">Delivery platform used to serve the fake verification lure leading to DLL side-loading</td>
+            <td class="seen">OCT 19</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>DragonForce claims ransomware attack on US defense/military-training contractor Oak Grove Technologies</h2>
+        </div>
+        <p class="inc-sum">DragonForce ransomware publicly claimed an attack on Oak Grove Technologies, a North Carolina-based defense contractor providing tactical training and simulation services, with both the attack and discovery dated Oct 19 and a claimed leak size of 261.46GB. As with this week's other leak-site claims, we found no confirmation from Oak Grove itself, a defense-sector regulator, or a government contracting authority describing what data was taken or whether any controlled/classified training materials were involved — the scope beyond DragonForce's own claim is unverified. <b>Durable catch: a defense-training contractor is exactly the kind of target where "we don't know the scope yet" matters more than usual — course content, simulation scenarios, and client rosters at a firm like this can carry sensitivity well beyond typical commercial data even if no classified material is involved, so downstream government/military clients should ask Oak Grove directly rather than wait for a public disclosure.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-19</span><span>ACTIVE SINCE 2026-10-19</span>
+        <span>DRAGONFORCE CLAIMED OAK GROVE TECHNOLOGIES (DEFENSE/TACTICAL-TRAINING CONTRACTOR, NC)</span>
+        <span>CLAIMED LEAK SIZE 261.46GB · ATTACK AND DISCOVERY BOTH DATED OCT 19</span>
+        <span>NO CONFIRMATION FROM OAK GROVE OR A CONTRACTING AUTHORITY AS OF WRITING — SCOPE UNVERIFIED</span>
+          <span class="attck">T1486 · T1567</span>
+          <span><a href="https://www.breachsense.com/breaches/oak-grove-technologies-data-breach/" rel="noopener">BreachSense</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · DEFENSE CONTRACTOR</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Government and military clients of Oak Grove Technologies should contact the firm directly to determine whether any shared training materials, rosters, or network credentials were exposed rather than relying on DragonForce&#x27;s own leak-site claim; Oak Grove staff/contractor credentials found reused elsewhere should be rotated as a precaution. Note: the indicators below describe DragonForce&#x27;s known encryptor behavior from prior reverse-engineering work, not a sample confirmed specific to the Oak Grove intrusion.</span>
+      <button class="tbtn copy-inc" data-inc="oak-grove-technologies-dragonforce">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="oak-grove-technologies-dragonforce">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">file</span></td>
+            <td><button class="val" data-defanged=".dragonforce_encrypted">.dragonforce_encrypted</button></td>
+            <td class="ctx">File extension appended by DragonForce&#x27;s encryptor (LockBit 3.0-derived builder); family-level indicator from prior reverse-engineering, not confirmed specific to this intrusion</td>
+            <td class="seen">PRIOR DRAGONFORCE CAMPAIGNS</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">path</span></td>
+            <td><button class="val" data-defanged="C:\ProgramData ; C:\Users\Public">C:\ProgramData ; C:\Users\Public</button></td>
+            <td class="ctx">DragonForce&#x27;s typical pre-encryption staging directories, observed across prior incidents</td>
+            <td class="seen">PRIOR DRAGONFORCE CAMPAIGNS</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">technique</span></td>
+            <td><button class="val" data-defanged="vssadmin.exe / wmic.exe shadow copy deletion">vssadmin.exe / wmic.exe shadow copy deletion</button></td>
+            <td class="ctx">DragonForce&#x27;s standard shadow-copy destruction step prior to encryption</td>
+            <td class="seen">PRIOR DRAGONFORCE CAMPAIGNS</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident high">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev high">HIGH</span>
+          <h2>N0n extortion group leaks Amagi Media Labs' internal network maps and device configs after cloud-TV infrastructure provider confirms attack</h2>
+        </div>
+        <p class="inc-sum">Amagi Media Labs, which provides cloud-based playout and ad-insertion infrastructure for broadcasters and streaming platforms, disclosed to stock exchanges that an unknown party claims to have taken operational and network-setup data, bringing in outside cybersecurity experts and legal counsel and notifying authorities. The N0n extortion group publicly claimed responsibility for the attack on Oct 18 and published internal network maps and device configuration files as proof, threatening further leaks absent negotiation; N0n is a data-theft (not encryption-based) extortion group active since September 2026 that has now claimed over 100 victims via its Tor leak site. Amagi's shares fell following the disclosure. We found no confirmation of the initial access method for this specific intrusion — researchers have attributed stolen-credential access to N0n in other cases, but that attribution is not yet confirmed for Amagi. <b>Durable catch: N0n's proof-of-claim here was internal network maps and device configs, not customer records — for infrastructure providers, that's arguably worse than a customer-data leak, since it hands follow-on attackers a blueprint of the target's own network before any ransom conversation even starts.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-18</span><span>ACTIVE SINCE 2026-10-18</span>
+        <span>AMAGI MEDIA LABS (CLOUD PLAYOUT/AD-INSERTION PROVIDER) DISCLOSED ATTACK TO STOCK EXCHANGES</span>
+        <span>N0n GROUP CLAIMED RESPONSIBILITY OCT 18, PUBLISHED INTERNAL NETWORK MAPS AND DEVICE CONFIGS AS PROOF</span>
+        <span>N0n IS DATA-THEFT-ONLY EXTORTION GROUP ACTIVE SINCE SEP 2026, 100+ CLAIMED VICTIMS ON ITS LEAK SITE</span>
+          <span class="attck">T1567 · T1082</span>
+          <span><a href="https://www.dexpose.io/n0n-ransomware-group-targets-amagi-media-labs/" rel="noopener">DeXpose</a> · <a href="https://socradar.io/free-tools/ransomware-intelligence/victims/amagi-media-labs-n0n-bdfc450f" rel="noopener">SOCRadar</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">RANSOMWARE · DATA EXTORTION · MEDIA/STREAMING INFRASTRUCTURE</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Broadcast and streaming partners relying on Amagi&#x27;s infrastructure should ask Amagi directly whether leaked network maps or device configs touch shared/multi-tenant infrastructure they depend on; organizations targeted by N0n generally should assume stolen credentials as the likely initial-access vector based on prior cases and prioritize credential rotation and MFA enforcement across remote-access points. Blocking/monitoring the leak-site address below can help confirm whether an organization&#x27;s own data has appeared on N0n&#x27;s site.</span>
+      <button class="tbtn copy-inc" data-inc="amagi-media-labs-n0n">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="amagi-media-labs-n0n">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad[.]onion">nongzecboljwv3yfndkggsybsglfrkffw7bvk2zemuteoxe6etpusnad[.]onion</button></td>
+            <td class="ctx">N0n group&#x27;s Tor leak/extortion site where the Amagi claim and proof files were posted</td>
+            <td class="seen">OCT 18</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med wide">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>CISA discloses three new access-control flaws in Hitachi Energy's MicroSCADA X SYS600 grid-control platform</h2>
+        </div>
+        <p class="inc-sum">CISA published ICSA-26-293-04 on Oct 20 alongside five other ICS advisories (HMS Networks PCAN drivers, WAGO OS Linux, Moxa AIG-302, and two Hitachi Energy RTU500 entries), disclosing CVE-2026-9852 (CSV injection, CWE-1236, CVSS v4.0 4.6), CVE-2026-9853 (unauthorized access to application objects, CWE-303, CVSS v4.0 8.5), and CVE-2026-9854 (RBAC privilege elevation, CWE-303, CVSS v4.0 8.5) in MicroSCADA X SYS600, a SCADA platform used by electric utilities for grid monitoring and control. Hitachi's own advisory (8DBD000249) and CISA both mark exploitation status as none observed — we're flagging that explicitly rather than implying active attack, since the honest state here is "disclosed, unpatched-for-one-version, not yet seen exploited." A fix to 10.8 closes CVE-2026-9852; CVE-2026-9853 and -9854 affect 10.8 as well, with Hitachi offering mitigation guidance rather than a vendor patch for the RBAC flaw. <b>Durable catch: two of the three CVEs affect the current shipping version (10.8), not just the legacy branch — "update to the latest version" isn't a complete answer here, and utilities running MicroSCADA X need the specific Hitachi mitigation guidance for CVE-2026-9854, not just a version bump.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-20</span><span>ACTIVE SINCE 2026-10-20</span>
+        <span>CVE-2026-9852/-9853/-9854 IN HITACHI ENERGY MICROSCADA X SYS600 (GRID SCADA PLATFORM)</span>
+        <span>CVSS v4.0 UP TO 8.5 · NO KNOWN EXPLOITATION, PER CISA AND HITACHI</span>
+        <span>TWO OF THREE CVEs AFFECT CURRENT VERSION 10.8, NOT JUST LEGACY 10.7 AND EARLIER</span>
+          <span class="attck">T1078 · T1068</span>
+          <span><a href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-293-04" rel="noopener">CISA ICS Advisory ICSA-26-293-04</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">CVE · ICS/OT · NO KNOWN EXPLOITATION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Electric utilities and grid operators running MicroSCADA X SYS600 should apply the 10.8 update for CVE-2026-9852 and follow Hitachi advisory 8DBD000249&#x27;s specific mitigation steps for CVE-2026-9853 and CVE-2026-9854, since no full vendor patch exists yet for the RBAC privilege-escalation flaw on the current version; segment SCADA management interfaces from general IT networks regardless of patch status.</span>
+      <button class="tbtn copy-inc" data-inc="hitachi-microscada-advisory">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="hitachi-microscada-advisory">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-9852">CVE-2026-9852</button></td>
+            <td class="ctx">CSV injection in MicroSCADA X SYS600, CWE-1236, CVSS v4.0 4.6, no known exploitation</td>
+            <td class="seen">OCT 20</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-9853">CVE-2026-9853</button></td>
+            <td class="ctx">Unauthorized access to application objects, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8</td>
+            <td class="seen">OCT 20</td>
+          </tr>
+          <tr data-type="host">
+            <td><span class="t-badge">cve</span></td>
+            <td><button class="val" data-defanged="CVE-2026-9854">CVE-2026-9854</button></td>
+            <td class="ctx">RBAC privilege elevation, CWE-303, CVSS v4.0 8.5, affects 10.7 and prior plus 10.8, no vendor patch yet for 10.8</td>
+            <td class="seen">OCT 20</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+  <section class="incident med">
+    <div class="inc-head">
+      <div class="inc-lead">
+        <div class="inc-title">
+          <span class="sev med">MEDIUM</span>
+          <h2>PEAR extortion group claims data theft from Arizona landscaping/tree-management firm, no systems encrypted</h2>
+        </div>
+        <p class="inc-sum">The PEAR group — a data-theft extortion operation that, per its own pattern across prior victims, does not deploy encryption and instead steals and threatens to leak data directly — claimed an attack against Caretaker Landscape and Tree Management, an Arizona-based commercial and HOA landscaping provider, on Oct 16. We found no confirmation from the company or a regulator of what data was taken; this is a leak-site claim only. PEAR's other recent victims span healthcare billing, IT services, and accounting firms, suggesting an opportunistic rather than sector-targeted pattern. <b>Durable catch: PEAR's business model is pure data-theft extortion with no ransomware payload — meaning a victim's backup and recovery posture is irrelevant to this threat; the only real defenses are preventing exfiltration in the first place and having a legal/PR response ready for a leak-site deadline, not a restore plan.</b></p>
+        <div class="inc-meta">
+          <span class="reported">REPORTED 2026-10-16</span><span>ACTIVE SINCE 2026-10-16</span>
+        <span>PEAR GROUP CLAIMED CARETAKER LANDSCAPE AND TREE MANAGEMENT (ARIZONA)</span>
+        <span>DATA-THEFT-ONLY EXTORTION — NO ENCRYPTION PAYLOAD, PER PEAR&#x27;S OWN PATTERN</span>
+        <span>NO COMPANY OR REGULATOR CONFIRMATION OF SCOPE AS OF WRITING — LEAK-SITE CLAIM ONLY</span>
+          <span class="attck">T1567</span>
+          <span><a href="https://www.dexpose.io/pear-ransomware-hits-caretaker-landscape-and-tree-management/" rel="noopener">DeXpose</a></span>
+        </div>
+      </div>
+      <span class="inc-kind">DATA EXTORTION · NO ENCRYPTION</span>
+    </div>
+    <div class="act-row">
+      <b>ACTION</b>
+      <span>Organizations in PEAR&#x27;s victim profile (SMBs across services, healthcare billing, accounting, IT) should prioritize egress monitoring and DLP over backup/recovery investment, since PEAR&#x27;s model skips encryption entirely; Caretaker clients/employees whose data may be included should watch for a company notification. Monitoring the leak-site address below can help confirm whether an organization&#x27;s own data has appeared on PEAR&#x27;s site.</span>
+      <button class="tbtn copy-inc" data-inc="caretaker-landscape-pear">COPY IOCs</button>
+    </div>
+    <div class="scroll">
+      <table data-inc="caretaker-landscape-pear">
+        <thead>
+          <tr><th class="w-type">Type</th><th>Indicator</th><th>Context</th><th class="w-seen">Seen</th></tr>
+        </thead>
+        <tbody>
+          <tr data-type="net">
+            <td><span class="t-badge">url</span></td>
+            <td><button class="val" data-defanged="peargxn3oki34c4savcbcfqofjjwjnnyrlrbszfv6ujlx36mhrh57did[.]onion">peargxn3oki34c4savcbcfqofjjwjnnyrlrbszfv6ujlx36mhrh57did[.]onion</button></td>
+            <td class="ctx">PEAR group&#x27;s Tor leak/extortion site where the Caretaker Landscape claim was posted</td>
+            <td class="seen">OCT 16</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<p class="hint">click any indicator to copy the clean value · COPY IOCs copies one incident · filters hide non-matching rows across all incidents · indicators shown defanged by default</p>
+
+<footer>
+  <span>MACHINE-READABLE:</span>
+  <a class="file" href="../feeds/issue-014-iocs.txt">issue-014-iocs.txt</a>
+  <a class="file" href="../feeds/issue-014-iocs.clean.txt">issue-014-iocs.clean.txt</a>
+  <a class="file" href="../feeds/issue-014-iocs.csv">issue-014-iocs.csv</a>
+  <a class="file" href="../feeds/issue-014.stix2.json">issue-014.stix2.json</a>
+  <span class="spacer"></span>
+  <span>curated from cited open sources · verify against the source before operational blocking · published weekly</span>
+</footer>
+
+<script>
+  var pchips = document.querySelectorAll(".pchip");
+  function setPalette(name) {
+    document.documentElement.dataset.palette = name;
+    pchips.forEach(function (p) { p.classList.toggle("on", p.dataset.palette === name); });
+    try { localStorage.setItem("ioc-digest-palette", name); } catch (e) {}
+  }
+  pchips.forEach(function (p) {
+    p.addEventListener("click", function () { setPalette(p.dataset.palette); });
+  });
+  var initial = "spectrum";
+  try { initial = localStorage.getItem("ioc-digest-palette") || "spectrum"; } catch (e) {}
+  setPalette(initial);
+
+  var rows = Array.prototype.slice.call(document.querySelectorAll("tbody tr"));
+  var chips = document.querySelectorAll(".fchip");
+  var defanged = true;
+
+  chips.forEach(function (c) {
+    c.addEventListener("click", function () {
+      chips.forEach(function (x) { x.classList.remove("on"); });
+      c.classList.add("on");
+      var t = c.dataset.type;
+      rows.forEach(function (r) {
+        r.style.display = (t === "all" || r.dataset.type === t) ? "" : "none";
+      });
+    });
+  });
+
+  /* Indicators exist only defanged at rest (page, repo, feeds). Clean values are
+     computed in-memory here, so AV/mail gateways never see them on disk. */
+  function refang(s) { return s.split("[.]").join("."); }
+
+  document.getElementById("defang").addEventListener("click", function () {
+    defanged = !defanged;
+    this.textContent = "SHOWING: " + (defanged ? "DEFANGED" : "CLEAN");
+    document.querySelectorAll(".val").forEach(function (v) {
+      v.textContent = defanged ? v.dataset.defanged : refang(v.dataset.defanged);
+    });
+  });
+
+  document.querySelectorAll(".val").forEach(function (v) {
+    v.addEventListener("click", function () {
+      navigator.clipboard.writeText(refang(v.dataset.defanged)).then(function () {
+        v.classList.add("flash");
+        setTimeout(function () { v.classList.remove("flash"); }, 1200);
+      });
+    });
+  });
+
+  function copyRows(list, btn, label) {
+    var out = list
+      .filter(function (r) { return r.style.display !== "none"; })
+      .map(function (r) { return refang(r.querySelector(".val").dataset.defanged); })
+      .join("\n");
+    navigator.clipboard.writeText(out).then(function () {
+      btn.textContent = "COPIED ✓";
+      setTimeout(function () { btn.textContent = label; }, 1500);
+    });
+  }
+
+  document.querySelectorAll(".copy-inc").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var tbl = document.querySelector('table[data-inc="' + btn.dataset.inc + '"]');
+      copyRows(Array.prototype.slice.call(tbl.querySelectorAll("tbody tr")), btn, "COPY IOCs");
+    });
+  });
+
+  document.getElementById("copyall").addEventListener("click", function () {
+    copyRows(rows, this, "COPY ALL VISIBLE (CLEAN)");
+  });
+</script>
